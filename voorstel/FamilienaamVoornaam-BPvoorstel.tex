@@ -20,14 +20,14 @@
 % \course{Bachelor thesis}
 % \assignmenttype{Research proposal}
 
-\academicyear{2022-2023} % TODO: pas het academiejaar aan
+\academicyear{2025-2026} % TODO: pas het academiejaar aan
 
 % TODO: Werktitel
-\title{Vul hier de voorgestelde titel van je onderzoek in}
+\title{Het ontwikkelen van een geïntegreerd framework dat de veiligheid garandeert en volledige traceerbaarheid biedt voor alle interacties tussen gebruikers en een digitale assistent in klantondersteuningsprocessen}
 
 % TODO: Studentnaam en emailadres invullen
-\author{Ernst Aarden}
-\email{ernst.aarden@student.hogent.be}
+\author{Bricke Volckeryck}
+\email{bricke.volckeryck@student.hogent.be}
 
 % TODO: Medestudent
 % Gaat het om een bachelorproef in samenwerking met een student in een andere
@@ -36,7 +36,7 @@
 % \email{yasmine.alaoui@student.hogent.be}
 
 % TODO: Geef de co-promotor op
-\supervisor[Co-promotor]{S. Beekman (Synalco, \href{mailto:sigrid.beekman@synalco.be}{sigrid.beekman@synalco.be})}
+\supervisor[Co-promotor]{K. Haeck (Evolane, \href{mailto:kristof.haeck@evolane.eu}{kristof.haeck@evolane.eu})}
 
 % Binnen welke specialisatierichting uit 3TI situeert dit onderzoek zich?
 % Kies uit deze lijst:
@@ -49,13 +49,22 @@
 % - Als het onderzoek niet past binnen een van deze domeinen specifieer je deze
 %   zelf
 %
-\specialisation{Mobile \& Enterprise development}
-\keywords{Scheme, World Wide Web, $\lambda$-calculus}
+\specialisation{System \& Network Administrator}
+\keywords{AI Security, Observability, Chatbot Interactions, Akamai AI Firewall, Dynatrace Integration}
 
 \begin{document}
 
 \begin{abstract}
-  Hier schrijf je de samenvatting van je voorstel, als een doorlopende tekst van één paragraaf. Let op: dit is geen inleiding, maar een samenvattende tekst van heel je voorstel met inleiding (voorstelling, kaderen thema), probleemstelling en centrale onderzoeksvraag, onderzoeksdoelstelling (wat zie je als het concrete resultaat van je bachelorproef?), voorgestelde methodologie, verwachte resultaten en meerwaarde van dit onderzoek (wat heeft de doelgroep aan het resultaat?).
+  In moderne digitale klantomgevingen worden AI-chatbots steeds vaker ingezet om ondersteuning te bieden, informatie te verstrekken en transacties te begeleiden. Deze groeiende afhankelijkheid van geautomatiseerde interacties brengt echter aanzienlijke risico’s met zich mee, onder meer op het vlak van datalekken, manipulatie via prompt-injecties en een gebrek aan inzicht in wat er precies tijdens een gesprek gebeurt. Daardoor ontstaat een duidelijke nood aan een oplossing die zowel traceerbaarheid als beveiliging kan garanderen, zonder afbreuk te doen aan privacy- en GDPR-vereisten.
+  \\
+  
+  Dit onderzoek heeft als doel een geïntegreerd framework te ontwikkelen dat de volledige communicatiestroom tussen eindgebruikers en een AI-chatbot inzichtelijk en beveiligd maakt. Hiervoor wordt onderzocht hoe Dynatrace kan worden ingezet om gesprekslogs, acties en systeeminteracties in real time te monitoren, en hoe Akamai’s AI Web \& API Firewall verdachte input, aanvallen of ongewenste datastromen kan detecteren en mitigeren. De centrale onderzoeksvraag luidt op welke manier deze twee technologieën gecombineerd kunnen worden om een traceerbare én veilige conversatieketen te realiseren.
+  \\
+  
+  Om deze vraag te beantwoorden wordt een prototype-chatbot ontwikkeld binnen een eenvoudig klantondersteuningsscenario. Deze chatbot wordt geïntegreerd met Dynatrace voor gedetailleerde logging, tracing en auditability, terwijl Akamai’s AI Firewall wordt geconfigureerd om inkomend en uitgaand verkeer te scannen en te beveiligen. Vervolgens worden de verzamelde observability-gegevens en security-events met elkaar gecorreleerd om inzicht te krijgen in aanvalspatronen, afwijkend gedrag en mogelijke risico’s.
+  \\
+  
+  Het onderzoek verwacht aan te tonen dat de combinatie van observability en AI-gedreven beveiliging een aanzienlijk hoger niveau van controle, transparantie en incidentrespons biedt dan klassieke monitoring- of firewalloplossingen afzonderlijk. Bovendien kan het voorgestelde framework organisaties ondersteunen bij het naleven van privacy- en complianceverplichtingen, doordat elke interactie reproduceerbaar en controleerbaar wordt vastgelegd. Hierdoor vormt dit werk een waardevolle stap richting veilige, betrouwbare en juridisch verdedigbare AI-gestuurde klantcommunicatie.
 \end{abstract}
 
 \tableofcontents
