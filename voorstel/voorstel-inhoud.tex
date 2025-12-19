@@ -15,70 +15,93 @@
 \section{Inleiding}%
 \label{sec:inleiding}
 
-Waarover zal je bachelorproef gaan? Introduceer het thema en zorg dat volgende zaken zeker duidelijk aanwezig zijn:
+\noindent De inzet van digitale assistenten binnen klantondersteuning neemt sterk toe binnen professionele IT-omgevingen. Organisaties gebruiken dergelijke systemen om klantvragen sneller te beantwoorden, incidenten op te volgen en administratieve processen te automatiseren. In deze context worden echter vaak gevoelige gegevens verwerkt, zoals persoonsgegevens, bestelgegevens of interne bedrijfsinformatie. Binnen veel organisaties ontbreekt vandaag een sluitend mechanisme om deze interacties volledig te volgen, te beveiligen en achteraf te reconstrueren. Dit vormt een concreet probleem wanneer beveiligingsincidenten optreden of wanneer naleving van privacywetgeving moet worden aangetoond.\\
 
-\begin{itemize}
-  \item kaderen thema
-  \item de doelgroep
-  \item de probleemstelling en (centrale) onderzoeksvraag
-  \item de onderzoeksdoelstelling
-\end{itemize}
+\noindent Deze bachelorproef vertrekt vanuit een concrete bedrijfscontext bij Evolane, een IT-dienstverlener die organisaties ondersteunt op het vlak van observability en security. Binnen deze casus stelt zich de uitdaging om AI-gestuurde chatbotinteracties niet alleen operationeel betrouwbaar te laten functioneren, maar ook volledig traceerbaar en beveiligd te maken. Meer specifiek ontbreekt vandaag een geïntegreerde aanpak waarbij zowel de inhoud van gesprekken als beveiligingsgebeurtenissen op een samenhangende manier worden geregistreerd, gecorreleerd en geanalyseerd. Dit gebrek aan inzicht bemoeilijkt incidentanalyse, auditing en het aantonen van compliance.\\
 
-Denk er aan: een typische bachelorproef is \textit{toegepast onderzoek}, wat betekent dat je start vanuit een concrete probleemsituatie in bedrijfscontext, een \textbf{casus}. Het is belangrijk om je onderwerp goed af te bakenen: je gaat voor die \textit{ene specifieke probleemsituatie} op zoek naar een goede oplossing, op basis van de huidige kennis in het vakgebied.
+\noindent De doelgroep van deze bachelorproef bestaat uit IT- en securityprofessionals binnen Evolane en vergelijkbare organisaties, die verantwoordelijk zijn voor het beheren, beveiligen en monitoren van digitale klantinteracties.\\
 
-De doelgroep moet ook concreet en duidelijk zijn, dus geen algemene of vaag gedefinieerde groepen zoals \emph{bedrijven}, \emph{developers}, \emph{Vlamingen}, enz. Je richt je in elk geval op it-professionals, een bachelorproef is geen populariserende tekst. Eén specifiek bedrijf (die te maken hebben met een concrete probleemsituatie) is dus beter dan \emph{bedrijven} in het algemeen.
+\noindent Vanuit deze probleemsituatie wordt volgende centrale onderzoeksvraag geformuleerd:
+Hoe kan een geïntegreerd framework op basis van Dynatraces Audit Logging en Akamai’s AI Firewall worden ontworpen om AI-chatbotinteracties volledig traceerbaar en beveiligd te maken, met behoud van privacy en naleving van GDPR?\\
 
-Formuleer duidelijk de onderzoeksvraag! De begeleiders lezen nog steeds te veel voorstellen waarin we geen onderzoeksvraag terugvinden.
+\noindent Om deze onderzoeksvraag te beantwoorden, richt het onderzoek zich op het combineren van observability en security binnen een samenhangend framework. Daarbij wordt onderzocht hoe interacties technisch gelogd en getraceerd kunnen worden, hoe verdachte of risicovolle invoer kan worden gedetecteerd en hoe deze informatie kan worden gecorreleerd om incidenten efficiënt te analyseren en te mitigeren.\\
 
-Schrijf ook iets over de doelstelling. Wat zie je als het concrete eindresultaat van je onderzoek, naast de uitgeschreven scriptie? Is het een proof-of-concept, een rapport met aanbevelingen, \ldots Met welk eindresultaat kan je je bachelorproef als een succes beschouwen?
+\noindent De onderzoeksdoelstelling van deze bachelorproef is het ontwerpen en realiseren van een proof-of-concept dat aantoont hoe een dergelijke geïntegreerde oplossing in de praktijk kan functioneren. Het concrete eindresultaat bestaat uit een werkend prototype van een digitale assistent, aangevuld met een observability- en securitylaag die interacties inzichtelijk en controleerbaar maakt. De bachelorproef kan als geslaagd worden beschouwd wanneer het prototype aantoont dat chatbotinteracties op een reproduceerbare, veilige en privacybewuste manier kunnen worden gemonitord en beveiligd.\\
 
 %---------- Stand van zaken ---------------------------------------------------
 
 \section{Literatuurstudie}%
 \label{sec:literatuurstudie}
 
-Hier beschrijf je de \emph{state-of-the-art} rondom je gekozen onderzoeksdomein, d.w.z.\ een inleidende, doorlopende tekst over het onderzoeksdomein van je bachelorproef. Je steunt daarbij heel sterk op de professionele \emph{vakliteratuur}, en niet zozeer op populariserende teksten voor een breed publiek. Wat is de huidige stand van zaken in dit domein, en wat zijn nog eventuele open vragen (die misschien de aanleiding waren tot je onderzoeksvraag!)?
+\noindent De opkomst van artificiële intelligentie binnen klantgerichte toepassingen heeft geleid tot een sterke toename van geautomatiseerde interacties tussen eindgebruikers en digitale systemen. In het bijzonder AI-chatbots worden steeds vaker ingezet voor klantondersteuning, verkoop en incidentopvolging. Hoewel deze technologie duidelijke voordelen biedt op vlak van efficiëntie en schaalbaarheid, Introduceert dit tegelijk ook nieuwe uitdagingen op het gebied van beveiliging, traceerbaarheid en privacy. Deze literatuurstudie beschrijft de huidige stand van zaken binnen dit domein en benadrukt de nood aan geïntegreerde oplossingen die observability en beveiliging combineren.
 
-Je mag de titel van deze sectie ook aanpassen (literatuurstudie, stand van zaken, enz.). Zijn er al gelijkaardige onderzoeken gevoerd? Wat concluderen ze? Wat is het verschil met jouw onderzoek?
+\subsection{AI-chatbots in bedrijfscontext}
 
-Verwijs bij elke introductie van een term of bewering over het domein naar de vakliteratuur, bijvoorbeeld~\autocite{Hykes2013}! Denk zeker goed na welke werken je refereert en waarom.
+\noindent AI-chatbots maken gebruik van natuurlijke taalverwerking en machine learning om menselijke interacties te simuleren en gebruikersvragen te beantwoorden. Volgens \textcite{Adamopoulou2020} worden dergelijke systemen vooral ingezet om repetitieve taken te automatiseren en de werkdruk op menselijke medewerkers te verlagen. In bedrijfscontexten verwerken chatbots echter vaak gevoelige informatie, zoals persoonsgegevens of contractdetails. Dit verhoogt het risico op datalekken en misbruik, zeker wanneer onvoldoende controle bestaat over de inhoud en het verloop van deze gesprekken \autocite{Bender2021}.\\
 
-Draag zorg voor correcte literatuurverwijzingen! Een bronvermelding hoort thuis \emph{binnen} de zin waar je je op die bron baseert, dus niet er buiten! Maak meteen een verwijzing als je gebruik maakt van een bron. Doe dit dus \emph{niet} aan het einde van een lange paragraaf. Baseer nooit teveel aansluitende tekst op eenzelfde bron.
+\noindent Daarnaast blijkt uit recent onderzoek dat AI-systemen kwetsbaar zijn voor specifieke aanvalsvormen, zoals prompt-injecties en data-exfiltratie via doelbewust gemanipuleerde input \autocite{Greshake2023}. Deze kwetsbaarheden tonen aan dat klassieke beveiligingsmaatregelen niet volstaan om AI-gedreven interacties voldoende te beschermen.
 
-Als je informatie over bronnen verzamelt in JabRef, zorg er dan voor dat alle nodige info aanwezig is om de bron terug te vinden (zoals uitvoerig besproken in de lessen Research Methods).
+\subsection{Beperkingen van traditionele beveiligingsmechanismen}
 
-% Voor literatuurverwijzingen zijn er twee belangrijke commando's:
-% \autocite{KEY} => (Auteur, jaartal) Gebruik dit als de naam van de auteur
-%   geen onderdeel is van de zin.
-% \textcite{KEY} => Auteur (jaartal)  Gebruik dit als de auteursnaam wel een
-%   functie heeft in de zin (bv. ``Uit onderzoek door Doll & Hill (1954) bleek
-%   ...'')
+\noindent Traditionele web- en API-beveiliging steunt voornamelijk op statische regels en vooraf gedefinieerde patronen. Firewalls en intrusion detection systems zijn effectief tegen bekende aanvalsvectoren, maar hebben moeite om contextuele en semantische aanvallen te detecteren \autocite{Sommer2010}. In het geval van AI-chatbots, waar input en output contextafhankelijk zijn, leidt dit tot een verhoogd risico op false negatives en onvoldoende bescherming.\\
 
-Je mag deze sectie nog verder onderverdelen in subsecties als dit de structuur van de tekst kan verduidelijken.
+\noindent Om deze beperkingen tegen te gaan, worden steeds vaker AI-gestuurde beveiligingsoplossingen voorgesteld. Akamai beschrijft in zijn recente publicaties hoe machine learning kan worden ingezet om afwijkende patronen in web- en API-verkeer te herkennen en dynamisch te mitigeren \autocite{AkamaiFirewallAI2025}. Dergelijke oplossingen bieden nieuwe mogelijkheden, maar vereisen een integratie van observability- en auditsysteem om hun effectiviteit te kunnen evalueren.
+
+\subsection{Observability en auditability van AI-systemen}
+
+\noindent Observability verwijst naar het vermogen om de interne toestand van een systeem te reconstrueren op basis van externe signalen zoals logs, metrics en traces. In moderne, complexe en gedistribueerde omgevingen is observability cruciaal om systeemgedrag te analyseren, incidenten te onderzoeken en performantie te optimaliseren \autocite{Li2021}. Dynatrace benadrukt dat observability steeds belangrijker wordt in AI-gedreven toepassingen, omdat de besluitvorming van modellen vaak complex is en moeilijk te verklaren valt \autocite{DynatraceAIObs2025}.\\
+
+
+\noindent Audit logging speelt hierbij een centrale rol. Door interacties, systeembeslissingen en beveiligingsevents systematisch te registreren, wordt het mogelijk om AI-gedreven processen achteraf te reconstrueren en te analyseren. Dergelijke auditmechanismen zijn essentieel voor troubleshooting, maar ook voor het aantonen van verantwoordelijkheid en naleving van regelgevingen \autocite{Novelli2023}. Recente onderzoeken laten zien dat audit logging bij AI-systemen vaak los van de rest wordt toegepast. Er is meestal geen goede koppeling tussen wat je kunt zien in observability-data en de security-events, waardoor het lastiger wordt om achteraf precies te begrijpen wat er gebeurd is of incidenten goed te analyseren.
+
+\subsection{Privacy en regelgeving}
+
+\noindent Het loggen van chatbotinteracties brengt onvermijdelijk privacyvraagstukken met zich mee. De General Data Protection Regulation (GDPR) legt strikte voorwaarden op voor het verzamelen, verwerken en bewaren van persoonsgegevens. Volgens \textcite{Voigt2017} moeten systemen die persoonsgegevens verwerken voldoen aan het principe van privacy by design, waarbij dataminimalisatie en transparantie centraal \\staan.\\
+
+\noindent In het geval van AI-chatbots betekent dit dat logging en tracing zorgvuldig moeten worden ontworpen om gevoelige gegevens te beschermen, bijvoorbeeld via pseudonimisering of selective logging \autocite{EDPBGuidelines4_2019}. De tekst benadrukt dat veiligheid en privacy geen tegengestelde doelen zijn, maar elkaar kunnen versterken wanneer ze vanaf het ontwerp geïntegreerd worden.
+
 
 %---------- Methodologie ------------------------------------------------------
 \section{Methodologie}%
 \label{sec:methodologie}
 
-Hier beschrijf je hoe je van plan bent het onderzoek te voeren. Welke onderzoekstechniek ga je toepassen om elk van je onderzoeksvragen te beantwoorden? Gebruik je hiervoor literatuurstudie, interviews met belanghebbenden (bv.~voor requirements-analyse), experimenten, simulaties, vergelijkende studie, risico-analyse, PoC, \ldots?
+\begin{figure*}[h]
+    \includegraphics[width=\textwidth]{gantt.png}
+    \caption{Gantt-diagram}
+\end{figure*}
 
-Valt je onderwerp onder één van de typische soorten bachelorproeven die besproken zijn in de lessen Research Methods (bv.\ vergelijkende studie of risico-analyse)? Zorg er dan ook voor dat we duidelijk de verschillende stappen terug vinden die we verwachten in dit soort onderzoek!
+\noindent Dit onderzoek wordt uitgevoerd als toegepast onderzoek binnen de bedrijfscontext van Evolane en focust op één afgebakende probleemsituatie, namelijk het gebrek aan traceerbaarheid en beveiliging van AI-gestuurde chatbotinteracties binnen klantondersteuningsprocessen. Het onderzoek resulteert in een minimum viable product (MVP), zijnde een eerste functionele implementatie waarin de kernfunctionaliteiten voor traceerbaarheid en beveiliging aantoonbaar aanwezig zijn. De scope van het onderzoek beperkt zich tot het technisch ontwerpen, implementeren en evalueren van dit prototype binnen een gecontroleerde testomgeving.\\
 
-Vermijd onderzoekstechnieken die geen objectieve, meetbare resultaten kunnen opleveren. Enquêtes, bijvoorbeeld, zijn voor een bachelorproef informatica meestal \textbf{niet geschikt}. De antwoorden zijn eerder meningen dan feiten en in de praktijk blijkt het ook bijzonder moeilijk om voldoende respondenten te vinden. Studenten die een enquête willen voeren, hebben meestal ook geen goede definitie van de populatie, waardoor ook niet kan aangetoond worden dat eventuele resultaten representatief zijn.
+\noindent Het proof-of-concept wordt opgebouwd in vier opeenvolgende, inhoudelijk samenhangende fasen. Elke fase levert een concrete mijlpaal op die bijdraagt aan het beantwoorden van de centrale onderzoeksvraag.
 
-Uit dit onderdeel moet duidelijk naar voor komen dat je bachelorproef ook technisch voldoen\-de diepgang zal bevatten. Het zou niet kloppen als een bachelorproef informatica ook door bv.\ een student marketing zou kunnen uitgevoerd worden.
+\paragraph{Fase 1: Ontwikkeling van een afgebakende chatbot}
+In de eerste fase wordt een eenvoudige chatbot ontwikkeld die één concreet klantondersteuningsscenario implementeert. De functionaliteit blijft bewust beperkt tot een duidelijk afgelijnde use case, zodat de interactiestroom tussen gebruiker en digitale assistent reproduceerbaar blijft. De chatbot dient uitsluitend als testobject voor verdere beveiligings- en traceerbaarheidsmechanismen. Het eindresultaat van deze fase is een functionerende chatbot met een stabiele interactiestroom.
 
-Je beschrijft ook al welke tools (hardware, software, diensten, \ldots) je denkt hiervoor te gebruiken of te ontwikkelen.
+\paragraph{Fase 2: AI firewall voor chatbotverkeer}
+In de tweede fase wordt het chatbotverkeer voorzien van een beveiligingslaag die inkomende en uitgaande interacties analyseert. De focus ligt op het detecteren en blokkeren van afwijkende of risicovolle invoer binnen de afgebakende testomgeving. Door het uitvoeren van gesimuleerde aanvalsscenario’s wordt nagegaan hoe effectief het systeem reageert op misbruik van de chatbotinterface. Deze fase resulteert in een chatbot waarbij beveiligingsdetectie en -mitigatie functioneren.
 
-Probeer ook een tijdschatting te maken. Hoe lang zal je met elke fase van je onderzoek bezig zijn en wat zijn de concrete \emph{deliverables} in elke fase?
+\paragraph{Fase 3: Implementatie van traceerbaarheid en audit trail}
+De derde fase richt zich op het vastleggen en overeenkomen van gebeurtenissen binnen de chatbotinteracties. Hierbij worden gebruikersacties, systeemreacties en beveiligingsgebeurtenissen gelogd om volledige reconstructie van gesprekken mogelijk te maken. De audit trail wordt opgezet met als doel technische reproduceerbaarheid van incidenten, zonder dat juridische bewijsvoering of langdurige datastorage wordt nagestreefd. Het eindresultaat van deze fase is een werkende audit trail die inzicht biedt in het volledige verloop van interacties.
+
+\paragraph{Fase 4: Integratie en evaluatie van het MVP}
+In de vierde fase worden alle ontwikkelde componenten samengebracht tot één geïntegreerd MVP. Dit prototype wordt geëvalueerd aan de hand van vooraf gedefinieerde testscenario’s die zowel normale interacties als afwijkend gedrag omvatten. De evaluatie focust op de mate waarin het systeem traceerbaarheid en beveiliging combineert binnen de afgebakende casus. Deze fase resulteert in een geïntegreerd MVP en een technische evaluatie die de basis vormt voor aanbevelingen.
+
 
 %---------- Verwachte resultaten ----------------------------------------------
 \section{Verwacht resultaat, conclusie}%
 \label{sec:verwachte_resultaten}
 
-Hier beschrijf je welke resultaten je verwacht. Als je metingen en simulaties uitvoert, kan je hier al mock-ups maken van de grafieken samen met de verwachte conclusies. Benoem zeker al je assen en de onderdelen van de grafiek die je gaat gebruiken. Dit zorgt ervoor dat je concreet weet welk soort data je moet verzamelen en hoe je die moet meten.
+\noindent Het voornaamste verwachte resultaat van deze bachelorproef is een functionerend proof-of-concept van een geïntegreerd framework waarin een AI-chatbot, een beveiligingslaag en een audit trail samenkomen tot een minimum viable product (MVP). Dit MVP zal aantonen dat interacties tussen eindgebruikers en de chatbot traceerbaar, reproduceerbaar en beveiligd kunnen worden, zonder dat gevoelige informatie onnodig wordt blootgesteld.\\
 
-Wat heeft de doelgroep van je onderzoek aan het resultaat? Op welke manier zorgt jouw bachelorproef voor een meerwaarde?
+\noindent Specifiek wordt verwacht dat het prototype de volgende kenmerken vertoont:
+\begin{itemize}
+\item Traceerbaarheid van gesprekken: alle prompts, antwoorden, sessie-ID’s en tijdstempels worden gelogd en zijn reconstructeerbaar.
 
-Hier beschrijf je wat je verwacht uit je onderzoek, met de motivatie waarom. Het is \textbf{niet} erg indien uit je onderzoek andere resultaten en conclusies vloeien dan dat je hier beschrijft: het is dan juist interessant om te onderzoeken waarom jouw hypothesen niet overeenkomen met de resultaten.
+\item Detectie en mitigatie van risicovolle input: de beveiligingslaag kan verdachte of afwijkende gebruikersinvoer herkennen en blokkeren of markeren voor nadere analyse.
+
+\item Gecorreleerde observability: beveiligingsincidenten en interactiegegevens zijn verbonden in een audit trail, waardoor een volledig overzicht van elk gesprek en mogelijke incidenten ontstaat.
+
+\end{itemize}
+
+\noindent Het onderzoek biedt inzicht in de praktische haalbaarheid van het combineren van observability en AI-gestuurde beveiliging. Verwacht wordt dat de resultaten aantonen welke componenten effectief bijdragen aan veiligheid en traceerbaarheid, en waar nog optimalisaties mogelijk zijn.
 
