@@ -24,7 +24,26 @@
 \noindent Vanuit deze probleemsituatie wordt volgende centrale onderzoeksvraag geformuleerd:
 Hoe kan een geïntegreerd framework op basis van Dynatraces Audit Logging en Akamai’s AI Firewall worden ontworpen om AI-chatbotinteracties volledig traceerbaar en beveiligd te maken, met behoud van privacy en naleving van GDPR?\\
 
-\noindent Om deze onderzoeksvraag te beantwoorden, richt het onderzoek zich op het combineren van observability en security binnen een samenhangend framework. Daarbij wordt onderzocht hoe interacties technisch gelogd en getraceerd kunnen worden, hoe verdachte of risicovolle invoer kan worden gedetecteerd en hoe deze informatie kan worden gecorreleerd om incidenten efficiënt te analyseren en te mitigeren.\\
+\noindent Om deze onderzoeksvraag te beantwoorden, richt het onderzoek zich op het combineren van observability en security binnen een samenhangend framework. Om het probleemdomein af te bakenen, worden de volgende deelonderzoeksvragen geformuleerd:
+
+\begin{itemize}
+    \item Hoe kan de interactiestroom tussen eindgebruiker en chatbot technisch in kaart gebracht worden via Dynatrace (wie, wat, wanneer)?
+    \item Welke soorten aanvallen of verdachte inputs kan Akamai’s AI Firewall detecteren en blokkeren tijdens chatbotverkeer? 
+    \item Hoe goed kunnen observability-gegevens uit Dynatrace gecorreleerd worden met security-events uit Akamai om een volledig beeld te vormen van een gesprek?
+    \item Hoe vertalen we de gecorreleerde Dynatrace-traces en Akamai-alerts naar een direct uitvoerbaar mitigatie-pad (detectie → analyse → containment → herstel) om incidenten reactief en meetbaar te beperken?
+    \item In welke mate voldoet het systeem aan privacy- en GDPR-richtlijnen bij het loggen en bewaren van conversatiegegevens?
+    \item Hoe betrouwbaar is het audit-trailsysteem bij het reconstrueren van volledige gesprekken en events?
+\end{itemize}
+
+\noindent Op basis van de analyse van het probleemdomein richt het onderzoek zich vervolgens op het oplossingsdomein, met de volgende deelonderzoeksvragen:
+
+\begin{itemize}
+    \item Hoe kan Dynatrace gebruikt worden om afwijkende patronen in chatbotinteracties automatisch te detecteren en te classificeren als potentieel risico?
+    \item Welke type aanvallen of risicovolle inputs detecteert Akamai’s AI Firewall het meest effectief, en hoe kunnen deze detecties worden teruggekoppeld naar Dynatrace voor correlatie?
+    \item Hoe kunnen observability-data en security-events gecombineerd worden om een automatische mitigatieactie te triggeren (zoals blokkeren, isoleren of waarschuwen)?
+    \item Welke vorm van audit trail of chain-of-evidence is het meest geschikt om incidenten achteraf reproduceerbaar en juridisch verdedigbaar te maken?
+    \item In welke mate voldoet het geïntegreerde framework aan GDPR- en privacy-by-designrichtlijnen bij het loggen, analyseren en mitigerend reageren op incidenten?
+\end{itemize}
 
 \noindent De onderzoeksdoelstelling van deze bachelorproef is het ontwerpen en realiseren van een proof-of-concept dat aantoont hoe een dergelijke geïntegreerde oplossing in de praktijk kan functioneren. Het concrete eindresultaat bestaat uit een werkend prototype van een digitale assistent, aangevuld met een observability- en securitylaag die interacties inzichtelijk en controleerbaar maakt. De bachelorproef kan als geslaagd worden beschouwd wanneer het prototype aantoont dat chatbotinteracties op een reproduceerbare, veilige en privacybewuste manier kunnen worden gemonitord en beveiligd.\\
 

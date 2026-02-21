@@ -5,46 +5,89 @@
 \chapter{\IfLanguageName{dutch}{Inleiding}{Introduction}}%
 \label{ch:inleiding}
 
-De inleiding moet de lezer net genoeg informatie verschaffen om het onderwerp te begrijpen en in te zien waarom de onderzoeksvraag de moeite waard is om te onderzoeken. In de inleiding ga je literatuurverwijzingen beperken, zodat de tekst vlot leesbaar blijft. Je kan de inleiding verder onderverdelen in secties als dit de tekst verduidelijkt. Zaken die aan bod kunnen komen in de inleiding~\autocite{Pollefliet2011}:
+De opkomst van AI-gestuurde chatbots en digitale assistenten heeft de manier waarop organisaties communiceren met klanten en medewerkers sterk veranderd. Steeds vaker worden deze systemen ingezet voor klantondersteuning, interne helpdesks en geautomatiseerde dienstverlening. Hoewel deze toepassingen efficiënt en schaalbaar zijn, brengen ze ook nieuwe beveiligings- en privacy-uitdagingen met zich mee. Interacties verlopen volledig digitaal en bevatten vaak gevoelige informatie, waardoor logging, monitoring en beveiliging cruciaal worden.\\
 
-\begin{itemize}
-  \item context, achtergrond
-  \item afbakenen van het onderwerp
-  \item verantwoording van het onderwerp, methodologie
-  \item probleemstelling
-  \item onderzoeksdoelstelling
-  \item onderzoeksvraag
-  \item \ldots
-\end{itemize}
+In moderne IT-omgevingen spelen observability- en securitytools een belangrijke rol bij het monitoren van applicaties en netwerkverkeer. Observabilityplatformen zoals Dynatrace maken het mogelijk om applicatiegedrag en gebruikersinteracties technisch in kaart te brengen, terwijl beveiligingsoplossingen zoals een AI Firewall inkomende verzoeken analyseren en potentieel schadelijke of verdachte input blokkeren. In de praktijk worden deze systemen echter vaak los van elkaar gebruikt, waardoor een geïntegreerd overzicht van chatbotinteracties ontbreekt.\\
+
+Dit leidt tot een belangrijk probleem: wanneer een beveiligingsincident optreedt tijdens een chatbotinteractie, is het vaak moeilijk om achteraf een volledig en coherent beeld te reconstrueren van wat er precies is gebeurd. Logs, traces en security-alerts bevinden zich in verschillende systemen en zijn niet automatisch met elkaar gecorreleerd. Hierdoor wordt incidentanalyse complexer, duurt mitigatie langer en ontstaat onzekerheid rond compliance en auditability.\\
+
+Deze bachelorproef onderzoekt hoe observability- en securitygegevens geïntegreerd kunnen worden om chatbotinteracties volledig traceerbaar te maken, verdachte invoer automatisch te detecteren en incidenten efficiënt te analyseren en te beperken. Daarbij wordt specifiek gekeken naar de combinatie van Dynatrace voor observability en Akamai’s AI Firewall voor security.\\
 
 \section{\IfLanguageName{dutch}{Probleemstelling}{Problem Statement}}%
 \label{sec:probleemstelling}
 
-Uit je probleemstelling moet duidelijk zijn dat je onderzoek een meerwaarde heeft voor een concrete doelgroep. De doelgroep moet goed gedefinieerd en afgelijnd zijn. Doelgroepen als ``bedrijven,'' ``KMO's'', systeembeheerders, enz.~zijn nog te vaag. Als je een lijstje kan maken van de personen/organisaties die een meerwaarde zullen vinden in deze bachelorproef (dit is eigenlijk je steekproefkader), dan is dat een indicatie dat de doelgroep goed gedefinieerd is. Dit kan een enkel bedrijf zijn of zelfs één persoon (je co-promotor/opdrachtgever).
+Organisaties die AI-gestuurde chatbots inzetten voor klantondersteuning of interne dienstverlening vertrouwen steeds vaker op observability- en securitytools om hun systemen te monitoren en te beveiligen. In de praktijk worden deze tools echter meestal afzonderlijk gebruikt. Observabilityplatformen registreren applicatiegedrag en gebruikersinteracties, terwijl beveiligingsoplossingen verdachte invoer detecteren en blokkeren. Er ontbreekt vaak een geïntegreerde aanpak waarbij deze gegevens automatisch met elkaar worden gecorreleerd.\\
+
+Dit leidt tot een concreet probleem voor IT- en securityteams: wanneer zich een incident voordoet tijdens een chatbotinteractie, is het moeilijk om een volledig en coherent beeld te reconstrueren van wat er precies is gebeurd. Logs, traces en security-alerts bevinden zich in verschillende systemen en zijn niet structureel aan elkaar gekoppeld. Hierdoor verloopt incidentanalyse trager, is mitigatie minder efficiënt en ontstaat onzekerheid rond auditability en compliance.\\
+
+Deze bachelorproef richt zich specifiek op organisaties die AI-gestuurde chatbots inzetten en gebruikmaken van Dynatrace voor observability en Akamai’s AI Firewall voor beveiliging. Voor deze doelgroep is er nood aan een geïntegreerd framework dat interacties volledig traceerbaar maakt, security-events koppelt aan applicatiedata en incidenten reproduceerbaar analyseerbaar maakt binnen de geldende privacy- en GDPR-richtlijnen.\\
+
+%% voorlopig heb ik gekozen voor bij de doelgroep akamai en dynatrace te zetten. Kan ook zonder gedaan worden en dan meer als ``verkoop'' om aan te tonen hoe goed deze combinatie is.
+
 
 \section{\IfLanguageName{dutch}{Onderzoeksvraag}{Research question}}%
 \label{sec:onderzoeksvraag}
 
-Wees zo concreet mogelijk bij het formuleren van je onderzoeksvraag. Een onderzoeksvraag is trouwens iets waar nog niemand op dit moment een antwoord heeft (voor zover je kan nagaan). Het opzoeken van bestaande informatie (bv. ``welke tools bestaan er voor deze toepassing?'') is dus geen onderzoeksvraag. Je kan de onderzoeksvraag verder specifiëren in deelvragen. Bv.~als je onderzoek gaat over performantiemetingen, dan 
+De centrale onderzoeksvraag van deze bachelorproef luidt als volgt:
+
+\textit{Hoe kan een geïntegreerd framework op basis van Dynatraces Audit Logging en Akamai’s AI Firewall worden ontworpen om AI-chatbotinteracties volledig traceerbaar en beveiligd te maken, met behoud van privacy en naleving van GDPR?}\\
+
+Om deze onderzoeksvraag te beantwoorden, worden volgende deelonderzoeksvragen geformuleerd.
+
+\subsection*{Probleemdomein}
+
+\begin{itemize}
+    \item Hoe kan de interactiestroom tussen eindgebruiker en chatbot technisch in kaart gebracht worden via Dynatrace (wie, wat, wanneer)?
+    \item Welke soorten aanvallen of verdachte inputs kan Akamai’s AI Firewall detecteren en blokkeren tijdens chatbotverkeer? 
+    \item Hoe goed kunnen observability-gegevens uit Dynatrace gecorreleerd worden met security-events uit Akamai om een volledig beeld te vormen van een gesprek?
+    \item Hoe vertalen we de gecorreleerde Dynatrace-traces en Akamai-alerts naar een direct uitvoerbaar mitigatie-pad (detectie → analyse → containment → herstel) om incidenten reactief en meetbaar te beperken?
+    \item In welke mate voldoet het systeem aan privacy- en GDPR-richtlijnen bij het loggen en bewaren van conversatiegegevens?
+    \item Hoe betrouwbaar is het audit-trailsysteem bij het reconstrueren van volledige gesprekken en events?
+\end{itemize}
+
+\subsection*{Oplossingsdomein}
+
+\begin{itemize}
+    \item Hoe kan Dynatrace gebruikt worden om afwijkende patronen in chatbotinteracties automatisch te detecteren en te classificeren als potentieel risico?
+    \item Welke type aanvallen of risicovolle inputs detecteert Akamai’s AI Firewall het meest effectief, en hoe kunnen deze detecties worden teruggekoppeld naar Dynatrace voor correlatie?
+    \item Hoe kunnen observability-data en security-events gecombineerd worden om een automatische mitigatieactie te triggeren (zoals blokkeren, isoleren of waarschuwen)?
+    \item Welke vorm van audit trail of chain-of-evidence is het meest geschikt om incidenten achteraf reproduceerbaar en juridisch verdedigbaar te maken?
+    \item In welke mate voldoet het geïntegreerde framework aan GDPR- en privacy-by-designrichtlijnen bij het loggen, analyseren en mitigerend reageren op incidenten?
+\end{itemize}
 
 \section{\IfLanguageName{dutch}{Onderzoeksdoelstelling}{Research objective}}%
 \label{sec:onderzoeksdoelstelling}
 
-Wat is het beoogde resultaat van je bachelorproef? Wat zijn de criteria voor succes? Beschrijf die zo concreet mogelijk. Gaat het bv.\ om een proof-of-concept, een prototype, een verslag met aanbevelingen, een vergelijkende studie, enz.
+De doelstelling van deze bachelorproef is het ontwerpen, implementeren en evalueren van een proof-of-concept waarin een AI-chatbot wordt geïntegreerd met een observabilitylaag en een AI-gebaseerde firewallbescherming.
+
+Het onderzoek richt zich op het realiseren van een werkend prototype van een digitale assistent (met een afgebakende use-case, zoals klantondersteuning bij bestellingen) dat:
+
+\begin{itemize}
+    \item geïntegreerd is met een Dynatrace-observabilitylaag voor logging, monitoring en analyse van conversatiegegevens;
+    \item beschermd wordt door een AI-firewall (Akamai) die verdachte of kwaadaardige prompts detecteert en filtert;
+    \item inzicht biedt in interacties via dashboards met conversatielogs, gebruikers- en sessiegegevens, tijdstempels en AI-analyses (zoals toxiciteit, anomalieën en trends);
+    \item security-events en threat-intelligence correleert met observabilitydata.
+\end{itemize}
+
+Het concrete eindresultaat bestaat uit:
+
+\begin{enumerate}
+    \item Een functionerend technisch prototype waarin chatbot, observabilityplatform en firewall correct geïntegreerd zijn.
+    \item Een Dynatrace-dashboard met gestructureerde logging, traceerbaarheid en analyse van interacties.
+    \item Een Akamai security-dashboard dat filtering, detectie van verdachte prompts en correlatie met monitoringdata aantoont.
+    \item Een technische documentatie met duidelijke architectuur, onderbouwde ontwerpkeuzes en kritische evaluatie van veiligheid, privacy en haalbaarheid.
+\end{enumerate}
+
+De bachelorproef wordt als geslaagd beschouwd wanneer het prototype aantoont dat chatbotinteracties reproduceerbaar, traceerbaar en beveiligd kunnen worden gemonitord, waarbij filtering, logcorrelatie en security-controle effectief functioneren binnen de voorgestelde architectuur.
+
 
 \section{\IfLanguageName{dutch}{Opzet van deze bachelorproef}{Structure of this bachelor thesis}}%
 \label{sec:opzet-bachelorproef}
 
-% Het is gebruikelijk aan het einde van de inleiding een overzicht te
-% geven van de opbouw van de rest van de tekst. Deze sectie bevat al een aanzet
-% die je kan aanvullen/aanpassen in functie van je eigen tekst.
-
 De rest van deze bachelorproef is als volgt opgebouwd:
 
-In Hoofdstuk~\ref{ch:stand-van-zaken} wordt een overzicht gegeven van de stand van zaken binnen het onderzoeksdomein, op basis van een literatuurstudie.
+In Hoofdstuk~\ref{ch:stand-van-zaken} wordt een overzicht gegeven van de stand van zaken binnen het onderzoeksdomein, op basis van een literatuurstudie rond observability, AI-security, audit logging en privacy by design.
 
 In Hoofdstuk~\ref{ch:methodologie} wordt de methodologie toegelicht en worden de gebruikte onderzoekstechnieken besproken om een antwoord te kunnen formuleren op de onderzoeksvragen.
-
-% TODO: Vul hier aan voor je eigen hoofstukken, één of twee zinnen per hoofdstuk
 
 In Hoofdstuk~\ref{ch:conclusie}, tenslotte, wordt de conclusie gegeven en een antwoord geformuleerd op de onderzoeksvragen. Daarbij wordt ook een aanzet gegeven voor toekomstig onderzoek binnen dit domein.
