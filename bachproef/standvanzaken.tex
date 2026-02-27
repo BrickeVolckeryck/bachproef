@@ -1,51 +1,97 @@
 \chapter{\IfLanguageName{dutch}{Stand van zaken}{State of the art}}%
 \label{ch:stand-van-zaken}
 
-% Tip: Begin elk hoofdstuk met een paragraaf inleiding die beschrijft hoe
-% dit hoofdstuk past binnen het geheel van de bachelorproef. Geef in het
-% bijzonder aan wat de link is met het vorige en volgende hoofdstuk.
+Dit hoofdstuk situeert de bachelorproef binnen het bestaande wetenschappelijke en technologische kader rond AI-gedreven conversatiesystemen, observability en AI-specifieke beveiliging. In het vorige hoofdstuk werd de probleemstelling geformuleerd, waarbij werd vastgesteld dat AI-chatbots steeds vaker worden geïntegreerd in enterprise-omgevingen, maar dat monitoring en beveiliging vaak los van elkaar worden geïmplementeerd. \\
 
-% Pas na deze inleidende paragraaf komt de eerste sectiehoofding.
+De literatuurstudie onderzoekt daarom de onderliggende concepten, architecturen en beveiligingsuitdagingen die relevant zijn voor het ontwerpen van een geïntegreerde oplossing. Eerst wordt de werking en evolutie van AI-chatbots besproken, gevolgd door de architecturale kenmerken van Large Language Models in enterprise-context. Vervolgens worden de belangrijkste securityrisico’s en AI-firewall\-mechanismen behandeld. Daarna wordt ingezoomd op observability, logging en eventcorrelatie binnen gedistribueerde systemen. Tot slot worden privacy- en ethische aspecten besproken en wordt het voorgestelde framework gepositioneerd ten opzichte van bestaande oplossingen.\\
 
-Dit hoofdstuk bevat je literatuurstudie. De inhoud gaat verder op de inleiding, maar zal het onderwerp van de bachelorproef *diepgaand* uitspitten. De bedoeling is dat de lezer na lezing van dit hoofdstuk helemaal op de hoogte is van de huidige stand van zaken (state-of-the-art) in het onderzoeksdomein. Iemand die niet vertrouwd is met het onderwerp, weet nu voldoende om de rest van het verhaal te kunnen volgen, zonder dat die er nog andere informatie moet over opzoeken \autocite{Pollefliet2011}.
+Dit hoofdstuk vormt de conceptuele basis voor de methodologie in het volgende hoofdstuk, waarin wordt toegelicht hoe deze inzichten worden toegepast in het ontwerp en de implementatie van de proof-of-concept.\\
 
-Je verwijst bij elke bewering die je doet, vakterm die je introduceert, enz.\ naar je bronnen. In \LaTeX{} kan dat met het commando \texttt{$\backslash${textcite\{\}}} of \texttt{$\backslash${autocite\{\}}}. Als argument van het commando geef je de ``sleutel'' van een ``record'' in een bibliografische databank in het Bib\LaTeX{}-formaat (een tekstbestand). Als je expliciet naar de auteur verwijst in de zin (narratieve referentie), gebruik je \texttt{$\backslash${}textcite\{\}}. Soms is de auteursnaam niet expliciet een onderdeel van de zin, dan gebruik je \texttt{$\backslash${}autocite\{\}} (referentie tussen haakjes). Dit gebruik je bv.~bij een citaat, of om in het bijschrift van een overgenomen afbeelding, broncode, tabel, enz. te verwijzen naar de bron. In de volgende paragraaf een voorbeeld van elk.
+\section{Inleiding tot AI-gedreven Conversatiesystemen}
 
-\textcite{Knuth1998} schreef een van de standaardwerken over sorteer- en zoekalgoritmen. Experten zijn het erover eens dat cloud computing een interessante opportuniteit vormen, zowel voor gebruikers als voor dienstverleners op vlak van informatietechnologie~\autocite{Creeger2009}.
+AI-gedreven conversatiesystemen, vaak aangeduid als chatbots of virtuele assistenten, zijn softwaretoepassingen die natuurlijke taal gebruiken om interactie met gebruikers mogelijk te maken. Waar vroege chatbots voornamelijk werkten op basis van vooraf gedefinieerde regels en beslissingsbomen, maken moderne systemen gebruik van machine learning en, meer recent, Large Language Models (LLM’s). Deze evolutie heeft geleid tot een significante toename in flexibiliteit, schaalbaarheid en contextbegrip binnen menselijke-computerinteractie \autocite{adamopoulou2020chatbots}.\\
 
-Let er ook op: het \texttt{cite}-commando voor de punt, dus binnen de zin. Je verwijst meteen naar een bron in de eerste zin die erop gebaseerd is, dus niet pas op het einde van een paragraaf.
+De opkomst van generatieve AI heeft het toepassingsgebied van chatbots verder uitgebreid. In tegenstelling tot traditionele Natural Language Processing (NLP)-systemen, die vaak beperkt zijn tot intentieherkenning en vooraf geprogrammeerde antwoorden, kunnen LLM-gebaseerde systemen autonoom tekst genereren op basis van context en probabilistische taalmodellen \autocite{brown2020language}. Hierdoor zijn ze in staat om complexere en meer natuurlijke dialogen te voeren.\\
 
-\begin{figure}
-  \centering
-  \includegraphics[width=0.8\textwidth]{grail.jpg}
-  \caption[Voorbeeld figuur.]{\label{fig:grail}Voorbeeld van invoegen van een figuur. Zorg altijd voor een uitgebreid bijschrift dat de figuur volledig beschrijft zonder in de tekst te moeten gaan zoeken. Vergeet ook je bronvermelding niet!}
-\end{figure}
+\subsection{Evolutie van Chatbots}
 
-\begin{listing}
-  \begin{minted}{python}
-    import pandas as pd
-    import seaborn as sns
+De eerste generatie chatbots, zoals ELIZA in de jaren 60, functioneerden op basis van patroonherkenning en eenvoudige teksttransformaties \autocite{weizenbaum1966eliza}. Deze systemen simuleerden conversatie zonder daadwerkelijk begrip van taalstructuur of semantiek. In de daaropvolgende decennia werden rule-based systemen uitgebreid met decision trees en keyword matching, wat leidde tot meer gestructureerde maar nog steeds beperkte interacties.\\
 
-    penguins = sns.load_dataset('penguins')
-    sns.relplot(data=penguins, x="flipper_length_mm", y="bill_length_mm", hue="species")
-  \end{minted}
-  \caption[Voorbeeld codefragment]{Voorbeeld van het invoegen van een codefragment.}
-\end{listing}
+Met de opkomst van machine learning en statistische NLP-technieken verschoof de focus naar intentieclassificatie en entiteitsextractie. Platforms zoals dialog management frameworks maakten het mogelijk om schaalbare klantenservicebots te ontwikkelen. Toch bleven deze systemen sterk afhankelijk van gestructureerde trainingsdata en vooraf gedefinieerde intenties \autocite{jurafsky2023speech}.\\
 
-\lipsum[7-20]
+De introductie van transformer-gebaseerde modellen betekende een fundamentele verschuiving. Het transformer-architectuurmodel, geïntroduceerd door \textcite{vaswani2017attention}, maakte het mogelijk om lange-afstandsafhankelijkheden in tekst efficiënt te modelleren. Hieruit ontstonden Large Language Models zoals GPT, die getraind worden op enorme tekstcorpora en in staat zijn coherente, contextbewuste tekst te genereren \autocite{brown2020language}. Deze modellen vormen vandaag de basis van moderne AI-chatbots.\\
 
-\begin{table}
-  \centering
-  \begin{tabular}{lcr}
-    \toprule
-    \textbf{Kolom 1} & \textbf{Kolom 2} & \textbf{Kolom 3} \\
-    $\alpha$         & $\beta$          & $\gamma$         \\
-    \midrule
-    A                & 10.230           & a                \\
-    B                & 45.678           & b                \\
-    C                & 99.987           & c                \\
-    \bottomrule
-  \end{tabular}
-  \caption[Voorbeeld tabel]{\label{tab:example}Voorbeeld van een tabel.}
-\end{table}
+\subsection{Toepassingen in Enterprise-omgevingen}
 
+Binnen enterprise-omgevingen worden AI-chatbots steeds vaker ingezet voor uiteenlopende toepassingen, waaronder klantenondersteuning, interne helpdesks, kennisbeheer en procesautomatisering. De schaalbaarheid en 24/7-beschikbaarheid maken deze systemen economisch aantrekkelijk \autocite{dwivedi2023opinion}.\\
+
+Tegelijkertijd brengt de integratie van generatieve AI binnen bedrijfsomgevingen nieuwe uitdagingen met zich mee. In tegenstelling tot klassieke systemen genereren LLM’s dynamische output, wat betekent dat antwoorden niet volledig voorspelbaar zijn. Dit verhoogt het risico op foutieve informatie, ongepaste inhoud of het lekken van gevoelige data \autocite{bommasani2021opportunities}.\\
+
+Bovendien worden AI-chatbots vaak geïntegreerd via API’s in bredere IT-architecturen, waarbij zij toegang krijgen tot interne databronnen. Hierdoor verschuift het risicoprofiel van louter functionele foutmarges naar potentiële security- en complianceproblemen. \\
+
+\subsection{Noodzaak van Monitoring en Beveiliging}
+
+De probabilistische aard van generatieve AI maakt traditionele kwaliteitscontrolemechanismen ontoereikend. Waar klassieke software deterministisch gedrag vertoont, kunnen LLM’s verschillende antwoorden genereren op identieke input. Dit bemoeilijkt validatie, auditing en incidentanalyse. \\
+
+Onderzoekers wijzen erop dat observability en security in AI-systemen vaak als afzonderlijke componenten worden benaderd, terwijl een geïntegreerde aanpak noodzakelijk is om anomalieën effectief te detecteren en te analyseren \autocite{bommasani2021opportunities}. Logging van conversaties, traceerbaarheid van interacties en correlatie van security-events zijn cruciale elementen om verantwoord gebruik van AI-systemen te waarborgen. \\
+
+De toenemende afhankelijkheid van AI binnen kritieke bedrijfsprocessen onderstreept daarom de noodzaak van geïntegreerde monitoring- en beveiligingsmechanismen. Dit vormt de basis voor het verdere onderzoek in deze bachelorproef.\\
+
+
+\section{Architectuur van Large Language Models in Enterprise-omgevingen}
+\subsection{Basisprincipes van Large Language Models}
+\subsection{Transformer-architectuur op Conceptueel Niveau}
+\subsection{Integratie via API-gebaseerde Architecturen}
+\subsection{SaaS versus Self-hosted Implementaties}
+\subsection{Dataflow binnen AI-Chatbots}
+\subsection{Architecturale Integratie van Monitoring en Firewalling}
+
+\section{Securityrisico’s bij AI-Chatbots}
+\subsection{Prompt Injection}
+\subsection{Jailbreaking van AI-modellen}
+\subsection{Data Exfiltration via Modeloutput}
+\subsection{Model Misuse en Abuse}
+\subsection{Beperkingen van Traditionele Beveiligingsmechanismen}
+
+\section{AI-Firewalls en Prompt Filtering}
+\subsection{Definitie en Werking van AI-Firewalls}
+\subsection{Input Filtering en Output Filtering}
+\subsection{Detectie van Toxiciteit en Ongepaste Inhoud}
+\subsection{Anomaliedetectie in Conversatiepatronen}
+\subsection{Verschillen met Klassieke Web Application Firewalls}
+
+\section{Observability in Gedistribueerde Systemen}
+\subsection{Definitie van Observability}
+\subsection{De Drie Pijlers: Logs, Metrics en Traces}
+\subsection{Distributed Tracing in Microservices-architecturen}
+\subsection{Monitoring versus Observability}
+\subsection{Uitdagingen bij AI-gedreven Systemen}
+
+\section{Logging, Traceerbaarheid en Monitoring van AI-Systemen}
+\subsection{Structurering van Conversatielogs}
+\subsection{User- en Session-identificatie}
+\subsection{Tijdstempels en Eventregistratie}
+\subsection{Analyse van AI-output (Toxiciteit en Anomalieën)}
+\subsection{Dashboarding en Visualisatie}
+\subsection{Correlatie tussen Monitoringdata en Security-events}
+
+\section{Correlatie tussen Security-events en Observabilitydata}
+\subsection{Principes van Event Correlatie}
+\subsection{Integratie van Threat Intelligence}
+\subsection{SIEM-benaderingen in AI-omgevingen}
+\subsection{Detectie van Afwijkende Interactiepatronen}
+\subsection{Incidentrespons binnen AI-systemen}
+
+\section{Privacy- en Ethiekvraagstukken bij AI Monitoring}
+\subsection{GDPR en Dataminimalisatie}
+\subsection{Privacy-by-Design in AI-systemen}
+\subsection{Bewaartermijnen en Logretentie}
+\subsection{Transparantie en Gebruikersrechten}
+\subsection{Ethiek en Bias in AI-monitoring}
+
+\section{Bestaande Oplossingen en Technologische Positionering}
+\subsection{AI Observability Platforms}
+\subsection{AI Security en Firewalloplossingen}
+\subsection{Enterprise Monitoring Frameworks}
+\subsection{Vergelijkende Analyse van Bestaande Benaderingen}
+\subsection{Positionering van het Voorgestelde Framework}
