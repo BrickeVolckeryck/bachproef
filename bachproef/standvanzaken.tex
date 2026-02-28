@@ -17,9 +17,11 @@ De opkomst van generatieve AI heeft het toepassingsgebied van chatbots verder ui
 
 De eerste generatie chatbots, zoals ELIZA in de jaren 60, functioneerden op basis van patroonherkenning en eenvoudige teksttransformaties \autocite{weizenbaum1966eliza}. Deze systemen simuleerden conversatie zonder daadwerkelijk begrip van taalstructuur of semantiek. In de daaropvolgende decennia werden rule-based systemen uitgebreid met decision trees en keyword matching, wat leidde tot meer gestructureerde maar nog steeds beperkte interacties.\\
 
+% semantiek = betekenisleer
+
 Met de opkomst van machine learning en statistische NLP-technieken verschoof de focus naar intentieclassificatie en entiteitsextractie. Platforms zoals dialog management frameworks maakten het mogelijk om schaalbare klantenservicebots te ontwikkelen. Toch bleven deze systemen sterk afhankelijk van gestructureerde trainingsdata en vooraf gedefinieerde intenties \autocite{jurafsky2023speech}.\\
 
-De introductie van transformer-gebaseerde modellen betekende een fundamentele verschuiving. Het transformer-architectuurmodel, geïntroduceerd door \textcite{vaswani2017attention}, maakte het mogelijk om lange-afstandsafhankelijkheden in tekst efficiënt te modelleren. Hieruit ontstonden Large Language Models zoals GPT, die getraind worden op enorme tekstcorpora en in staat zijn coherente, contextbewuste tekst te genereren \autocite{brown2020language}. Deze modellen vormen vandaag de basis van moderne AI-chatbots.\\
+De introductie van transformer-gebaseerde modellen betekende een fundamentele verschuiving. Het transformer-architectuurmodel, geïntroduceerd door \textcite{vaswani2017attention}, maakte het mogelijk om lange-afstandsafhankelijkheden in tekst efficiënt te modelleren. Hieruit ontstonden Large Language Models zoals GPT, die getraind worden op enorme tekstcorpora en in staat zijn coherente, contextbewuste tekst te genereren \autocite{brown2020language}. Dit zijn grote, gestructureerde verzameling van geschreven of gesproken teksten in een bepaalde taal. Deze modellen vormen vandaag de basis van moderne AI-chatbots.\\
 
 \subsection{Toepassingen in Enterprise-omgevingen}
 
@@ -27,11 +29,11 @@ Binnen enterprise-omgevingen worden AI-chatbots steeds vaker ingezet voor uiteen
 
 Tegelijkertijd brengt de integratie van generatieve AI binnen bedrijfsomgevingen nieuwe uitdagingen met zich mee. In tegenstelling tot klassieke systemen genereren LLM’s dynamische output, wat betekent dat antwoorden niet volledig voorspelbaar zijn. Dit verhoogt het risico op foutieve informatie, ongepaste inhoud of het lekken van gevoelige data \autocite{bommasani2021opportunities}.\\
 
-Bovendien worden AI-chatbots vaak geïntegreerd via API’s in bredere IT-architecturen, waarbij zij toegang krijgen tot interne databronnen. Hierdoor verschuift het risicoprofiel van louter functionele foutmarges naar potentiële security- en complianceproblemen. \\
+Bovendien worden AI-chatbots vaak geïntegreerd via API’s in bredere IT-architecturen, waarbij zij toegang krijgen tot interne databronnen. Hierdoor verschuift het risicoprofiel van enkel functionele foutmarges naar potentiële security- en complianceproblemen. \\
 
 \subsection{Noodzaak van Monitoring en Beveiliging}
 
-De probabilistische aard van generatieve AI maakt traditionele kwaliteitscontrolemechanismen ontoereikend. Waar klassieke software deterministisch gedrag vertoont, kunnen LLM’s verschillende antwoorden genereren op identieke input. Dit bemoeilijkt validatie, auditing en incidentanalyse. \\
+De probabilistische aard van generatieve AI maakt traditionele kwaliteitscontrolemechanismen onvoldoende. Waar klassieke software deterministisch gedrag vertoont, kunnen LLM’s verschillende antwoorden genereren op identieke input. Dit bemoeilijkt validatie, auditing en incidentanalyse. \\
 
 Onderzoekers wijzen erop dat observability en security in AI-systemen vaak als afzonderlijke componenten worden benaderd, terwijl een geïntegreerde aanpak noodzakelijk is om anomalieën effectief te detecteren en te analyseren \autocite{bommasani2021opportunities}. Logging van conversaties, traceerbaarheid van interacties en correlatie van security-events zijn cruciale elementen om verantwoord gebruik van AI-systemen te waarborgen. \\
 
@@ -39,12 +41,81 @@ De toenemende afhankelijkheid van AI binnen kritieke bedrijfsprocessen onderstre
 
 
 \section{Architectuur van Large Language Models in Enterprise-omgevingen}
+
+Large Language Models (LLM’s) vormen de technologische kern van moderne AI-gedreven conversatiesystemen. Deze modellen zijn gebaseerd op deep learning-architecturen en worden getraind op grootschalige tekstcorpora om probabilistische taalpatronen te leren. Binnen enterprise-omgevingen worden LLM’s doorgaans niet als standalone systemen gebruikt, maar geïntegreerd als component binnen een bredere IT-architectuur.
+
+Dit hoofdstuk bespreekt de onderliggende architectuurprincipes van LLM’s, hun integratiemodellen binnen bedrijfsomgevingen en de gevolgen voor monitoring en beveiliging.
+
 \subsection{Basisprincipes van Large Language Models}
-\subsection{Transformer-architectuur op Conceptueel Niveau}
+
+LLM’s zijn neurale netwerken met miljarden parameters die taal modelleren op basis van waarschijnlijkheidsverdelingen. In plaats van vaste regels toe te passen, voorspellen zij het volgende token in een sequentie op basis van context \autocite{brown2020language}. Hierdoor kunnen zij coherente en contextbewuste tekst genereren.
+
+De schaal van deze modellen is een bepalende factor voor hun performantie. \textcite{kaplan2020scaling} tonen aan dat modelprestaties systematisch verbeteren naarmate het aantal parameters, trainingsdata en rekencapaciteit toenemen. Dit schaalprincipe verklaart de sterke vooruitgang in generatieve AI-systemen.
+
+\subsection{Transformer-architectuur}
+
+De meeste hedendaagse LLM’s zijn gebaseerd op de transformer-architectuur, geïntroduceerd door Vaswani et al. \cite{vaswani2017attention}. Het kernmechanisme van deze architectuur is self-attention, waarmee het model relevante woorden in een zin kan wegen ten opzichte van elkaar, ongeacht hun positie in de tekst.
+
+In tegenstelling tot recurrente neurale netwerken maakt de transformer parallelle verwerking mogelijk, wat schaalbaarheid en efficiëntie aanzienlijk verhoogt. Dit maakt het trainen van zeer grote modellen haalbaar op gedistribueerde infrastructuren.
+
+Voor enterprise-toepassingen betekent dit dat de intelligentie voornamelijk in het model zelf zit, terwijl de applicatielaag zich richt op interfacing, validatie, logging en beveiliging.
+
 \subsection{Integratie via API-gebaseerde Architecturen}
+
+Binnen bedrijfsomgevingen worden LLM’s vaak geïntegreerd via API’s. De applicatie dient hierbij als tussenlaag tussen gebruiker en model. De typische dataflow verloopt als volgt:
+
+\begin{enumerate}
+    \item Gebruiker stuurt een prompt naar de applicatie.
+    \item De applicatie valideert de input.
+    \item De prompt wordt doorgestuurd naar het LLM via een API-call.
+    \item Het model genereert een response.
+    \item De applicatie verwerkt, filtert en logt de output.
+\end{enumerate}
+
+Dit architectuurmodel verduidelijkt dat beveiliging en observability niet in het model zelf zitten, maar in de omliggende infrastructuur. Hierdoor ontstaat een duidelijke noodzaak om input- en outputstromen systematisch te monitoren.
+
 \subsection{SaaS versus Self-hosted Implementaties}
+
+Organisaties kunnen kiezen tussen cloudgebaseerde (SaaS) LLM-oplossingen of self-hosted modellen. SaaS-oplossingen bieden schaalbaarheid en eenvoud in beheer, maar brengen afhankelijkheid van externe providers met zich mee. Self-hosted modellen bieden meer controle over data en configuratie, maar vereisen aanzienlijke infrastructuur en expertise \cite{bommasani2021opportunities}.
+
+De keuze tussen beide modellen heeft directe implicaties voor:
+
+\begin{itemize}
+    \item Databeheer en compliance
+    \item Loggingmogelijkheden
+    \item Beveiligingscontroles
+    \item Observability-integratie
+\end{itemize}
+
 \subsection{Dataflow binnen AI-Chatbots}
+
+De integratie van LLM’s in enterprise-systemen gebeurt zelden zonder bijkomende componenten. Vaak worden retrieval-mechanismen toegevoegd (Retrieval-Augmented Generation, RAG), waarbij externe databronnen worden geraadpleegd om context te verrijken \cite{lewis2020rag}. 
+
+Dit introduceert extra complexiteit in de dataflow:
+\begin{itemize}
+    \item Query naar kennisdatabase
+    \item Verrijking van prompt
+    \item Modelinferentie
+    \item Outputvalidatie
+\end{itemize}
+
+Elke stap vormt een potentieel controlepunt voor logging en beveiliging.
+
 \subsection{Architecturale Integratie van Monitoring en Firewalling}
+
+Aangezien LLM’s probabilistisch gedrag vertonen, kunnen ongewenste outputs of manipulaties niet volledig binnen het model zelf worden uitgesloten. Daarom wordt in recente literatuur gepleit voor een ``defence-in-depth''-benadering rond generatieve AI-systemen \cite{bommasani2021opportunities}.
+
+Dit betekent dat monitoring- en beveiligingslagen worden toegevoegd rond het model:
+
+\begin{itemize}
+    \item Input filtering (detectie van prompt injection)
+    \item Output filtering (toxicity, data leakage)
+    \item Logging en traceerbaarheid
+    \item Event correlatie
+\end{itemize}
+
+Deze architecturale positionering vormt de basis voor de proof-of-concept dat in deze bachelorproef wordt ontwikkeld.
+
 
 \section{Securityrisico’s bij AI-Chatbots}
 \subsection{Prompt Injection}
