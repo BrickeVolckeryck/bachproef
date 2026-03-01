@@ -54,7 +54,7 @@ De schaal van deze modellen is een bepalende factor voor hun performantie. \text
 
 \subsection{Transformer-architectuur}
 
-De meeste hedendaagse LLM’s zijn gebaseerd op de transformer-architectuur, geïntroduceerd door Vaswani et al. \cite{vaswani2017attention}. Het kernmechanisme van deze architectuur is self-attention, waarmee het model relevante woorden in een zin kan wegen ten opzichte van elkaar, ongeacht hun positie in de tekst.
+De meeste hedendaagse LLM’s zijn gebaseerd op de transformer-architectuur, geïntroduceerd door Vaswani et al. \autocite{vaswani2017attention}. Het kernmechanisme van deze architectuur is self-attention, waarmee het model relevante woorden in een zin kan wegen ten opzichte van elkaar, ongeacht hun positie in de tekst.
 
 In tegenstelling tot recurrente neurale netwerken maakt de transformer parallelle verwerking mogelijk, wat schaalbaarheid en efficiëntie aanzienlijk verhoogt. Dit maakt het trainen van zeer grote modellen haalbaar op gedistribueerde infrastructuren.
 
@@ -76,7 +76,7 @@ Dit architectuurmodel verduidelijkt dat beveiliging en observability niet in het
 
 \subsection{SaaS versus Self-hosted Implementaties}
 
-Organisaties kunnen kiezen tussen cloudgebaseerde (SaaS) LLM-oplossingen of self-hosted modellen. SaaS-oplossingen bieden schaalbaarheid en eenvoud in beheer, maar brengen afhankelijkheid van externe providers met zich mee. Self-hosted modellen bieden meer controle over data en configuratie, maar vereisen aanzienlijke infrastructuur en expertise \cite{bommasani2021opportunities}.
+Organisaties kunnen kiezen tussen cloudgebaseerde (SaaS) LLM-oplossingen of self-hosted modellen. SaaS-oplossingen bieden schaalbaarheid en eenvoud in beheer, maar brengen afhankelijkheid van externe providers met zich mee. Self-hosted modellen bieden meer controle over data en configuratie, maar vereisen aanzienlijke infrastructuur en expertise \autocite{bommasani2021opportunities}.
 
 De keuze tussen beide modellen heeft directe implicaties voor:
 
@@ -89,7 +89,7 @@ De keuze tussen beide modellen heeft directe implicaties voor:
 
 \subsection{Dataflow binnen AI-Chatbots}
 
-De integratie van LLM’s in enterprise-systemen gebeurt zelden zonder bijkomende componenten. Vaak worden retrieval-mechanismen toegevoegd (Retrieval-Augmented Generation, RAG), waarbij externe databronnen worden geraadpleegd om context te verrijken \cite{lewis2020rag}. 
+De integratie van LLM’s in enterprise-systemen gebeurt zelden zonder bijkomende componenten. Vaak worden retrieval-mechanismen toegevoegd (Retrieval-Augmented Generation, RAG), waarbij externe databronnen worden geraadpleegd om context te verrijken \autocite{lewis2020rag}. 
 
 Dit introduceert extra complexiteit in de dataflow:
 \begin{itemize}
@@ -103,7 +103,7 @@ Elke stap vormt een potentieel controlepunt voor logging en beveiliging.
 
 \subsection{Architecturale Integratie van Monitoring en Firewalling}
 
-Aangezien LLM’s probabilistisch gedrag vertonen, kunnen ongewenste outputs of manipulaties niet volledig binnen het model zelf worden uitgesloten. Daarom wordt in recente literatuur gepleit voor een ``defence-in-depth''-benadering rond generatieve AI-systemen \cite{bommasani2021opportunities}.
+Aangezien LLM’s probabilistisch gedrag vertonen, kunnen ongewenste outputs of manipulaties niet volledig binnen het model zelf worden uitgesloten. Daarom wordt in recente literatuur gepleit voor een ``defence-in-depth''-benadering rond generatieve AI-systemen \autocite{bommasani2021opportunities}.
 
 Dit betekent dat monitoring- en beveiligingslagen worden toegevoegd rond het model:
 
@@ -118,18 +118,143 @@ Deze architecturale positionering vormt de basis voor de proof-of-concept dat in
 
 
 \section{Securityrisico’s bij AI-Chatbots}
+
+De integratie van Large Language Models binnen enterprise-omgevingen introduceert nieuwe beveiligingsrisico’s die fundamenteel verschillen van traditionele applicatiebeveiliging. In tegenstelling tot klassieke software, die deterministisch gedrag vertoont, genereren LLM-gebaseerde systemen probabilistische output. Dit maakt hun gedrag minder voorspelbaar en complexer om te beveiligen \autocite{bommasani2021opportunities}.
+
+Recente studies tonen aan dat generatieve AI-systemen kwetsbaar zijn voor manipulatie via invoerprompts, datalekken via modeloutput en misbruik voor schadelijke doeleinden \autocite{owasp2023llm}. Dit hoofdstuk bespreekt de belangrijkste dreigingen die relevant zijn voor enterprise-implementaties.
+
 \subsection{Prompt Injection}
+
+Prompt injection is een aanvalstechniek waarbij een gebruiker kwaadaardige instructies verwerkt in een prompt om het gedrag van het model te manipuleren. Omdat LLM’s instructies interpreteren als natuurlijke taal en geen strikt onderscheid maken tussen systeeminstructies en gebruikersinput, kunnen zij worden misleid om beveiligingsrichtlijnen te negeren \autocite{greshake2023prompt}.
+
+Een voorbeeld hiervan is het overschrijven van systeeminstructies via een extra prompt, zoals het vragen om verborgen beleidsregels of het negeren van eerder opgelegde restricties. Dit vormt een aanzienlijk risico wanneer chatbots toegang hebben tot interne databronnen of gevoelige bedrijfsinformatie.
+
+Prompt injection verschilt van klassieke code-injectie doordat het geen syntactische kwetsbaarheid uitbuit, maar inspeelt op het interpretatievermogen van het model. Traditionele firewalls detecteren dit type aanval doorgaans niet, aangezien de invoer op technisch niveau geldig blijft.
+
+%Syntactische fouten" (syntax errors) treden op als code niet aan de grammaticaregels van de programmeertaal voldoet. bij interpretatie gaat het meer over de semantiek (betekenis) van wat er gezegd wordt.
+
 \subsection{Jailbreaking van AI-modellen}
+
+Jailbreaking verwijst naar technieken waarmee gebruikers de ingebouwde veiligheidsmechanismen van een model proberen te omzeilen. Dit gebeurt vaak door hypothetische scenario’s of role-playing prompts te gebruiken die het model aanzetten om ongewenste of verboden informatie te genereren \autocite{zou2023jailbreak}.
+
+Onderzoek toont aan dat zelfs geavanceerde modellen vatbaar blijven voor dergelijke manipulaties, ondanks fine-tuning en reinforcement learning with human feedback (RLHF). Dit wijst op inherente beperkingen in het afdwingen van gedragsrestricties binnen probabilistische modellen.
+
+Voor enterprise-omgevingen betekent dit dat modeloutput niet als veilig mag worden beschouwd en aanvullende controlemechanismen vereist zijn.
+
 \subsection{Data Exfiltration via Modeloutput}
+
+Wanneer AI-systemen geïntegreerd worden met interne databronnen, bijvoorbeeld via Retrieval-Augmented Generation (RAG), ontstaat het risico dat gevoelige informatie onbedoeld wordt blootgesteld \autocite{lewis2020rag}. 
+
+Aanvallers kunnen gerichte prompts gebruiken om vertrouwelijke gegevens op te vragen of om indirect toegang te verkrijgen tot interne kennisdatabanken. Daarnaast kan trainingsdata-leakage optreden wanneer modellen specifieke informatie reproduceren die tijdens training werd opgenomen \autocite{carlini2021extracting}.
+
+Dit type dreiging is bijzonder problematisch in sectoren waar vertrouwelijkheid en compliance centraal staan, zoals gezondheidszorg en financiële dienstverlening.
+
 \subsection{Model Misuse en Abuse}
+
+Generatieve AI kan worden misbruikt voor het genereren van phishingmails, desinformatie of schadelijke code. Hoewel dit risico niet noodzakelijk voortkomt uit een technische kwetsbaarheid, heeft het belangrijke implicaties voor verantwoord gebruik \autocite{dwivedi2023opinion}.
+
+Binnen enterprise-contexten kan misuse ook intern optreden, bijvoorbeeld wanneer medewerkers AI-systemen gebruiken om beveiligingsmechanismen te omzeilen of gevoelige informatie te extraheren. Dit onderstreept de noodzaak van logging en monitoring van gebruikersinteracties.
+
 \subsection{Beperkingen van Traditionele Beveiligingsmechanismen}
 
+Traditionele beveiligingsmaatregelen, zoals Web Application Firewalls (WAF’s), zijn ontworpen om syntactische patronen en bekende aanvalssignaturen te detecteren. AI-specifieke dreigingen zijn echter semantisch van aard en maken gebruik van natuurlijke taalmanipulatie \autocite{owasp2023llm}.
+
+Daardoor volstaat klassieke perimeterbeveiliging niet. Er is nood aan:
+
+\begin{itemize}
+    \item Semantische analyse van prompts
+    \item Contextbewuste filtering
+    \item Detectie van afwijkende interactiepatronen
+    \item Correlatie van security-events met gebruikerssessies
+\end{itemize}
+
+Deze vaststellingen vormen de theoretische onderbouwing voor het implementeren van een AI-firewall in combinatie met een observabilitylaag, zoals voorgesteld in deze bachelorproef.
+
+
 \section{AI-Firewalls en Prompt Filtering}
+
+De opkomst van generatieve AI heeft geleid tot de ontwikkeling van gespecialiseerde beveiligingsmechanismen die specifiek gericht zijn op Large Language Model (LLM)-toepassingen. In tegenstelling tot traditionele beveiligingsoplossingen, die zich focussen op netwerk- of applicatieniveau, richten AI-firewalls zich op semantische analyse van taalinput en -output.
+
+Aangezien dreigingen zoals prompt injection en jailbreaking niet gebaseerd zijn op syntactische kwetsbaarheden maar op semantische manipulatie, is een aanvullende beveiligingslaag noodzakelijk \autocite{owasp2023llm}. Dit hoofdstuk bespreekt de werking, architectuur en beperkingen van AI-firewalls binnen enterprise-omgevingen.
+
 \subsection{Definitie en Werking van AI-Firewalls}
+
+Een AI-firewall kan worden gedefinieerd als een beveiligingscomponent die inkomende en uitgaande interacties met een AI-model analyseert, evalueert en indien nodig filtert voordat deze het model bereiken of de gebruiker terugkoppelen. In tegenstelling tot klassieke firewalls inspecteert een AI-firewall geen netwerkpakketten, maar taalinhoud.
+
+De kernfunctionaliteiten zijn:
+
+\begin{itemize}
+    \item Detectie van kwaadaardige of manipulatieve prompts
+    \item Classificatie van risicovolle content
+    \item Filtering van ongepaste of gevoelige output
+    \item Logging van verdachte interacties
+\end{itemize}
+
+Onderzoek benadrukt dat dergelijke beveiligingslagen essentieel zijn om foundation models veilig te integreren in bedrijfsprocessen \autocite{bommasani2021opportunities}.
+
 \subsection{Input Filtering en Output Filtering}
+
+AI-firewalls opereren doorgaans op twee niveaus:
+
+\paragraph{Input Filtering}
+Hier wordt de gebruikersprompt geanalyseerd voordat deze naar het model wordt doorgestuurd. Mechanismen kunnen bestaan uit:
+\begin{itemize}
+    \item Toxiciteitsdetectie
+    \item Detectie van prompt injection-patronen
+    \item Analyse van afwijkende instructiestructuren
+\end{itemize}
+
+Door inputvalidatie kan worden voorkomen dat het model ongewenste context ontvangt.
+
+\paragraph{Output Filtering}
+Na generatie van de modeloutput wordt deze opnieuw geëvalueerd. Dit is noodzakelijk omdat LLM’s probabilistische output genereren en veiligheidsmechanismen binnen het model niet foutloos zijn \autocite{zou2023jailbreak}.
+
+Output filtering kan onder meer bestaan uit:
+\begin{itemize}
+    \item Detectie van gevoelige informatie
+    \item Controle of antwoorden aan beleid voldoen
+    \item Anomaliedetectie in gegenereerde tekst
+\end{itemize}
+
+Deze tweelaagse aanpak sluit aan bij het principe van defence-in-depth.
+
 \subsection{Detectie van Toxiciteit en Ongepaste Inhoud}
+
+Een belangrijk onderdeel van AI-firewalls is contentmoderatie. Onderzoek toont aan dat LLM’s, ondanks alignment-technieken, nog steeds ongepaste of schadelijke inhoud kunnen genereren onder bepaalde omstandigheden \autocite{gehman2020realtoxicity}.
+
+Automatische classificatiemodellen worden ingezet om:
+\begin{itemize}
+    \item Hate speech te detecteren
+    \item Beledigende taal te identificeren
+    \item Discriminerende of gewelddadige inhoud te markeren
+\end{itemize}
+
+Deze detectiemechanismen worden vaak geïntegreerd als externe API’s of als aparte machine learning-modellen binnen de beveiligingslaag.
+
 \subsection{Anomaliedetectie in Conversatiepatronen}
+
+Naast inhoudsanalyse kan ook gedragsanalyse worden toegepast. Door interactiepatronen te monitoren (zoals frequentie, promptstructuur of herhalende manipulatieve pogingen) kunnen afwijkingen worden gedetecteerd.
+
+Anomaliedetectie wordt vaak toegepast in cybersecuritycontexten en kan worden uitgebreid naar AI-interacties \autocite{chandola2009anomaly}. Door security-events te correleren met sessiegegevens ontstaat een vollediger risicobeeld.
+
+Dit aspect is bijzonder relevant voor enterprise-omgevingen waar AI-systemen publiek toegankelijk zijn.
+
 \subsection{Verschillen met Klassieke Web Application Firewalls}
+
+Klassieke Web Application Firewalls (WAF’s) analyseren HTTP-verkeer op basis van bekende aanvalssignaturen, zoals SQL-injectie of cross-site scripting. AI-dreigingen opereren echter op semantisch niveau en zijn contextafhankelijk \autocite{owasp2023llm}.
+
+Belangrijke verschillen zijn:
+
+\begin{itemize}
+    \item Syntactische versus semantische detectie
+    \item Deterministische versus probabilistische output
+    \item Contextafhankelijke risicoanalyse
+\end{itemize}
+
+Hieruit volgt dat AI-firewalls geen vervanging zijn van traditionele beveiliging, maar een aanvullende laag vormen binnen een meerlagige beveiligingsarchitectuur.
+
+De besproken concepten vormen de theoretische basis voor het implementeren van een AI-gebaseerde firewall in combinatie met een observabilitylaag, zoals verder uitgewerkt in deze bachelorproef.
+
 
 \section{Observability in Gedistribueerde Systemen}
 \subsection{Definitie van Observability}
