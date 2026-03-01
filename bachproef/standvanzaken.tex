@@ -256,27 +256,246 @@ Hieruit volgt dat AI-firewalls geen vervanging zijn van traditionele beveiliging
 De besproken concepten vormen de theoretische basis voor het implementeren van een AI-gebaseerde firewall in combinatie met een observabilitylaag, zoals verder uitgewerkt in deze bachelorproef.
 
 
+
+
+
 \section{Observability in Gedistribueerde Systemen}
+
+Moderne enterprise-applicaties worden steeds vaker opgebouwd volgens gedistribueerde architecturen, zoals microservices en cloud-native omgevingen. In dergelijke systemen is het gedrag van individuele componenten niet langer eenvoudig te reconstrueren via traditionele monitoringtechnieken. Observability is daarom uitgegroeid tot een essentieel concept binnen hedendaags systeembeheer \autocite{sigelman2010dapper}.
+
+Binnen de context van AI-gedreven systemen, waarbij meerdere lagen (frontend, API, modelinference, databronnen, beveiligingslaag) samenwerken, wordt observability cruciaal voor het analyseren van prestaties, fouten en beveiligingsincidenten.
+
 \subsection{Definitie van Observability}
+
+De term observability vind zijn oorsprong in de controletheorie en verwijst naar hoever de interne toestand van een systeem kan worden afgeleid uit externe outputs. Toegepast op software betekent dit dat ontwikkelaars en beheerders in staat moeten zijn om het gedrag van een systeem te begrijpen op basis van gegenereerde Prestatiegegevens \autocite{ganesan2022observability}.
+
+In tegenstelling tot traditionele monitoring, dat vooraf gedefinieerde metrics opvolgt, richt observability zich op het beantwoorden van onverwachte vragen over systeemgedrag. Dit is bijzonder relevant voor AI-systemen, waar afwijkend gedrag niet altijd vooraf voorspelbaar is.
+
 \subsection{De Drie Pijlers: Logs, Metrics en Traces}
+
+Observability wordt doorgaans opgebouwd rond drie kerncomponenten:
+
+\begin{itemize}
+    \item \textbf{Logs:} Gedetailleerde, tijdsgebonden registraties van gebeurtenissen binnen een systeem.
+    \item \textbf{Metrics:} Numerieke waarden die prestaties of statusindicatoren weergeven.
+    \item \textbf{Traces:} End-to-end weergave van een verzoek doorheen verschillende systeemcomponenten.
+\end{itemize}
+
+Distributed tracing, zoals geïntroduceerd in systemen zoals Dapper \autocite{sigelman2010dapper}, maakt het mogelijk om individuele requests te volgen over meerdere services heen.
+
 \subsection{Distributed Tracing in Microservices-architecturen}
+
+Microservices-architecturen splitsen applicaties op in afzonderlijke, onafhankelijke services. Hoewel dit schaalbaarheid en flexibiliteit verhoogt, bemoeilijkt het foutopsporing en prestatieanalyse.
+
+Distributed tracing lost dit probleem op door unieke trace-ID’s toe te kennen aan verzoeken, waardoor hun volledige traject kan worden gereconstrueerd \autocite{sigelman2010dapper}. In AI-contexten kan een enkele gebruikersprompt meerdere interne processen activeren, zoals:
+
+\begin{itemize}
+    \item Authenticatiecontrole
+    \item Inputvalidatie
+    \item API-aanroep naar het LLM
+    \item Retrieval van externe databronnen
+    \item Outputfiltering
+\end{itemize}
+
+Zonder tracing is het moeilijk om te achterhalen waar vertragingen of beveiligingsproblemen ontstaan.
+
 \subsection{Monitoring versus Observability}
+
+Hoewel de termen vaak door elkaar worden gebruikt, is er een fundamenteel verschil tussen monitoring en observability. Monitoring focust op het opvolgen van vooraf bepaalde indicatoren en alarmen. Observability daarentegen laat toe om onbekende problemen te onderzoeken op basis van beschikbare prestatiegegevens \autocite{ganesan2022observability}.
+
+In AI-systemen, waar output dynamisch en contextafhankelijk is, kunnen afwijkingen niet altijd via statische regels worden gedetecteerd. Observability maakt het mogelijk om onverwachte patronen of anomalieën te identificeren via loganalyse en correlatie.
+
 \subsection{Uitdagingen bij AI-gedreven Systemen}
 
+AI-systemen introduceren bijkomende observability-uitdagingen:
+
+\begin{itemize}
+    \item Niet-deterministische output
+    \item Complexe dataflows
+    \item Hoge afhankelijkheid van externe API’s
+    \item Mogelijke privacybeperkingen bij logging van gebruikersinteracties
+\end{itemize}
+
+Onderzoekers benadrukken dat het gebrek aan transparantie in AI-modellen (de zogenaamde ``black-box''-problematiek) extra nadruk legt op externe observabilitymechanismen \autocite{bommasani2021opportunities}.
+
+Een geïntegreerde aanpak waarbij logs, metrics en security-events worden gecorreleerd, is daarom essentieel om betrouwbare en veilige AI-systemen te realiseren.
+
+
+
+
+
+
+
 \section{Logging, Traceerbaarheid en Monitoring van AI-Systemen}
+
+De integratie van AI-systemen binnen enterprise-architecturen vereist een gestructureerde aanpak voor logging en traceerbaarheid. In tegenstelling tot traditionele applicaties genereren Large Language Models (LLM’s) probabilistische output, waardoor het gedrag van het systeem niet volledig deterministisch is. Dit bemoeilijkt auditing, foutanalyse en incidentonderzoek.
+
+Recente literatuur benadrukt dat observability bij AI-systemen verder moet gaan dan prestatiegegevens en ook semantische interacties moet omvatten \autocite{ganesan2022observability}. Logging vormt hierbij de primaire bron van waarheid voor analyse en reconstructie van gebeurtenissen.
+
 \subsection{Structurering van Conversatielogs}
+
+Voor AI-chatbots is het onvoldoende om enkel technische systeemlogs bij te houden. Ook inhoudelijke interacties moeten worden geregistreerd, met inachtneming van privacyprincipes. Een gestructureerde logregistratie omvat doorgaans:
+
+\begin{itemize}
+    \item Gebruikersprompt
+    \item Modelresponse
+    \item Tijdstempel
+    \item Sessie-identificatie
+    \item Eventuele verrijkte context (bijvoorbeeld RAG-bronnen)
+\end{itemize}
+
+Volgens de principes van distributed tracing \autocite{sigelman2010dapper} moet elk verzoek een unieke identifier bevatten, zodat het volledige traject van een interactie kan worden gereconstrueerd.
+
+Een correcte logstructuur maakt zowel technische debugging als security-analyse mogelijk.
+
 \subsection{User- en Session-identificatie}
+
+Traceerbaarheid vereist dat interacties kunnen worden gekoppeld aan specifieke sessies of gebruikerscontexten. Dit betekent niet noodzakelijk dat persoonlijke identificatiegegevens worden opgeslagen, maar wel dat er een consistente correlatiesleutel aanwezig is.
+
+Binnen cybersecurity wordt dit principe vaak toegepast in Security Information and Event Management (SIEM)-systemen, waar events worden gecorreleerd op basis van tijd, bron en sessie \autocite{kotenko2022securityCorrelation}. 
+
+Voor AI-systemen betekent dit dat verdachte prompts of anomalieën moeten kunnen worden gelinkt aan eerdere interacties binnen dezelfde sessie.
+
 \subsection{Tijdstempels en Eventregistratie}
-\subsection{Analyse van AI-output (Toxiciteit en Anomalieën)}
+
+Tijdssynchronisatie is essentieel voor analyse. Zonder nauwkeurige tijdstempels is het onmogelijk om volgordes van gebeurtenissen correct te reconstrueren.
+
+In gedistribueerde systemen kunnen kleine tijdsverschillen leiden tot foutieve interpretaties van incidenten. Daarom wordt in moderne observabilitypraktijken gebruikgemaakt van gecentraliseerde logging-architecturen en uniforme tijdstandaarden \autocite{ganesan2022observability}.
+
+Voor AI-toepassingen is dit bijzonder relevant wanneer meerdere lagen betrokken zijn, zoals:
+
+\begin{itemize}
+    \item Authenticatieservices
+    \item AI-firewallcomponenten
+    \item LLM-API-aanroepen
+    \item Outputvalidatie
+\end{itemize}
+
+\subsection{Analyse van AI-output}
+
+Naast technische logging moet ook de inhoud van AI-output geanalyseerd kunnen worden. Onderzoek toont aan dat LLM’s onder bepaalde omstandigheden gevoelige of ongepaste informatie kunnen genereren \autocite{gehman2020realtoxicity}.
+
+Daarom kan logging worden uitgebreid met aanvullende metadata, zoals:
+
+\begin{itemize}
+    \item Toxiciteitsscores
+    \item Risicoclassificatie
+    \item Detectie van policy-violations
+    \item Anomaliescores
+\end{itemize}
+
+Door deze metadata te koppelen aan conversatielogs ontstaat er een dataset voor incidentanalyse.
+
 \subsection{Dashboarding en Visualisatie}
+
+Het verzamelen van logs is slechts de eerste stap. Effectieve monitoring vereist visualisatie en analyse via dashboards. Moderne observabilityplatformen combineren logs, metrics en traces in gecorreleerde weergaven \autocite{ganesan2022observability}.
+
+Voor AI-systemen kunnen dashboards onder meer inzicht bieden in:
+
+\begin{itemize}
+    \item Frequentie van verdachte prompts
+    \item Trendanalyse van toxiciteit
+    \item Correlatie tussen security-events en gebruikerssessies
+\end{itemize}
+
+Visualisatie maakt het mogelijk om afwijkende patronen sneller te identificeren dan via loganalyse.
+
 \subsection{Correlatie tussen Monitoringdata en Security-events}
 
+Een geïsoleerde benadering van monitoring en beveiliging is onvoldoende voor complexe AI-systemen. Onderzoekers benadrukken dat effectieve incidentdetectie afhankelijk is van eventcorrelatie \autocite{chandola2009anomaly}.
+
+Door security-events (bijvoorbeeld detectie van prompt injection) te correleren met observabilitydata (zoals sessiegedrag, frequentie en timing) kan een vollediger dreigingsbeeld worden opgebouwd.
+
+
+
+
+
+
 \section{Correlatie tussen Security-events en Observabilitydata}
+
+De beveiliging van AI-systemen vereist een geïntegreerde benadering waarbij operationele monitoring en security-analyse niet langer los van elkaar worden behandeld. In complexe IT-omgevingen bestaan beveiligingsincidenten zelden uit één afzonderlijk event, maar uit een reeks gerelateerde gebeurtenissen die gezamenlijk een aanvalspatroon vormen. Eventcorrelatie maakt het mogelijk om deze verspreide signalen te structureren en te analyseren als één samenhangend incidentbeeld \autocite{kotenko2022securityCorrelation}.
+
+Volgens \textcite{kotenko2022securityCorrelation} is het doel van eventcorrelatie het reduceren van losse en vaak talrijke alerts tot betekenisvolle beveiligingsincidenten door gebruik te maken van gestructureerde correlatiemethoden. Dit principe is bijzonder relevant binnen AI-omgevingen, waar interacties met Large Language Models (LLM’s) bestaan uit opeenvolgende prompts, responses en systeeminteracties die samen een potentieel misbruikscenario kunnen vormen.
+
 \subsection{Principes van Event Correlatie}
+
+Eventcorrelatie omvat technieken waarmee meerdere log- of security-events worden gecombineerd op basis van vooraf gedefinieerde regels, statistische modellen of gedragsanalyse. \textcite{kotenko2022securityCorrelation} onderscheiden verschillende benaderingen, waaronder rule-based correlatie, scenario-gebaseerde correlatie en statistische methoden die afwijkingen in eventpatronen identificeren.
+
+Belangrijke correlatieprincipes zijn:
+
+\begin{itemize}
+    \item \textbf{Rule-based correlatie}: gebeurtenissen worden gecombineerd op basis van vooraf gedefinieerde regels of correlatievoorwaarden. Dit type correlatie wordt vaak toegepast in traditionele SIEM-systemen.
+    
+    \item \textbf{Scenario-based correlatie}: vooraf gemodelleerde aanvalsscenario’s of multi-stage aanvalspatronen worden herkend door gebeurtenissen te matchen met bekende sequenties.
+    
+    \item \textbf{Statistische of similarity-based correlatie}: gebeurtenissen worden geclusterd of gegroepeerd op basis van gelijkenis of afwijking van normaal gedrag.
+    
+    \item \textbf{Knowledge-based correlatie}: gebruik van domeinkennis of threat intelligence om gebeurtenissen in een bredere context te plaatsen.
+    
+    \item \textbf{Graph-based en machine learning-gebaseerde correlatie}: geavanceerde technieken waarbij relaties tussen events worden gemodelleerd als grafstructuren of waarbij algoritmen automatisch patronen leren detecteren.
+\end{itemize}
+
+Deze benaderingen maken het mogelijk om afzonderlijke alerts te reduceren tot betekenisvolle incidenten en multi-stage aanvalspatronen te identificeren die anders verborgen blijven in grote hoeveelheden logdata.
+
 \subsection{Integratie van Threat Intelligence}
+
+Threat intelligence verrijkt interne monitoringdata met externe kennis over bekende aanvalstechnieken en dreigingsactoren. Volgens het MITRE ATT\&CK-framework worden aanvallen vaak opgebouwd uit gestandaardiseerde tactieken en technieken \autocite{strom2018mitre}.
+
+Door AI-gerelateerde dreigingen — zoals prompt injection of data-exfiltratie via LLM’s — te mappen op bestaande aanvalstactieken, kan correlatie verfijnd worden. Threat intelligence maakt het mogelijk om:
+
+\begin{itemize}
+    \item Bekende aanvalspatronen sneller te herkennen
+    \item Indicators of Compromise (IoC’s) te integreren in detectieregels
+    \item Interne anomalieën te koppelen aan externe dreigingsinformatie
+\end{itemize}
+
+Voor AI-omgevingen betekent dit dat observabilitydata niet enkel intern geanalyseerd wordt, maar ook in een bredere dreigingscontext geplaatst kan worden.
+
 \subsection{SIEM-benaderingen in AI-omgevingen}
+
+Security Information and Event Management (SIEM)-systemen centraliseren logging en passen correlatieregels toe om incidenten te detecteren. Moderne SIEM-architecturen combineren loganalyse, rule-based detectie en gedragsanalyse \autocite{chandola2009anomaly}.
+
+Binnen AI-omgevingen kan een SIEM-achtige aanpak worden toegepast op:
+
+\begin{itemize}
+    \item Conversatielogs
+    \item Authenticatie-events
+    \item API-aanroepen naar LLM-diensten
+    \item Detecties van AI-firewallcomponenten
+\end{itemize}
+
+Door deze gegevensstromen te centraliseren ontstaat een uniform analysepunt waarin verdachte interactiepatronen kunnen worden geïdentificeerd.
+
 \subsection{Detectie van Afwijkende Interactiepatronen}
+
+Anomaliedetectie speelt een belangrijke rol bij het identificeren van afwijkend gebruikersgedrag. \textcite{chandola2009anomaly} definiëren een anomalie als een patroon dat significant afwijkt van verwacht gedrag.
+
+Toegepast op AI-systemen kunnen afwijkende interactiepatronen onder meer bestaan uit:
+
+\begin{itemize}
+    \item Ongebruikelijk hoge frequentie van prompts
+    \item Systematische variaties van eenzelfde jailbreak-instructie
+    \item Combinaties van prompts die wijzen op informatie-extractie
+    \item Onverwachte escalatie van privileges via modelinstructies
+\end{itemize}
+
+Door deze gedragsafwijkingen te correleren met semantische detecties (bijvoorbeeld toxiciteit of policy violations) kan een meerlagige beveiligingsarchitectuur worden gerealiseerd.
+
 \subsection{Incidentrespons binnen AI-systemen}
+
+Detectie alleen is onvoldoende zonder een gestructureerde responsstrategie. Incidentrespons binnen AI-systemen vereist zowel technische als organisatorische maatregelen, zoals beschreven in algemene incidentresponsframeworks \autocite{nist80061}.
+
+Voor AI-toepassingen kan respons onder meer bestaan uit:
+
+\begin{itemize}
+    \item Automatische blokkering van verdachte sessies
+    \item Verhoogde logging bij risicogedrag
+    \item Waarschuwingen naar beheerders
+    \item Tijdelijke beperking van modelcapaciteiten
+\end{itemize}
+
+De combinatie van eventcorrelatie, threat intelligence en observabilitydata maakt het mogelijk om incidentrespons proportioneel en contextbewust uit te voeren. Dit vormt een essentieel uitgangspunt voor het ontwerp van een AI-gestuurde beveiligingsarchitectuur.
+
 
 \section{Privacy- en Ethiekvraagstukken bij AI Monitoring}
 \subsection{GDPR en Dataminimalisatie}
