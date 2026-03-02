@@ -413,7 +413,7 @@ Door security-events (bijvoorbeeld detectie van prompt injection) te correleren 
 
 \section{Correlatie tussen Security-events en Observabilitydata}
 
-De beveiliging van AI-systemen vereist een geïntegreerde benadering waarbij operationele monitoring en security-analyse niet langer los van elkaar worden behandeld. In complexe IT-omgevingen bestaan beveiligingsincidenten zelden uit één afzonderlijk event, maar uit een reeks gerelateerde gebeurtenissen die gezamenlijk een aanvalspatroon vormen. Eventcorrelatie maakt het mogelijk om deze verspreide signalen te structureren en te analyseren als één samenhangend incidentbeeld \autocite{kotenko2022securityCorrelation}.
+De beveiliging van AI-systemen vereist een geïntegreerde benadering waarbij operationele monitoring en security-analyse niet langer los van elkaar worden behandeld. In complexe IT-omgevingen bestaan beveiligingsincidenten zelden uit 1 afzonderlijk event, maar uit een reeks gerelateerde gebeurtenissen die gezamenlijk een aanvalspatroon vormen. Eventcorrelatie maakt het mogelijk om deze verspreide signalen te structureren en analyseren als één samenhangend incidentbeeld \autocite{kotenko2022securityCorrelation}.
 
 Volgens \textcite{kotenko2022securityCorrelation} is het doel van eventcorrelatie het reduceren van losse en vaak talrijke alerts tot betekenisvolle beveiligingsincidenten door gebruik te maken van gestructureerde correlatiemethoden. Dit principe is bijzonder relevant binnen AI-omgevingen, waar interacties met Large Language Models (LLM’s) bestaan uit opeenvolgende prompts, responses en systeeminteracties die samen een potentieel misbruikscenario kunnen vormen.
 
@@ -432,7 +432,7 @@ Belangrijke correlatieprincipes zijn:
     
     \item \textbf{Knowledge-based correlatie}: gebruik van domeinkennis of threat intelligence om gebeurtenissen in een bredere context te plaatsen.
     
-    \item \textbf{Graph-based en machine learning-gebaseerde correlatie}: geavanceerde technieken waarbij relaties tussen events worden gemodelleerd als grafstructuren of waarbij algoritmen automatisch patronen leren detecteren.
+    \item \textbf{Graph-based en machine learning-gebaseerde correlatie}: geavanceerde technieken waarbij relaties tussen events worden gemodelleerd als grafstructuren of algoritmen automatisch patronen leren detecteren.
 \end{itemize}
 
 Deze benaderingen maken het mogelijk om afzonderlijke alerts te reduceren tot betekenisvolle incidenten en multi-stage aanvalspatronen te identificeren die anders verborgen blijven in grote hoeveelheden logdata.
@@ -441,7 +441,7 @@ Deze benaderingen maken het mogelijk om afzonderlijke alerts te reduceren tot be
 
 Threat intelligence verrijkt interne monitoringdata met externe kennis over bekende aanvalstechnieken en dreigingsactoren. Volgens het MITRE ATT\&CK-framework worden aanvallen vaak opgebouwd uit gestandaardiseerde tactieken en technieken \autocite{strom2018mitre}.
 
-Door AI-gerelateerde dreigingen — zoals prompt injection of data-exfiltratie via LLM’s — te mappen op bestaande aanvalstactieken, kan correlatie verfijnd worden. Threat intelligence maakt het mogelijk om:
+Door AI-gerelateerde dreigingen (prompt injection of data-exfiltratie) te mappen op bestaande aanvalstactieken, kan correlatie verfijnd worden. Threat intelligence maakt het mogelijk om:
 
 \begin{itemize}
     \item Bekende aanvalspatronen sneller te herkennen
