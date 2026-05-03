@@ -5,11 +5,6 @@
 
 \documentclass[dutch,dit,thesis]{hogentreport}
 
-% TODO:
-% - If necessary, replace the option `dit`' with your own department!
-%   Valid entries are dbo, dbt, dgz, dit, dlo, dog, dsa, soa
-% - If you write your thesis in English (remark: only possible after getting
-%   explicit approval!), remove the option "dutch," or replace with "english".
 
 \usepackage{lipsum} % For blind text, can be removed after adding actual content
 
@@ -47,12 +42,15 @@
 
 % Other packages not already included can be imported here
 
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+
 %%---------- Document metadata -------------------------------------------------
-% TODO: Replace this with your own information
 \author{Bricke Volckeryck}
 \supervisor{Dhr. P. Van Der Helst}
 \cosupervisor{Dhr. K. Haeck}
-\title[Optionele ondertitel]%
+\title[Een Defense-in-Depth framework voor agentic AI en app\-licatie\--integraties]%
     {Het ontwikkelen van een geïntegreerd framework dat
         de veiligheid garandeert en volledige traceerbaarheid
         biedt voor alle interacties tussen gebruikers en een
@@ -137,8 +135,13 @@
 \input{standvanzaken}
 \input{methodologie}
 
+\input{risicoanalyse}
+\input{PoC}
+\input{evaluatie}
+\input{resultaten}
+
 % Voeg hier je eigen hoofdstukken toe die de ``corpus'' van je bachelorproef
-% vormen. De structuur en titels hangen af van je eigen onderzoek. Je kan bv.
+% vormen. De structuur en titels hangen af vanè je eigen onderzoek. Je kan bv.
 % elke fase in je onderzoek in een apart hoofdstuk bespreken.
 
 %\input{...}

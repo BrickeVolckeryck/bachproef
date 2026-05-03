@@ -1,0 +1,89 @@
+\chapter{Risicoanalyse}
+
+\section{Inleiding}
+
+Deze risicoanalyse vormt de basis voor de technische validatie in deze bachelorproef. Alvorens een beveiligingsoplossing kan worden geïmplementeerd, moet de huidige staat van de digitale assistent (Rasa) en de achterliggende API-infrastructuur worden geëvalueerd in een onbeveiligde omgeving. Dit proces staat bekend als het vaststellen van een baseline. Het doel is om aan te tonen welke kwetsbaarheden aanwezig zijn wanneer de applicatie direct aan het internet wordt blootgesteld zonder de bescherming van een AI Firewall en geavanceerde monitoring.\\
+
+De resultaten uit deze analyse verantwoorden de specifieke configuratiekeuzes in het volgende hoofdstuk (Proof of Concept). De analyse richt zich op drie pijlers:
+
+\begin{itemize}
+    \item Kwantificering van risico's: Gebaseerd op internationaal erkende methodologieën voor dreigingsanalyse.
+    \item Baseline-vaststelling: Een gedetailleerde beschrijving van aanvalsscenario's in een onbeveiligde versus een gemitigeerde situatie.
+    \item Compliance-mapping: Het koppelen van technische dreigingen aan wettelijke kaders zoals de AVG en industriestandaarden zoals PCI-DSS.
+\end{itemize}
+
+\section{Risicobeoordeling}
+
+Voor het kwantificeren van de risico's wordt gebruikgemaakt van de principes uit de \textcite{nist80030} en de \textcite{iso27005}. Risico wordt hierbij benaderd als het product van de waarschijnlijkheid van een dreiging en de impact op de organisatie indien deze dreiging zich voordoet.
+
+\[
+\text{Risico} = \text{Waarschijnlijkheid} \times \text{Impact}
+\]
+
+De resultaten worden gecategoriseerd op een schaal van 1 tot 25, waarbij scores boven de 14 als 'Hoog' worden beschouwd en onmiddellijke mitigatie vereisen. Tabel 4.1 geeft een overzicht van de geïdentificeerde dreigingen binnen de chatbot-omgeving.
+
+\begin{table}[H]
+    \centering
+    \caption{Risico-analyse van aanvalsvectoren voor de onbeveiligde chatbot-omgeving}
+    \begin{tabular}{|p{6cm}|c|c|c|c|}
+        \hline
+        Aanvalsvector / Kwetsbaarheid & Waarschijnlijkheid & Impact & Totaal Risico & Categorie \\
+        \hline
+        \multicolumn{5}{|l|}{Applicatielaag Injecties} \\
+        \hline
+        Cross-Site Scripting (XSS) via chat-payload & 4 & 4 & 16 & Hoog \\
+        SQL / ORM Wildcard Injectie (\%) & 3 & 5 & 15 & Hoog \\
+        \hline
+        \multicolumn{5}{|l|}{Autorisatie \& Data-exfiltratie} \\
+        \hline
+        IDOR (Opvragen bestelstatus derden) & 4 & 5 & 20 & Zeer hoog \\
+        Onbewust delen van PII door eindgebruiker & 5 & 3 & 15 & Hoog \\
+        \hline
+        \multicolumn{5}{|l|}{Beschikbaarheid \& Integriteit} \\
+        \hline
+        Application DoS (Geautomatiseerde bot-spam) & 5 & 4 & 20 & Zeer hoog \\
+        Integer Overflow (Crashen backend-services) & 2 & 4 & 8 & Gemiddeld \\
+        Toxisch gedrag / Profanity in logs & 5 & 2 & 10 & Gemiddeld \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\section{Analyse van de Baseline versus Mitigatie}
+
+Om de effectiviteit van het voorgestelde framework te bewijzen, worden de drie meest kritieke risico's hieronder nader toegelicht in een "voor-en-na" scenario.
+
+\subsection{Scenario 1: Manipulatie van de Applicatielaag (OWASP A03:2021)}
+
+Baseline: De Rasa-backend accepteert ongeschoonde JSON-payloads. Een aanvaller kan JavaScript-code injecteren (bijv. \texttt{<script>alert(1)</script>}) die door de applicatie wordt opgeslagen in de database. Wanneer een beheerder deze interactie bekijkt, wordt de code uitgevoerd in zijn browser (Stored XSS).\\
+
+Mitigatie: De Akamai Firewall for AI voert semantische inspectie uit op het \texttt{\$.message} veld. Malafide scripts worden herkend en geblokkeerd aan de edge, nog voordat de API wordt bereikt.
+
+\subsection{Scenario 2: Uitputting van Resources (Bot-verkeer)}
+
+Baseline: Zonder actieve beperkingen kan een aanvaller via een eenvoudig Bash-script duizenden registratieverzoeken per minuut versturen. Dit leidt tot een overbelasting van de Java-microservices en het vollopen van de MongoDB-database met garbage data, waardoor de bot onbereikbaar wordt voor legitieme gebruikers.\\
+
+Mitigatie: Door de implementatie van Rate Limiting en Bot Management herkent de WAF afwijkende verkeerspatronen en weigert het verzoeken na een vooraf ingestelde drempelwaarde. Aangezien deze oplossing WAF gebasseerd is en niet door de Firewall for AI kan worden opgelost, valt dit buiten de scope van dit onderzoek. Het uitputten van resources door extreem lange prompts, dat wel tegen gehouden kan worden door de firewall for AI regel Input too long, valt hier wel binnen.
+
+\subsection{Scenario 3: Ongeoorloofde toegang tot Objecten (IDOR)}
+
+Baseline: Indien de backend-logica uitsluitend vertrouwt op de door de gebruiker meegegeven ID's in de chat, kan een kwaadwillende gebruiker de status van andermans bestellingen opvragen. Dit resulteert in het lekken van namen, adressen en betaalgegevens in het chatvenster.\\
+
+Mitigatie: Deze kwetsbaarheid behoort tot de categorie Broken Access Control en vereist een structurele oplossing in de backend, zoals het afdwingen van correcte autorisatiecontroles op basis van de sessiecontext. Aangezien dit een applicatielogica-probleem betreft, valt het buiten de scope van dit onderzoek.
+
+\section{Wetgeving, Richtlijnen en Standaarden}
+
+\subsection{Algemene Verordening Gegevensbescherming (AVG / GDPR)}
+
+Volgens \textcite{gdpr2016} artikel 32 moeten organisaties passende technische maatregelen nemen om de beveiliging van persoonsgegevens te waarborgen. Het ongefilterd loggen van conversaties vormt een risico op log injection en blootstelling van gevoelige data. Dynatrace faciliteert Privacy by Design door middel van Data Masking regels, waarbij gevoelige data (zoals rijksregisternummers) automatisch wordt geanonimiseerd tijdens de opname.
+
+\subsection{NIS2-richtlijn}
+
+De \textcite{nis2} verplicht aanbieders van essentiële diensten tot het implementeren van incidentenbehandeling en continue monitoring. Het gebruik van distributed tracing in Dynatrace stelt de organisatie in staat om de volledige keten van een verzoek te auditeren, wat essentieel is voor de rapportageverplichtingen onder NIS2.
+
+\subsection{Payment Card Industry Data Security Standard (PCI-DSS)}
+
+Voor het verwerken van betalingsinformatie is compliance met \textcite{pcidss4} v4.0 vereist. De risicoanalyse toont aan dat creditcardgegevens kunnen lekken via de chatbot-interface. Akamai's Output Filtering draagt bij aan Vereiste 1.2 (beschermen van dataverkeer) en Dynatrace's masking-regels voldoen aan Vereiste 3 (beschermen van opgeslagen kaartgegevens).
+
+\subsection{OWASP Top 10}
+
+Hoewel geen wetgeving, is de \textcite{owasp2021} de industriestandaard voor applicatiebeveiliging. De geconfigureerde testscenario's mappen direct op kritieke kwetsbaarheden zoals A03:2021-Injection (XSS).

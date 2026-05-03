@@ -7,11 +7,11 @@
 
 De opkomst van AI-gestuurde chatbots en digitale assistenten heeft de manier waarop organisaties communiceren met klanten en medewerkers sterk veranderd. Steeds vaker worden deze systemen ingezet voor klantondersteuning, interne helpdesks en geautomatiseerde dienstverlening. Hoewel deze toepassingen efficiënt en schaalbaar zijn, brengen ze ook nieuwe beveiligings- en privacy-uitdagingen met zich mee. Interacties verlopen volledig digitaal en bevatten vaak gevoelige informatie, waardoor logging, monitoring en beveiliging cruciaal worden.\\
 
-In moderne IT-omgevingen spelen observability- en securitytools een belangrijke rol bij het monitoren van applicaties en netwerkverkeer. Observabilityplatformen zoals Dynatrace maken het mogelijk om applicatiegedrag en gebruikersinteracties technisch in kaart te brengen, terwijl beveiligingsoplossingen zoals een AI Firewall inkomende verzoeken analyseren en potentieel schadelijke of verdachte input blokkeren. In de praktijk worden deze systemen echter vaak los van elkaar gebruikt, waardoor een geïntegreerd overzicht van chatbotinteracties ontbreekt.\\
+In moderne IT-omgevingen spelen observability- en securitytools een belangrijke rol bij het monitoren van applicaties en netwerkverkeer. Observabilityplatformen zoals Dynatrace maken het mogelijk om applicatiegedrag en gebruikersinteracties technisch in kaart te brengen, terwijl beveiligingsoplossingen zoals een Firewall for AI inkomende verzoeken analyseren en potentieel schadelijke of verdachte input blokkeren. In de praktijk worden deze systemen echter vaak los van elkaar gebruikt, waardoor een geïntegreerd overzicht van chatbotinteracties ontbreekt.\\
 
 Dit leidt tot een belangrijk probleem: wanneer een beveiligingsincident optreedt tijdens een chatbotinteractie, is het vaak moeilijk om achteraf een volledig en coherent beeld te reconstrueren van wat er precies is gebeurd. Logs, traces en security-alerts bevinden zich in verschillende systemen en zijn niet automatisch met elkaar gecorreleerd. Hierdoor wordt incidentanalyse complexer, duurt mitigatie langer en ontstaat onzekerheid rond compliance en auditability.\\
 
-Deze bachelorproef onderzoekt hoe observability- en securitygegevens geïntegreerd kunnen worden om chatbotinteracties volledig traceerbaar te maken, verdachte invoer automatisch te detecteren en incidenten efficiënt te analyseren en te beperken. Daarbij wordt specifiek gekeken naar de combinatie van Dynatrace voor observability en Akamai’s AI Firewall voor security.\\
+Deze bachelorproef onderzoekt hoe observability- en securitygegevens geïntegreerd kunnen worden om chatbotinteracties volledig traceerbaar te maken, verdachte invoer automatisch te detecteren en incidenten efficiënt te analyseren en te beperken. Daarbij wordt specifiek gekeken naar de combinatie van Dynatrace voor observability en Akamai’s Firewall for AI voor security.\\
 
 \section{\IfLanguageName{dutch}{Probleemstelling}{Problem Statement}}%
 \label{sec:probleemstelling}
@@ -20,7 +20,7 @@ Organisaties die AI-gestuurde chatbots inzetten voor klantondersteuning of inter
 
 Dit leidt tot een concreet probleem voor IT- en securityteams: wanneer zich een incident voordoet tijdens een chatbotinteractie, is het moeilijk om een volledig en coherent beeld te reconstrueren van wat er precies is gebeurd. Logs, traces en security-alerts bevinden zich in verschillende systemen en zijn niet structureel aan elkaar gekoppeld. Hierdoor verloopt incidentanalyse trager, is mitigatie minder efficiënt en ontstaat onzekerheid rond auditability en compliance.\\
 
-Deze bachelorproef richt zich specifiek op organisaties die AI-gestuurde chatbots inzetten en gebruikmaken van Dynatrace voor observability en Akamai’s AI Firewall voor beveiliging. Voor deze doelgroep is er nood aan een geïntegreerd framework dat interacties volledig traceerbaar maakt, security-events koppelt aan applicatiedata en incidenten reproduceerbaar analyseerbaar maakt binnen de geldende privacy- en GDPR-richtlijnen.\\
+Deze bachelorproef richt zich specifiek op organisaties die AI-gestuurde chatbots inzetten en gebruikmaken van Dynatrace voor observability en Akamai’s Firewall for AI voor beveiliging. Voor deze doelgroep is er nood aan een geïntegreerd framework dat interacties volledig traceerbaar maakt, security-events koppelt aan applicatiedata en incidenten reproduceerbaar analyseerbaar maakt binnen de geldende privacy- en GDPR-richtlijnen.\\
 
 %% voorlopig heb ik gekozen voor bij de doelgroep akamai en dynatrace te zetten. Kan ook zonder gedaan worden en dan meer als ``verkoop'' om aan te tonen hoe goed deze combinatie is.
 
@@ -30,7 +30,7 @@ Deze bachelorproef richt zich specifiek op organisaties die AI-gestuurde chatbot
 
 De centrale onderzoeksvraag van deze bachelorproef luidt als volgt:
 
-\textit{Hoe kan een geïntegreerd framework op basis van Dynatraces Audit Logging en Akamai’s AI Firewall worden ontworpen om AI-chatbotinteracties volledig traceerbaar en beveiligd te maken, met behoud van privacy en naleving van GDPR?}\\
+\textit{Hoe kan een geïntegreerd framework op basis van Dynatraces Audit Logging en Akamai’s Firewall for AI worden ontworpen om AI-chatbotinteracties volledig traceerbaar en beveiligd te maken, met behoud van privacy en naleving van GDPR?}\\
 
 Om deze onderzoeksvraag te beantwoorden, worden volgende deelonderzoeksvragen geformuleerd.
 
@@ -38,7 +38,7 @@ Om deze onderzoeksvraag te beantwoorden, worden volgende deelonderzoeksvragen ge
 
 \begin{itemize}
     \item Hoe kan de interactiestroom tussen eindgebruiker en chatbot technisch in kaart gebracht worden via Dynatrace (wie, wat, wanneer)?
-    \item Welke soorten aanvallen of verdachte inputs kan Akamai’s AI Firewall detecteren en blokkeren tijdens chatbotverkeer? 
+    \item Welke soorten aanvallen of verdachte inputs kan Akamai’s firewall for AI detecteren en blokkeren tijdens chatbotverkeer? 
     \item Hoe goed kunnen observability-gegevens uit Dynatrace gecorreleerd worden met security-events uit Akamai om een volledig beeld te vormen van een gesprek?
     \item Hoe vertalen we de gecorreleerde Dynatrace-traces en Akamai-alerts naar een direct uitvoerbaar mitigatie-pad (detectie → analyse → containment → herstel) om incidenten reactief en meetbaar te beperken?
     \item In welke mate voldoet het systeem aan privacy- en GDPR-richtlijnen bij het loggen en bewaren van conversatiegegevens?
@@ -49,7 +49,7 @@ Om deze onderzoeksvraag te beantwoorden, worden volgende deelonderzoeksvragen ge
 
 \begin{itemize}
     \item Hoe kan Dynatrace gebruikt worden om afwijkende patronen in chatbotinteracties automatisch te detecteren en te classificeren als potentieel risico?
-    \item Welke type aanvallen of risicovolle inputs detecteert Akamai’s AI Firewall het meest effectief, en hoe kunnen deze detecties worden teruggekoppeld naar Dynatrace voor correlatie?
+    \item Welke type aanvallen of risicovolle inputs detecteert Akamai’s firewall for AI het meest effectief, en hoe kunnen deze detecties worden teruggekoppeld naar Dynatrace voor correlatie?
     \item Hoe kunnen observability-data en security-events gecombineerd worden om een automatische mitigatieactie te triggeren (zoals blokkeren, isoleren of waarschuwen)?
     \item Welke vorm van audit trail of chain-of-evidence is het meest geschikt om incidenten achteraf reproduceerbaar en juridisch verdedigbaar te maken?
     \item In welke mate voldoet het geïntegreerde framework aan GDPR- en privacy-by-designrichtlijnen bij het loggen, analyseren en mitigerend reageren op incidenten?
@@ -58,13 +58,13 @@ Om deze onderzoeksvraag te beantwoorden, worden volgende deelonderzoeksvragen ge
 \section{\IfLanguageName{dutch}{Onderzoeksdoelstelling}{Research objective}}%
 \label{sec:onderzoeksdoelstelling}
 
-De doelstelling van deze bachelorproef is het ontwerpen, implementeren en evalueren van een proof-of-concept waarin een AI-chatbot wordt geïntegreerd met een observabilitylaag en een AI-gebaseerde firewallbescherming.\\
+De doelstelling van deze bachelorproef is het ontwerpen, implementeren en evalueren van een proof-of-concept waarin een AI-chatbot wordt geïntegreerd met een observabilitylaag en een firewall gebaseerde AI-bescherming.\\
 
 Het onderzoek richt zich op het realiseren van een werkend prototype van een digitale assistent (met een afgebakende use-case, zoals klantondersteuning bij bestellingen) dat:
 
 \begin{itemize}
     \item geïntegreerd is met een Dynatrace-observabilitylaag voor logging, monitoring en analyse van conversatiegegevens;
-    \item beschermd wordt door een AI-firewall (Akamai) die verdachte of kwaadaardige prompts detecteert en filtert;
+    \item beschermd wordt door een firewall for AI (Akamai) die verdachte of kwaadaardige prompts detecteert en filtert;
     \item inzicht biedt in interacties via dashboards met conversatielogs, gebruikers- en sessiegegevens, tijdstempels en AI-analyses (zoals toxiciteit, anomalieën en trends);
     \item security-events en threat-intelligence correleert met observabilitydata.
 \end{itemize}

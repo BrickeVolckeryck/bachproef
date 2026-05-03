@@ -42,21 +42,21 @@ De toenemende afhankelijkheid van AI binnen kritieke bedrijfsprocessen onderstre
 
 \section{Architectuur van Large Language Models in Enterprise-omgevingen}
 
-Large Language Models (LLM’s) vormen de technologische kern van moderne AI-gedreven conversatiesystemen. Deze modellen zijn gebaseerd op deep learning-architecturen en worden getraind op grootschalige tekstcorpora om probabilistische taalpatronen te leren. Binnen enterprise-omgevingen worden LLM’s doorgaans niet als standalone systemen gebruikt, maar geïntegreerd als component binnen een bredere IT-architectuur.
+Large Language Models (LLM’s) vormen de technologische kern van moderne AI-gedreven conversatiesystemen. Deze modellen zijn gebaseerd op deep learning-architecturen en worden getraind op grootschalige tekstcorpora om probabilistische taalpatronen te leren. Binnen enterprise-omgevingen worden LLM’s doorgaans niet als standalone systemen gebruikt, maar geïntegreerd als component binnen een bredere IT-architectuur.\\
 
 Dit hoofdstuk bespreekt de onderliggende architectuurprincipes van LLM’s, hun integratiemodellen binnen bedrijfsomgevingen en de gevolgen voor monitoring en beveiliging.
 
 \subsection{Basisprincipes van Large Language Models}
 
-LLM’s zijn neurale netwerken met miljarden parameters die taal modelleren op basis van waarschijnlijkheidsverdelingen. In plaats van vaste regels toe te passen, voorspellen zij het volgende token in een sequentie op basis van context \autocite{brown2020language}. Hierdoor kunnen zij coherente en contextbewuste tekst genereren.
+LLM’s zijn neurale netwerken met miljarden parameters die taal modelleren op basis van waarschijnlijkheidsverdelingen. In plaats van vaste regels toe te passen, voorspellen zij het volgende token in een sequentie op basis van context \autocite{brown2020language}. Hierdoor kunnen zij coherente en contextbewuste tekst genereren.\\
 
 De schaal van deze modellen is een bepalende factor voor hun performantie. \textcite{kaplan2020scaling} tonen aan dat modelprestaties systematisch verbeteren naarmate het aantal parameters, trainingsdata en rekencapaciteit toenemen. Dit schaalprincipe verklaart de sterke vooruitgang in generatieve AI-systemen.
 
 \subsection{Transformer-architectuur}
 
-De meeste hedendaagse LLM’s zijn gebaseerd op de transformer-architectuur, geïntroduceerd door Vaswani et al. \autocite{vaswani2017attention}. Het kernmechanisme van deze architectuur is self-attention, waarmee het model relevante woorden in een zin kan wegen ten opzichte van elkaar, ongeacht hun positie in de tekst.
+De meeste hedendaagse LLM’s zijn gebaseerd op de transformer-architectuur, geïntroduceerd door Vaswani et al. \autocite{vaswani2017attention}. Het kernmechanisme van deze architectuur is self-attention, waarmee het model relevante woorden in een zin kan wegen ten opzichte van elkaar, ongeacht hun positie in de tekst.\\
 
-In tegenstelling tot recurrente neurale netwerken maakt de transformer parallelle verwerking mogelijk, wat schaalbaarheid en efficiëntie aanzienlijk verhoogt. Dit maakt het trainen van zeer grote modellen haalbaar op gedistribueerde infrastructuren.
+In tegenstelling tot recurrente neurale netwerken maakt de transformer parallelle verwerking mogelijk, wat schaalbaarheid en efficiëntie aanzienlijk verhoogt. Dit maakt het trainen van zeer grote modellen haalbaar op gedistribueerde infrastructuren.\\
 
 Voor enterprise-toepassingen betekent dit dat de intelligentie voornamelijk in het model zelf zit, terwijl de applicatielaag zich richt op interfacing, validatie, logging en beveiliging.
 
@@ -76,7 +76,7 @@ Dit architectuurmodel verduidelijkt dat beveiliging en observability niet in het
 
 \subsection{SaaS versus Self-hosted Implementaties}
 
-Organisaties kunnen kiezen tussen cloudgebaseerde (SaaS) LLM-oplossingen of self-hosted modellen. SaaS-oplossingen bieden schaalbaarheid en eenvoud in beheer, maar brengen afhankelijkheid van externe providers met zich mee. Self-hosted modellen bieden meer controle over data en configuratie, maar vereisen aanzienlijke infrastructuur en expertise \autocite{bommasani2021opportunities}.
+Organisaties kunnen kiezen tussen cloudgebaseerde (SaaS) LLM-oplossingen of self-hosted modellen. SaaS-oplossingen bieden schaalbaarheid en eenvoud in beheer, maar brengen afhankelijkheid van externe providers met zich mee. Self-hosted modellen bieden meer controle over data en configuratie, maar vereisen aanzienlijke infrastructuur en expertise \autocite{bommasani2021opportunities}.\\
 
 De keuze tussen beide modellen heeft directe implicaties voor:
 
@@ -89,9 +89,10 @@ De keuze tussen beide modellen heeft directe implicaties voor:
 
 \subsection{Dataflow binnen AI-Chatbots}
 
-De integratie van LLM’s in enterprise-systemen gebeurt zelden zonder bijkomende componenten. Vaak worden retrieval-mechanismen toegevoegd (Retrieval-Augmented Generation, RAG), waarbij externe databronnen worden geraadpleegd om context te verrijken \autocite{lewis2020rag}. 
+De integratie van LLM’s in enterprise-systemen gebeurt zelden zonder bijkomende componenten. Vaak worden retrieval-mechanismen toegevoegd (Retrieval-Augmented Generation, RAG), waarbij externe databronnen worden geraadpleegd om context te verrijken \autocite{lewis2020rag}. \\
 
 Dit introduceert extra complexiteit in de dataflow:
+
 \begin{itemize}
     \item Query naar kennisdatabase
     \item Verrijking van prompt
@@ -103,7 +104,7 @@ Elke stap vormt een potentieel controlepunt voor logging en beveiliging.
 
 \subsection{Architecturale Integratie van Monitoring en Firewalling}
 
-Aangezien LLM’s probabilistisch gedrag vertonen, kunnen ongewenste outputs of manipulaties niet volledig binnen het model zelf worden uitgesloten. Daarom wordt in recente literatuur gepleit voor een ``defence-in-depth''-benadering rond generatieve AI-systemen \autocite{bommasani2021opportunities}.
+Aangezien LLM’s probabilistisch gedrag vertonen, kunnen ongewenste outputs of manipulaties niet volledig binnen het model zelf worden uitgesloten. Daarom wordt in recente literatuur gepleit voor een ``defence-in-depth''-benadering rond generatieve AI-systemen \autocite{bommasani2021opportunities}.\\
 
 Dit betekent dat monitoring- en beveiligingslagen worden toegevoegd rond het model:
 
@@ -119,15 +120,15 @@ Deze architecturale positionering vormt de basis voor de proof-of-concept dat in
 
 \section{Securityrisico’s bij AI-Chatbots}
 
-De integratie van Large Language Models binnen enterprise-omgevingen introduceert nieuwe beveiligingsrisico’s die fundamenteel verschillen van traditionele applicatiebeveiliging. In tegenstelling tot klassieke software, die deterministisch gedrag vertoont, genereren LLM-gebaseerde systemen probabilistische output. Dit maakt hun gedrag minder voorspelbaar en complexer om te beveiligen \autocite{bommasani2021opportunities}.
+De integratie van Large Language Models binnen enterprise-omgevingen introduceert nieuwe beveiligingsrisico’s die fundamenteel verschillen van traditionele applicatiebeveiliging. In tegenstelling tot klassieke software, die deterministisch gedrag vertoont, genereren LLM-gebaseerde systemen probabilistische output. Dit maakt hun gedrag minder voorspelbaar en complexer om te beveiligen \autocite{bommasani2021opportunities}.\\
 
 Recente studies tonen aan dat generatieve AI-systemen kwetsbaar zijn voor manipulatie via invoerprompts, datalekken via modeloutput en misbruik voor schadelijke doeleinden \autocite{owasp2023llm}. Dit hoofdstuk bespreekt de belangrijkste dreigingen die relevant zijn voor enterprise-implementaties.
 
 \subsection{Prompt Injection}
 
-Prompt injection is een aanvalstechniek waarbij een gebruiker kwaadaardige instructies verwerkt in een prompt om het gedrag van het model te manipuleren. Omdat LLM’s instructies interpreteren als natuurlijke taal en geen strikt onderscheid maken tussen systeeminstructies en gebruikersinput, kunnen zij worden misleid om beveiligingsrichtlijnen te negeren \autocite{greshake2023prompt}.
+Prompt injection is een aanvalstechniek waarbij een gebruiker kwaadaardige instructies verwerkt in een prompt om het gedrag van het model te manipuleren. Omdat LLM’s instructies interpreteren als natuurlijke taal en geen strikt onderscheid maken tussen systeeminstructies en gebruikersinput, kunnen zij worden misleid om beveiligingsrichtlijnen te negeren \autocite{greshake2023prompt}.\\
 
-Een voorbeeld hiervan is het overschrijven van systeeminstructies via een extra prompt, zoals het vragen om verborgen beleidsregels of het negeren van eerder opgelegde restricties. Dit vormt een aanzienlijk risico wanneer chatbots toegang hebben tot interne databronnen of gevoelige bedrijfsinformatie.
+Een voorbeeld hiervan is het overschrijven van systeeminstructies via een extra prompt, zoals het vragen om verborgen beleidsregels of het negeren van eerder opgelegde restricties. Dit vormt een aanzienlijk risico wanneer chatbots toegang hebben tot interne databronnen of gevoelige bedrijfsinformatie.\\
 
 Prompt injection verschilt van klassieke code-injectie doordat het geen syntactische kwetsbaarheid uitbuit, maar inspeelt op het interpretatievermogen van het model. Traditionele firewalls detecteren dit type aanval doorgaans niet, aangezien de invoer op technisch niveau geldig blijft.
 
@@ -135,29 +136,29 @@ Prompt injection verschilt van klassieke code-injectie doordat het geen syntacti
 
 \subsection{Jailbreaking van AI-modellen}
 
-Jailbreaking verwijst naar technieken waarmee gebruikers de ingebouwde veiligheidsmechanismen van een model proberen te omzeilen. Dit gebeurt vaak door hypothetische scenario’s of role-playing prompts te gebruiken die het model aanzetten om ongewenste of verboden informatie te genereren \autocite{zou2023jailbreak}.
+Jailbreaking verwijst naar technieken waarmee gebruikers de ingebouwde veiligheidsmechanismen van een model proberen te omzeilen. Dit gebeurt vaak door hypothetische scenario’s of role-playing prompts te gebruiken die het model aanzetten om ongewenste of verboden informatie te genereren \autocite{zou2023jailbreak}.\\
 
-Onderzoek toont aan dat zelfs geavanceerde modellen vatbaar blijven voor dergelijke manipulaties, ondanks fine-tuning en reinforcement learning with human feedback (RLHF). Dit wijst op inherente beperkingen in het afdwingen van gedragsrestricties binnen probabilistische modellen.
+Onderzoek toont aan dat zelfs geavanceerde modellen vatbaar blijven voor dergelijke manipulaties, ondanks fine-tuning en reinforcement learning with human feedback (RLHF). Dit wijst op inherente beperkingen in het afdwingen van gedragsrestricties binnen probabilistische modellen.\\
 
 Voor enterprise-omgevingen betekent dit dat modeloutput niet als veilig mag worden beschouwd en aanvullende controlemechanismen vereist zijn.
 
 \subsection{Data Exfiltration via Modeloutput}
 
-Wanneer AI-systemen geïntegreerd worden met interne databronnen, bijvoorbeeld via Retrieval-Augmented Generation (RAG), ontstaat het risico dat gevoelige informatie onbedoeld wordt blootgesteld \autocite{lewis2020rag}. 
+Wanneer AI-systemen geïntegreerd worden met interne databronnen, bijvoorbeeld via Retrieval-Augmented Generation (RAG), ontstaat het risico dat gevoelige informatie onbedoeld wordt blootgesteld \autocite{lewis2020rag}.\\
 
-Aanvallers kunnen gerichte prompts gebruiken om vertrouwelijke gegevens op te vragen of om indirect toegang te verkrijgen tot interne kennisdatabanken. Daarnaast kan trainingsdata-leakage optreden wanneer modellen specifieke informatie reproduceren die tijdens training werd opgenomen \autocite{carlini2021extracting}.
+Aanvallers kunnen gerichte prompts gebruiken om vertrouwelijke gegevens op te vragen of om indirect toegang te verkrijgen tot interne kennisdatabanken. Daarnaast kan trainingsdata-leakage optreden wanneer modellen specifieke informatie reproduceren die tijdens training werd opgenomen \autocite{carlini2021extracting}.\\
 
 Dit type dreiging is bijzonder problematisch in sectoren waar vertrouwelijkheid en compliance centraal staan, zoals gezondheidszorg en financiële dienstverlening.
 
 \subsection{Model Misuse en Abuse}
 
-Generatieve AI kan worden misbruikt voor het genereren van phishingmails, desinformatie of schadelijke code. Hoewel dit risico niet noodzakelijk voortkomt uit een technische kwetsbaarheid, heeft het belangrijke implicaties voor verantwoord gebruik \autocite{dwivedi2023opinion}.
+Generatieve AI kan worden misbruikt voor het genereren van phishingmails, desinformatie of schadelijke code. Hoewel dit risico niet noodzakelijk voortkomt uit een technische kwetsbaarheid, heeft het belangrijke implicaties voor verantwoord gebruik \autocite{dwivedi2023opinion}.\\
 
-Binnen enterprise-contexten kan misuse ook intern optreden, bijvoorbeeld wanneer medewerkers AI-systemen gebruiken om beveiligingsmechanismen te omzeilen of gevoelige informatie te extraheren. Dit onderstreept de noodzaak van logging en monitoring van gebruikersinteracties.
+Binnen enterprise-contexten kan misuse ook intern optreden, bijvoorbeeld wanneer medewerkers AI-systemen gebruiken om beveiligingsmechanismen te omzeilen of gevoelige informatie te extraheren. Dit onderstreept de noodzaak van logging en monitoring van gebruikersinteracties.\\
 
 \subsection{Beperkingen van Traditionele Beveiligingsmechanismen}
 
-Traditionele beveiligingsmaatregelen, zoals Web Application Firewalls (WAF’s), zijn ontworpen om syntactische patronen en bekende aanvalssignaturen te detecteren. AI-specifieke dreigingen zijn echter semantisch van aard en maken gebruik van natuurlijke taalmanipulatie \autocite{owasp2023llm}.
+Traditionele beveiligingsmaatregelen, zoals Web Application Firewalls (WAF’s), zijn ontworpen om syntactische patronen en bekende aanvalssignaturen te detecteren. AI-specifieke dreigingen zijn echter semantisch van aard en maken gebruik van natuurlijke taalmanipulatie \autocite{owasp2023llm}.\\
 
 Daardoor volstaat klassieke perimeterbeveiliging niet. Er is nood aan:
 
@@ -173,13 +174,13 @@ Deze vaststellingen vormen de theoretische onderbouwing voor het implementeren v
 
 \section{AI-Firewalls en Prompt Filtering}
 
-De opkomst van generatieve AI heeft geleid tot de ontwikkeling van gespecialiseerde beveiligingsmechanismen die specifiek gericht zijn op Large Language Model (LLM)-toepassingen. In tegenstelling tot traditionele beveiligingsoplossingen, die zich focussen op netwerk- of applicatieniveau, richten AI-firewalls zich op semantische analyse van taalinput en -output.
+De opkomst van generatieve AI heeft geleid tot de ontwikkeling van gespecialiseerde beveiligingsmechanismen die specifiek gericht zijn op Large Language Model (LLM)-toepassingen. In tegenstelling tot traditionele beveiligingsoplossingen, die zich focussen op netwerk- of applicatieniveau, richten AI-firewalls zich op semantische analyse van taalinput en -output.\\
 
-Aangezien dreigingen zoals prompt injection en jailbreaking niet gebaseerd zijn op syntactische kwetsbaarheden maar op semantische manipulatie, is een aanvullende beveiligingslaag noodzakelijk \autocite{owasp2023llm}. Dit hoofdstuk bespreekt de werking, architectuur en beperkingen van AI-firewalls binnen enterprise-omgevingen.
+Aangezien dreigingen zoals prompt injection en jailbreaking niet gebaseerd zijn op syntactische kwetsbaarheden maar op semantische manipulatie, is een aanvullende beveiligingslaag noodzakelijk \autocite{owasp2023llm}. Dit hoofdstuk bespreekt de werking, architectuur en beperkingen van AI-firewalls binnen enterprise-omgevingen.\\
 
 \subsection{Definitie en Werking van AI-Firewalls}
 
-Een AI-firewall kan worden gedefinieerd als een beveiligingscomponent die inkomende en uitgaande interacties met een AI-model analyseert, evalueert en indien nodig filtert voordat deze het model bereiken of de gebruiker terugkoppelen. In tegenstelling tot klassieke firewalls inspecteert een AI-firewall geen netwerkpakketten, maar taalinhoud.
+Een AI-firewall kan worden gedefinieerd als een beveiligingscomponent die inkomende en uitgaande interacties met een AI-model analyseert, evalueert en indien nodig filtert voordat deze het model bereiken of de gebruiker terugkoppelen. In tegenstelling tot klassieke firewalls inspecteert een AI-firewall geen netwerkpakketten, maar taalinhoud.\\
 
 De kernfunctionaliteiten zijn:
 
@@ -207,7 +208,7 @@ Hier wordt de gebruikersprompt geanalyseerd voordat deze naar het model wordt do
 Door inputvalidatie kan worden voorkomen dat het model ongewenste context ontvangt.
 
 \paragraph{Output Filtering}
-Na generatie van de modeloutput wordt deze opnieuw geëvalueerd. Dit is noodzakelijk omdat LLM’s probabilistische output genereren en veiligheidsmechanismen binnen het model niet foutloos zijn \autocite{zou2023jailbreak}.
+Na generatie van de modeloutput wordt deze opnieuw geëvalueerd. Dit is noodzakelijk omdat LLM’s probabilistische output genereren en veiligheidsmechanismen binnen het model niet foutloos zijn \autocite{zou2023jailbreak}.\\
 
 Output filtering kan onder meer bestaan uit:
 \begin{itemize}
@@ -220,7 +221,7 @@ Deze tweelaagse aanpak sluit aan bij het principe van defence-in-depth.
 
 \subsection{Detectie van Toxiciteit en Ongepaste Inhoud}
 
-Een belangrijk onderdeel van AI-firewalls is contentmoderatie. Onderzoek toont aan dat LLM’s, ondanks alignment-technieken, nog steeds ongepaste of schadelijke inhoud kunnen genereren onder bepaalde omstandigheden \autocite{gehman2020realtoxicity}.
+Een belangrijk onderdeel van AI-firewalls is contentmoderatie. Onderzoek toont aan dat LLM’s, ondanks alignment-technieken, nog steeds ongepaste of schadelijke inhoud kunnen genereren onder bepaalde omstandigheden \autocite{gehman2020realtoxicity}.\\
 
 Automatische classificatiemodellen worden ingezet om:
 \begin{itemize}
@@ -233,15 +234,15 @@ Deze detectiemechanismen worden vaak geïntegreerd als externe API’s of als ap
 
 \subsection{Anomaliedetectie in Conversatiepatronen}
 
-Naast inhoudsanalyse kan ook gedragsanalyse worden toegepast. Door interactiepatronen te monitoren (zoals frequentie, promptstructuur of herhalende manipulatieve pogingen) kunnen afwijkingen worden gedetecteerd.
+Naast inhoudsanalyse kan ook gedragsanalyse worden toegepast. Door interactiepatronen te monitoren (zoals frequentie, promptstructuur of herhalende manipulatieve pogingen) kunnen afwijkingen worden gedetecteerd.\\
 
-Anomaliedetectie wordt vaak toegepast in cybersecuritycontexten en kan worden uitgebreid naar AI-interacties \autocite{chandola2009anomaly}. Door security-events te correleren met sessiegegevens ontstaat een vollediger risicobeeld.
+Anomaliedetectie wordt vaak toegepast in cybersecuritycontexten en kan worden uitgebreid naar AI-interacties \autocite{chandola2009anomaly}. Door security-events te correleren met sessiegegevens ontstaat een vollediger risicobeeld.\\
 
 Dit aspect is bijzonder relevant voor enterprise-omgevingen waar AI-systemen publiek toegankelijk zijn.
 
 \subsection{Verschillen met Klassieke Web Application Firewalls}
 
-Klassieke Web Application Firewalls (WAF’s) analyseren HTTP-verkeer op basis van bekende aanvalssignaturen, zoals SQL-injectie of cross-site scripting. AI-dreigingen opereren echter op semantisch niveau en zijn contextafhankelijk \autocite{owasp2023llm}.
+Klassieke Web Application Firewalls (WAF’s) analyseren HTTP-verkeer op basis van bekende aanvalssignaturen, zoals SQL-injectie of cross-site scripting. AI-dreigingen opereren echter op semantisch niveau en zijn contextafhankelijk \autocite{owasp2023llm}.\\
 
 Belangrijke verschillen zijn:
 
@@ -251,7 +252,7 @@ Belangrijke verschillen zijn:
     \item Contextafhankelijke risicoanalyse
 \end{itemize}
 
-Hieruit volgt dat AI-firewalls geen vervanging zijn van traditionele beveiliging, maar een aanvullende laag vormen binnen een meerlagige beveiligingsarchitectuur.
+Hieruit volgt dat AI-firewalls geen vervanging zijn van traditionele beveiliging, maar een aanvullende laag vormen binnen een meerlagige beveiligingsarchitectuur.\\
 
 De besproken concepten vormen de theoretische basis voor het implementeren van een AI-gebaseerde firewall in combinatie met een observabilitylaag, zoals verder uitgewerkt in deze bachelorproef.
 
@@ -261,13 +262,13 @@ De besproken concepten vormen de theoretische basis voor het implementeren van e
 
 \section{Observability in Gedistribueerde Systemen}
 
-Moderne enterprise-applicaties worden steeds vaker opgebouwd volgens gedistribueerde architecturen, zoals microservices en cloud-native omgevingen. In dergelijke systemen is het gedrag van individuele componenten niet langer eenvoudig te reconstrueren via traditionele monitoringtechnieken. Observability is daarom uitgegroeid tot een essentieel concept binnen hedendaags systeembeheer \autocite{sigelman2010dapper}.
+Moderne enterprise-applicaties worden steeds vaker opgebouwd volgens gedistribueerde architecturen, zoals microservices en cloud-native omgevingen. In dergelijke systemen is het gedrag van individuele componenten niet langer eenvoudig te reconstrueren via traditionele monitoringtechnieken. Observability is daarom uitgegroeid tot een essentieel concept binnen hedendaags systeembeheer \autocite{sigelman2010dapper}.\\
 
 Binnen de context van AI-gedreven systemen, waarbij meerdere lagen (frontend, API, modelinference, databronnen, beveiligingslaag) samenwerken, wordt observability cruciaal voor het analyseren van prestaties, fouten en beveiligingsincidenten.
 
 \subsection{Definitie van Observability}
 
-De term observability vind zijn oorsprong in de controletheorie en verwijst naar hoever de interne toestand van een systeem kan worden afgeleid uit externe outputs. Toegepast op software betekent dit dat ontwikkelaars en beheerders in staat moeten zijn om het gedrag van een systeem te begrijpen op basis van gegenereerde Prestatiegegevens \autocite{ganesan2022observability}.
+De term observability vind zijn oorsprong in de controletheorie en verwijst naar hoever de interne toestand van een systeem kan worden afgeleid uit externe outputs. Toegepast op software betekent dit dat ontwikkelaars en beheerders in staat moeten zijn om het gedrag van een systeem te begrijpen op basis van gegenereerde Prestatiegegevens \autocite{ganesan2022observability}.\\
 
 In tegenstelling tot traditionele monitoring, dat vooraf gedefinieerde metrics opvolgt, richt observability zich op het beantwoorden van onverwachte vragen over systeemgedrag. Dit is bijzonder relevant voor AI-systemen, waar afwijkend gedrag niet altijd vooraf voorspelbaar is.
 
@@ -285,7 +286,7 @@ Distributed tracing, zoals geïntroduceerd in systemen zoals Dapper \autocite{si
 
 \subsection{Distributed Tracing in Microservices-architecturen}
 
-Microservices-architecturen splitsen applicaties op in afzonderlijke, onafhankelijke services. Hoewel dit schaalbaarheid en flexibiliteit verhoogt, bemoeilijkt het foutopsporing en prestatieanalyse.
+Microservices-architecturen splitsen applicaties op in afzonderlijke, onafhankelijke services. Hoewel dit schaalbaarheid en flexibiliteit verhoogt, bemoeilijkt het foutopsporing en prestatieanalyse.\\
 
 Distributed tracing lost dit probleem op door unieke trace-ID’s toe te kennen aan verzoeken, waardoor hun volledige traject kan worden gereconstrueerd \autocite{sigelman2010dapper}. In AI-contexten kan een enkele gebruikersprompt meerdere interne processen activeren, zoals:
 
@@ -301,7 +302,7 @@ Zonder tracing is het moeilijk om te achterhalen waar vertragingen of beveiligin
 
 \subsection{Monitoring versus Observability}
 
-Hoewel de termen vaak door elkaar worden gebruikt, is er een fundamenteel verschil tussen monitoring en observability. Monitoring focust op het opvolgen van vooraf bepaalde indicatoren en alarmen. Observability daarentegen laat toe om onbekende problemen te onderzoeken op basis van beschikbare prestatiegegevens \autocite{ganesan2022observability}.
+Hoewel de termen vaak door elkaar worden gebruikt, is er een fundamenteel verschil tussen monitoring en observability. Monitoring focust op het opvolgen van vooraf bepaalde indicatoren en alarmen. Observability daarentegen laat toe om onbekende problemen te onderzoeken op basis van beschikbare prestatiegegevens \autocite{ganesan2022observability}.\\
 
 In AI-systemen, waar output dynamisch en contextafhankelijk is, kunnen afwijkingen niet altijd via statische regels worden gedetecteerd. Observability maakt het mogelijk om onverwachte patronen of anomalieën te identificeren via loganalyse en correlatie.
 
@@ -316,7 +317,7 @@ AI-systemen introduceren bijkomende observability-uitdagingen:
     \item Mogelijke privacybeperkingen bij logging van gebruikersinteracties
 \end{itemize}
 
-Onderzoekers benadrukken dat het gebrek aan transparantie in AI-modellen (de zogenaamde ``black-box''-problematiek) extra nadruk legt op externe observabilitymechanismen \autocite{bommasani2021opportunities}.
+Onderzoekers benadrukken dat het gebrek aan transparantie in AI-modellen (de zogenaamde ``black-box''-problematiek) extra nadruk legt op externe observabilitymechanismen \autocite{bommasani2021opportunities}.\\
 
 Een geïntegreerde aanpak waarbij logs, metrics en security-events worden gecorreleerd, is daarom essentieel om betrouwbare en veilige AI-systemen te realiseren.
 
@@ -328,7 +329,7 @@ Een geïntegreerde aanpak waarbij logs, metrics en security-events worden gecorr
 
 \section{Logging, Traceerbaarheid en Monitoring van AI-Systemen}
 
-De integratie van AI-systemen binnen enterprise-architecturen vereist een gestructureerde aanpak voor logging en traceerbaarheid. In tegenstelling tot traditionele applicaties genereren Large Language Models (LLM’s) probabilistische output, waardoor het gedrag van het systeem niet volledig deterministisch is. Dit bemoeilijkt auditing, foutanalyse en incidentonderzoek.
+De integratie van AI-systemen binnen enterprise-architecturen vereist een gestructureerde aanpak voor logging en traceerbaarheid. In tegenstelling tot traditionele applicaties genereren Large Language Models (LLM’s) probabilistische output, waardoor het gedrag van het systeem niet volledig deterministisch is. Dit bemoeilijkt auditing, foutanalyse en incidentonderzoek.\\
 
 Recente literatuur benadrukt dat observability bij AI-systemen verder moet gaan dan prestatiegegevens en ook semantische interacties moet omvatten \autocite{ganesan2022observability}. Logging vormt hierbij de primaire bron van waarheid voor analyse en reconstructie van gebeurtenissen.
 
@@ -344,23 +345,23 @@ Voor AI-chatbots is het onvoldoende om enkel technische systeemlogs bij te houde
     \item Eventuele verrijkte context (bijvoorbeeld RAG-bronnen)
 \end{itemize}
 
-Volgens de principes van distributed tracing \autocite{sigelman2010dapper} moet elk verzoek een unieke identifier bevatten, zodat het volledige traject van een interactie kan worden gereconstrueerd.
+Volgens de principes van distributed tracing \autocite{sigelman2010dapper} moet elk verzoek een unieke identifier bevatten, zodat het volledige traject van een interactie kan worden gereconstrueerd.\\
 
 Een correcte logstructuur maakt zowel technische debugging als security-analyse mogelijk.
 
 \subsection{User- en Session-identificatie}
 
-Traceerbaarheid vereist dat interacties kunnen worden gekoppeld aan specifieke sessies of gebruikerscontexten. Dit betekent niet noodzakelijk dat persoonlijke identificatiegegevens worden opgeslagen, maar wel dat er een consistente correlatiesleutel aanwezig is.
+Traceerbaarheid vereist dat interacties kunnen worden gekoppeld aan specifieke sessies of gebruikerscontexten. Dit betekent niet noodzakelijk dat persoonlijke identificatiegegevens worden opgeslagen, maar wel dat er een consistente correlatiesleutel aanwezig is.\\
 
-Binnen cybersecurity wordt dit principe vaak toegepast in Security Information and Event Management (SIEM)-systemen, waar events worden gecorreleerd op basis van tijd, bron en sessie \autocite{kotenko2022securityCorrelation}. 
+Binnen cybersecurity wordt dit principe vaak toegepast in Security Information and Event Management (SIEM)-systemen, waar events worden gecorreleerd op basis van tijd, bron en sessie \autocite{kotenko2022securityCorrelation}.\\
 
 Voor AI-systemen betekent dit dat verdachte prompts of anomalieën moeten kunnen worden gelinkt aan eerdere interacties binnen dezelfde sessie.
 
 \subsection{Tijdstempels en Eventregistratie}
 
-Tijdssynchronisatie is essentieel voor analyse. Zonder nauwkeurige tijdstempels is het onmogelijk om volgordes van gebeurtenissen correct te reconstrueren.
+Tijdssynchronisatie is essentieel voor analyse. Zonder nauwkeurige tijdstempels is het onmogelijk om volgordes van gebeurtenissen correct te reconstrueren.\\
 
-In gedistribueerde systemen kunnen kleine tijdsverschillen leiden tot foutieve interpretaties van incidenten. Daarom wordt in moderne observabilitypraktijken gebruikgemaakt van gecentraliseerde logging-architecturen en uniforme tijdstandaarden \autocite{ganesan2022observability}.
+In gedistribueerde systemen kunnen kleine tijdsverschillen leiden tot foutieve interpretaties van incidenten. Daarom wordt in moderne observabilitypraktijken gebruikgemaakt van gecentraliseerde logging-architecturen en uniforme tijdstandaarden \autocite{ganesan2022observability}.\\
 
 Voor AI-toepassingen is dit bijzonder relevant wanneer meerdere lagen betrokken zijn, zoals:
 
@@ -373,7 +374,7 @@ Voor AI-toepassingen is dit bijzonder relevant wanneer meerdere lagen betrokken 
 
 \subsection{Analyse van AI-output}
 
-Naast technische logging moet ook de inhoud van AI-output geanalyseerd kunnen worden. Onderzoek toont aan dat LLM’s onder bepaalde omstandigheden gevoelige of ongepaste informatie kunnen genereren \autocite{gehman2020realtoxicity}.
+Naast technische logging moet ook de inhoud van AI-output geanalyseerd kunnen worden. Onderzoek toont aan dat LLM’s onder bepaalde omstandigheden gevoelige of ongepaste informatie kunnen genereren \autocite{gehman2020realtoxicity}.\\
 
 Daarom kan logging worden uitgebreid met aanvullende metadata, zoals:
 
@@ -402,9 +403,9 @@ Visualisatie maakt het mogelijk om afwijkende patronen sneller te identificeren 
 
 \subsection{Correlatie tussen Monitoringdata en Security-events}
 
-Een geïsoleerde benadering van monitoring en beveiliging is onvoldoende voor complexe AI-systemen. Onderzoekers benadrukken dat effectieve incidentdetectie afhankelijk is van eventcorrelatie \autocite{chandola2009anomaly}.
+Een geïsoleerde benadering van monitoring en beveiliging is onvoldoende voor complexe AI-systemen. Onderzoekers benadrukken dat effectieve incidentdetectie afhankelijk is van eventcorrelatie \autocite{chandola2009anomaly}.\\
 
-Door security-events (bijvoorbeeld detectie van prompt injection) te correleren met observabilitydata (zoals sessiegedrag, frequentie en timing) kan een vollediger dreigingsbeeld worden opgebouwd.
+Door security-events (bijvoorbeeld detectie van prompt injection) te correleren met observabilitydata (zoals sessiegedrag, frequentie en timing) kan een vollediger dreigingsbeeld worden opgebouwd.\\
 
 
 
@@ -413,7 +414,7 @@ Door security-events (bijvoorbeeld detectie van prompt injection) te correleren 
 
 \section{Correlatie tussen Security-events en Observabilitydata}
 
-De beveiliging van AI-systemen vereist een geïntegreerde benadering waarbij operationele monitoring en security-analyse niet langer los van elkaar worden behandeld. In complexe IT-omgevingen bestaan beveiligingsincidenten zelden uit 1 afzonderlijk event, maar uit een reeks gerelateerde gebeurtenissen die gezamenlijk een aanvalspatroon vormen. Eventcorrelatie maakt het mogelijk om deze verspreide signalen te structureren en analyseren als één samenhangend incidentbeeld \autocite{kotenko2022securityCorrelation}.
+De beveiliging van AI-systemen vereist een geïntegreerde benadering waarbij operationele monitoring en security-analyse niet langer los van elkaar worden behandeld. In complexe IT-omgevingen bestaan beveiligingsincidenten zelden uit 1 afzonderlijk event, maar uit een reeks gerelateerde gebeurtenissen die gezamenlijk een aanvalspatroon vormen. Eventcorrelatie maakt het mogelijk om deze verspreide signalen te structureren en analyseren als één samenhangend incidentbeeld \autocite{kotenko2022securityCorrelation}.\\
 
 Volgens \textcite{kotenko2022securityCorrelation} is het doel van eventcorrelatie het reduceren van losse en vaak talrijke alerts tot betekenisvolle beveiligingsincidenten door gebruik te maken van gestructureerde correlatiemethoden. Dit principe is bijzonder relevant binnen AI-omgevingen, waar interacties met Large Language Models (LLM’s) bestaan uit opeenvolgende prompts, responses en systeeminteracties die samen een potentieel misbruikscenario kunnen vormen.
 
@@ -439,7 +440,7 @@ Deze benaderingen maken het mogelijk om afzonderlijke alerts te reduceren tot be
 
 \subsection{Integratie van Threat Intelligence}
 
-Threat intelligence verrijkt interne monitoringdata met externe kennis over bekende aanvalstechnieken en dreigingsactoren. Volgens het MITRE ATT\&CK-framework worden aanvallen vaak opgebouwd uit gestandaardiseerde tactieken en technieken \autocite{strom2018mitre}.
+Threat intelligence verrijkt interne monitoringdata met externe kennis over bekende aanvalstechnieken en dreigingsactoren. Volgens het MITRE ATT\&CK-framework worden aanvallen vaak opgebouwd uit gestandaardiseerde tactieken en technieken \autocite{strom2018mitre}.\\
 
 Door AI-gerelateerde dreigingen (prompt injection of data-exfiltratie) te mappen op bestaande aanvalstactieken, kan correlatie verfijnd worden. Threat intelligence maakt het mogelijk om:
 
@@ -497,16 +498,165 @@ Voor AI-toepassingen kan respons onder meer bestaan uit:
 De combinatie van eventcorrelatie, threat intelligence en observabilitydata maakt het mogelijk om incidentrespons proportioneel en contextbewust uit te voeren. Dit vormt een essentieel uitgangspunt voor het ontwerp van een AI-gestuurde beveiligingsarchitectuur.
 
 
+
 \section{Privacy- en Ethiekvraagstukken bij AI Monitoring}
+
+De integratie van monitoring- en beveiligingsmechanismen binnen AI-systemen brengt belangrijke privacy- en ethische uitdagingen met zich mee. Aangezien chatbotinteracties vaak persoonsgegevens en gevoelige informatie bevatten, moet het verzamelen, opslaan en analyseren van deze gegevens voldoen aan strikte regelgeving. In Europa vormt de General Data Protection Regulation (GDPR) het centrale kader voor gegevensbescherming en privacy \autocite{gdpr2016}.\\
+
+Het dilemma tussen uitgebreide monitoring enerzijds en privacybescherming anderzijds maakt dit domein bijzonder complex. Langs de ene kant is gedetailleerde logging noodzakelijk voor traceerbaarheid en beveiliging, anderzijds moet dataverwerking beperkt blijven tot wat strikt noodzakelijk is.
+
 \subsection{GDPR en Dataminimalisatie}
+
+Een kernprincipe binnen de GDPR is dataminimalisatie, waarbij enkel persoonsgegevens mogen worden verwerkt die noodzakelijk zijn voor het beoogde doel \autocite{gdpr2016}. \\
+
+Voor AI-monitoring betekent dit dat niet alle interactiedata onbeperkt mag worden opgeslagen. In de context van chatbotlogging moet daarom kritisch worden afgewogen:
+
+\begin{itemize}
+    \item Welke gegevens noodzakelijk zijn voor security en auditing
+    \item Welke gegevens geanonimiseerd of gepseudonimiseerd kunnen worden
+    \item Welke data volledig vermeden kan worden
+\end{itemize}
+
+Het toepassen van dataminimalisatie heeft directe impact op de ontwerpkeuzes van logging- en observabilitysystemen.
+
 \subsection{Privacy-by-Design in AI-systemen}
+
+Naast dataminimalisatie introduceert de GDPR het principe van privacy-by-design, waarbij gegevensbescherming vanaf het ontwerp van een systeem wordt geïntegreerd \autocite{edpb2021}.\\
+
+Voor AI-systemen houdt dit in dat privacy niet achteraf wordt toegevoegd, maar een fundamenteel onderdeel vormt van de architectuur. Concreet kan dit betekenen:
+
+\begin{itemize}
+    \item Automatische anonimisering van logs
+    \item Beperking van toegangsrechten tot gevoelige data
+    \item Encryptie van opgeslagen en verzonden gegevens
+\end{itemize}
+
+Deze maatregelen zorgen ervoor dat monitoring en beveiliging kunnen worden uitgevoerd zonder onnodige blootstelling van persoonsgegevens.
+
 \subsection{Bewaartermijnen en Logretentie}
+
+De GDPR vereist dat persoonsgegevens niet langer worden bewaard dan noodzakelijk voor het doel waarvoor ze zijn verzameld \autocite{gdpr2016}. Dit heeft belangrijke implicaties voor logging en audit trails.\\
+
+Binnen AI-monitoring moet een balans worden gevonden tussen:
+
+\begin{itemize}
+    \item Langdurige opslag voor audit en forensisch onderzoek
+    \item Beperking van opslagduur om privacyrisico’s te minimaliseren
+\end{itemize}
+
+Het definiëren van een duidelijk Gegevensbehoudbeleid  is daarom essentieel binnen een compliant systeemarchitectuur.
+
 \subsection{Transparantie en Gebruikersrechten}
+
+Een ander fundamenteel principe binnen de GDPR is transparantie. Gebruikers moeten geïnformeerd worden over hoe hun gegevens worden verwerkt en hebben recht op inzage, correctie en verwijdering van hun data \autocite{gdpr2016}.\\
+
+Voor AI-systemen betekent dit dat:
+
+\begin{itemize}
+    \item Gebruikers geïnformeerd moeten worden over logging en monitoring
+    \item Mechanismen voorzien moeten worden om data op te vragen of te verwijderen
+    \item Beslissingen van AI-systemen, waar mogelijk, verklaarbaar moeten zijn
+\end{itemize}
+
 \subsection{Ethiek en Bias in AI-monitoring}
 
+Naast juridische vereisten spelen ook ethische overwegingen een belangrijke rol. AI-systemen kunnen bias vertonen, bijvoorbeeld in de manier waarop risicovolle interacties worden gedetecteerd of geclassificeerd.\\
+
+Volgens NIST moeten AI-systemen betrouwbaar, transparant en eerlijk zijn, waarbij bias en discriminatie actief worden geminimaliseerd \autocite{nistai2023}.\\
+
+Binnen AI-monitoring betekent dit dat:
+
+\begin{itemize}
+    \item Detectiemechanismen geen systematische vooroordelen mogen bevatten
+    \item Risicoclassificaties controleerbaar moeten zijn
+    \item Monitoring niet mag leiden tot ongerechtvaardigde profilering van gebruikers
+\end{itemize}
+
+Het combineren van technische beveiliging met ethische verantwoordelijkheid is van essentieel belang voor de ontwikkeling van AI-gestuurde systemen.
+
+
+
+
+
+
 \section{Bestaande Oplossingen en Technologische Positionering}
+
+De snelle opkomst van AI-toepassingen heeft geleid tot de ontwikkeling van diverse observability- en securityoplossingen die zich richten op het monitoren en beveiligen van complexe systemen. Hoewel deze oplossingen belangrijke functionaliteiten bieden, blijkt dat zij vaak slechts een deel van het probleem aankaarten. 
+
 \subsection{AI Observability Platforms}
+
+AI observability platforms richten zich op het monitoren van modelgedrag, performantie en interacties. Observability is gebaseerd op het verzamelen en analyseren van logs, metrics en traces om inzicht te krijgen in systeemgedrag, waarbij distributed tracing een centrale rol speelt in het begrijpen van complexe interacties binnen systemen \autocite{sigelman2010dapper}.\\
+
+Een voorbeeld van een dergelijk platform is Dynatrace, dat end-to-end observability biedt binnen gedistribueerde systemen. Het platform maakt het mogelijk om gebruikersinteracties, systeemcalls en performantiegegevens te traceren over verschillende componenten heen.\\
+
+Voor AI-systemen betekent dit dat onder meer volgende aspecten gemonitord kunnen worden:
+
+\begin{itemize}
+    \item Interactiestromen tussen gebruiker en applicatie
+    \item API-aanroepen naar AI-modellen
+    \item Performantie en responstijden van modelinference
+\end{itemize}
+
+Hoewel dergelijke platforms sterk zijn in technische monitoring en analyse, ligt de focus voornamelijk op performantie en systeemgedrag. Detectie van kwaadaardige of risicovolle input binnen AI-interacties wordt niet expliciet ondersteund.
+
 \subsection{AI Security en Firewalloplossingen}
+
+Naast observability zijn er gespecialiseerde beveiligingsoplossingen ontwikkeld die zich richten op AI-systemen. Deze oplossingen bouwen voort op traditionele web- en API-beveiliging, maar voegen detectiemechanismen toe die specifiek gericht zijn op AI-gerelateerde dreigingen.\\
+
+Een voorbeeld hiervan is Akamai, dat beveiligingsoplossingen aanbiedt voor webapplicaties en API’s, en uitbreidingen voorziet voor het beschermen van AI-gedreven toepassingen.\\
+
+Typische functionaliteiten zijn:
+
+\begin{itemize}
+    \item Detectie van prompt injection en manipulatiepogingen
+    \item Filtering van schadelijke of ongewenste input
+    \item Bescherming tegen misbruik van AI-modellen en data-exfiltratie
+\end{itemize}
+
+Hoewel dergelijke systemen effectief zijn in het detecteren en blokkeren van verdachte interacties, functioneren zij vaak als een afzonderlijke beveiligingslaag. Hierdoor ontbreekt een directe koppeling met observabilitydata, wat de analyse en reconstructie van incidenten bemoeilijkt.
+
 \subsection{Enterprise Monitoring Frameworks}
+
+Binnen enterprise-omgevingen worden monitoring- en loggingoplossingen vaak gecentraliseerd via platformen die logs, metrics en traces combineren. Volgens \textcite{nist80092} is gecentraliseerd logbeheer essentieel voor het analyseren en reconstrueren van beveiligingsincidenten.\\
+
+Deze frameworks bieden:
+
+\begin{itemize}
+    \item Centralisatie van logdata uit verschillende bronnen
+    \item Real-time monitoring en alerting
+    \item Ondersteuning voor eventcorrelatie
+\end{itemize}
+
+Hoewel deze systemen sterk zijn in algemene monitoring en analyse, zijn ze niet specifiek ontworpen voor de semantische complexiteit van AI-interacties. Hierdoor ontbreekt vaak ondersteuning voor AI-specifieke dreigingen en interpretatie van conversatie-inhoud.
+
+
+
+
+
+
+
 \subsection{Vergelijkende Analyse van Bestaande Benaderingen}
+
+Uit de voorgaande analyse blijkt dat bestaande oplossingen elk een deelaspect van het probleem aanpakken.\\
+
+Observabilityplatforms, zoals Dynatrace, bieden diepgaand inzicht in systeemgedrag en interactiestromen, maar missen specifieke beveiligingsmechanismen voor AI-gerelateerde dreigingen. AI-securityoplossingen, zoals Akamai, zijn dan weer gericht op het detecteren en blokkeren van kwaadaardige input, maar bieden beperkte ondersteuning voor traceerbaarheid en diepgaande analyse van volledige interacties.\\
+
+Enterprise monitoring frameworks centraliseren data en ondersteunen correlatie, maar zijn doorgaans niet afgestemd op de semantische en dynamische aard van AI-interacties.\\
+
+Deze fragmentatie leidt tot een situatie waarin organisaties meerdere systemen moeten combineren zonder een uniforme integratie. Hierdoor ontstaat een gebrek aan end-to-end zichtbaarheid en coherente incidentanalyse.
+
 \subsection{Positionering van het Voorgestelde Framework}
+
+Het voorgestelde framework in deze bachelorproef combineert observability en security. In tegenstelling tot bestaande oplossingen wordt gekozen voor een geïntegreerde aanpak, waarbij inzichten uit observability en security bewust met elkaar kunnen worden verbonden.\\
+
+Door observabilityfunctionaliteiten, zoals die van Dynatrace, te combineren met beveiligingsmechanismen, zoals aangeboden door Akamai, wordt een end-to-end zicht gecreëerd op chatbotinteracties.
+
+Dit maakt het mogelijk om:
+
+\begin{itemize}
+    \item interacties volledig te traceren (wie, wat, wanneer)
+    \item verdachte gebeurtenissen te detecteren
+    \item incidenten reproduceerbaar te analyseren en te mitigeren
+\end{itemize}
+
+Deze geïntegreerde benadering vormt een duidelijke uitbreiding op bestaande oplossingen en speelt in op de nood aan systemen die zowel inzicht, beveiliging als controleerbaarheid bieden binnen AI-gedreven toepassingen. Hiermee sluit dit framework rechtstreeks aan bij de centrale onderzoeksvraag van deze bachelorproef.

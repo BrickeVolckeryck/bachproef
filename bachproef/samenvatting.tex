@@ -45,4 +45,19 @@
 
 \chapter*{\IfLanguageName{dutch}{Samenvatting}{Abstract}}
 
-\lipsum[1-4]
+
+In moderne digitale klantomgevingen worden AI-chatbots en digitale assistenten steeds vaker ingezet om ondersteuning te bieden, informatie te verstrekken en bedrijfskritische transacties te begeleiden. Deze groeiende afhankelijkheid van geautomatiseerde interacties brengt echter aanzienlijke veiligheidsrisico’s met zich mee. Chatbots verwerken ongestructureerde natuurlijke taal, waardoor traditionele beveiligingsmechanismen vaak tekortschieten. Dit creëert kwetsbaarheden zoals applicatielaag-injecties (zoals XSS en SQLi), data-exfiltratie, en manipulatie via prompt-injecties of toxische invoer. Bovendien werken deze AI-systemen vaak als een 'black-box', wat leidt tot een gebrek aan inzicht in de gesprekscontext en potentiële schendingen van de Algemene Verordening Gegevensbescherming (GDPR). Daardoor ontstaat een duidelijke nood aan een architectuur die zowel traceerbaarheid als diepgaande beveiliging garandeert.
+    \\
+    
+Dit onderzoek heeft als doel een geïntegreerd framework te ontwikkelen dat de volledige communicatiestroom tussen eindgebruikers en een AI-chatbot inzichtelijk en beveiligd maakt. Hiervoor wordt onderzocht hoe Dynatrace kan worden ingezet om gesprekslogs, acties en systeeminteracties end-to-end te monitoren, en hoe Akamai’s Firewall for AI verdachte input, aanvallen of ongewenste datastromen op de \textit{edge} kan detecteren en blokkeren. De centrale onderzoeksvraag luidt op welke manier deze twee technologieën gecombineerd kunnen worden om een traceerbare én veilige communicatiestroom te realiseren.
+    \\
+    
+Om deze vraag te beantwoorden is een Proof of Concept (PoC) ontwikkeld met een hybride infrastructuur. Deze testomgeving bestaat uit een intent-gebaseerde NLU-engine (Rasa) en gecontaineriseerde backend-microservices, die via een REST API communiceren. Akamai's Firewall for AI werd geconfigureerd met semantische inspectieregels en JSONPath-filtering om zowel inkomend verkeer (Input Filtering) als uitgaande database-responsen (Output Filtering) te valideren. Gelijktijdig werd de Dynatrace OneAgent op host-niveau geïntegreerd voor gedistribueerde tracing en werden geautomatiseerde \textit{Data Masking}-regels toegepast om Privacy-by-Design af te dwingen. Deze architectuur werd vervolgens systematisch geëvalueerd door middel van geautomatiseerde aanvalssimulaties (via Bash-scripts) en gerichte data-manipulaties.
+    \\
+
+De resultaten van de simulaties tonen aan dat de inzet van de Firewall for AI succesvol alle geteste aanvalsvectoren—waaronder applicatielaag-injecties, het lekken van PII en toxisch taalgebruik blokkeerde. Daarnaast bewijst de integratie van Dynatrace dat de volledige interactieketen reproduceerbaar kan worden vastgelegd in traces, waarbij gevoelige persoonsgegevens (PII) effectief worden verborgen nog vóór deze in logbestanden belanden.
+    \\
+    
+Concluderend toont dit onderzoek aan dat de combinatie van observability en AI-gedreven beveiliging een aanzienlijk hoger niveau van controle, transparantie en incidentrespons biedt dan klassieke oplossingen afzonderlijk. Dit gelaagde \textit{Defense-in-Depth} framework ondersteunt organisaties direct bij het naleven van privacy- en complianceverplichtingen, en vormt een essentiële, technisch gevalideerde stap richting veilige en juridisch verdedigbare AI-gestuurde klantcommunicatie.
+
+

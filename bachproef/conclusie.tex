@@ -5,14 +5,39 @@
 \chapter{Conclusie}%
 \label{ch:conclusie}
 
-% TODO: Trek een duidelijke conclusie, in de vorm van een antwoord op de
-% onderzoeksvra(a)g(en). Wat was jouw bijdrage aan het onderzoeksdomein en
-% hoe biedt dit meerwaarde aan het vakgebied/doelgroep? 
-% Reflecteer kritisch over het resultaat. In Engelse teksten wordt deze sectie
-% ``Discussion'' genoemd. Had je deze uitkomst verwacht? Zijn er zaken die nog
-% niet duidelijk zijn?
-% Heeft het onderzoek geleid tot nieuwe vragen die uitnodigen tot verder 
-%onderzoek?
 
-\lipsum[76-80]
+De integratie van AI-gedreven digitale assistenten in bedrijfsomgevingen biedt aanzienlijke voordelen op het vlak van efficiëntie en klantinteractie, maar introduceert tegelijkertijd een complex en uitgebreid aanvalsoppervlak. Het doel van dit onderzoek was na te gaan hoe een enterprise-chatbot op een veilige en traceerbare manier kan worden geïmplementeerd, zonder afbreuk te doen aan functionaliteit of aan de privacyvereisten zoals vastgelegd in de GDPR.\\
 
+Om deze onderzoeksvraag te beantwoorden, werd een hybride proof-of-concept (PoC) ontwikkeld bestaande uit een intent-gebaseerde NLU-engine (Rasa), gecontaineriseerde backend-microservices (Helidon) en een gelaagde beveiligingsarchitectuur waarin zowel observability als security centraal staan.
+
+\section{Evaluatie van de Beveiligingsarchitectuur}
+
+De resultaten van de PoC tonen aan dat een gelaagde beveiligingsaanpak een effectieve strategie vormt voor het beschermen van AI-gedreven toepassingen. De inzet van een Firewall for AI op de edge maakte het mogelijk om inkomend verkeer proactief te analyseren en te filteren op basis van vooraf gedefinieerde regels en semantische patronen. Tijdens de testfase werden verschillende gesimuleerde aanvalsvectoren, zoals injectie-aanvallen en misbruik van invoer, succesvol gedetecteerd en geblokkeerd.\\
+
+Daarnaast werd duidelijk dat beveiliging niet beperkt blijft tot het controleren van inkomende data. Ook het monitoren en filteren van uitgaande data speelt een belangrijke rol in het voorkomen van ongewenste informatielekken. Dit principe draagt bij aan een meer volledige beveiligingsstrategie, waarbij zowel preventie als controle noodzakelijk zijn.\\
+
+Tegelijkertijd toont de evaluatie aan dat dergelijke beveiligingsmechanismen niet statisch zijn. Het afstemmen van detectieregels blijft een iteratief proces, waarbij een evenwicht moet worden gevonden tussen het blokkeren van kwaadaardige interacties en het vermijden van foutieve detecties.
+
+\section{Traceerbaarheid en Privacy-by-Design}
+
+Een tweede belangrijk resultaat van dit onderzoek is dat het mogelijk is om het gedrag van een AI-systeem inzichtelijk te maken zonder de privacy van gebruikers in gevaar te brengen. Door het integreren van observabilitymechanismen werd een end-to-end zicht gecreëerd op de interactiestroom binnen het systeem.\\
+
+Hierbij werd aangetoond dat interacties tussen verschillende componenten, zoals frontend, backend en externe services, systematisch kunnen worden geregistreerd en geanalyseerd. Dit draagt bij aan een beter begrip van systeemgedrag en maakt het mogelijk om incidenten achteraf te reconstrueren.\\
+
+Tegelijkertijd werd binnen het ontwerp expliciet rekening gehouden met privacyvereisten. Door technieken zoals data masking en gecontroleerde logverwerking toe te passen, werd de verwerking van persoonsgegevens beperkt tot wat noodzakelijk is. Dit toont aan dat traceerbaarheid en privacy-by-design niet noodzakelijk tegenstrijdig zijn, maar gecombineerd kunnen worden binnen één architectuur.
+
+\section{Eindoordeel}
+
+Op basis van dit onderzoek kan worden vastgesteld dat een geïntegreerde benadering van observability en security essentieel is voor het veilig inzetten van AI-gedreven chatbots in een enterprise-context. Het ontwikkelde proof-of-concept toont aan dat het mogelijk is om zowel beveiliging als traceerbaarheid te realiseren door bestaande technologieën op een doordachte manier te combineren.\\
+
+Voor de doelgroep, IT-teams die verantwoordelijk zijn voor het beheer van AI-toepassingen, biedt deze aanpak een duidelijke meerwaarde. Het systeem maakt het mogelijk om interacties te monitoren, verdachte patronen te detecteren en incidenten reproduceerbaar te analyseren, terwijl tegelijkertijd rekening wordt gehouden met privacy- en compliancevereisten.\\
+
+Er moeten echter ook enkele beperkingen worden erkend. De evaluatie werd uitgevoerd binnen een gecontroleerde testomgeving, waardoor de resultaten niet zonder meer kunnen worden veralgemeend naar grootschalige productieomgevingen. Factoren zoals schaalbaarheid, performantie en integratiecomplexiteit vereisen verdere analyse.
+
+\section{Aanbevelingen voor Toekomstig Onderzoek}
+
+Dit onderzoek richtte zich voornamelijk op een intent-gebaseerd NLU-systeem. Gezien de snelle evolutie richting generatieve AI en Large Language Models (LLM’s), vormt dit een belangrijk aandachtspunt voor toekomstig onderzoek. Verdere studie kan zich richten op het detecteren van complexere aanvalstechnieken, zoals geavanceerde prompt injection en manipulatie van modelgedrag.\\
+
+Daarnaast biedt de automatisering van incidentrespons een interessant perspectief. Het koppelen van detectiemechanismen aan automatische mitigatieacties kan bijdragen aan een meer proactieve beveiligingsstrategie.\\
+
+Tot slot kan verder onderzoek zich richten op het verbeteren van explainability binnen AI-systemen, zodat niet alleen zichtbaar is wat er gebeurt, maar ook waarom bepaalde beslissingen worden genomen.

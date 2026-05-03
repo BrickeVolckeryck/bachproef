@@ -1,0 +1,55 @@
+\chapter{Evaluatie}
+\label{ch:Evaluatie}
+
+\section{Evaluatiecriteria}
+
+Zoals besproken in eerdere hoofdstukken worden de resultaten van de Proof of Concept (PoC) geëvalueerd aan de hand van een vastgestelde set criteria. De focus van de evaluatie volledig op de effectiviteit en beheerbaarheid van de beveiligingsarchitectuur.\\
+
+De criteria zijn onderverdeeld in drie hoofdcategorieën: Correctheid, Traceerbaarheid en Compliance, en Gebruiksvriendelijkheid. De evaluatie is gebaseerd op de testfase waarin geautomatiseerde Bash-scripts en gerichte injecties werden uitgevoerd op de REST API van de digitale assistent.
+
+\subsection{Correctheid}
+
+Om de technische effectiviteit van de geïmplementeerde architectuur te meten, wordt primair gekeken naar de detectienauwkeurigheid van de Akamai firewall for AI en de Dynatrace masking-regels. Binnen dit criterium wordt geëvalueerd of de firewall daadwerkelijk kwaadaardige payloads (zoals applicatielaag-injecties en ongewenste LLM-invoer) succesvol blokkeert (True Positives), en of legitieme chatbot-conversaties ongehinderd de backend bereiken (True Negatives).\\
+
+Het onterecht blokkeren van normale gebruikersinvoer (False Positives) vormt hierbij een kritiek aandachtspunt, aangezien dit de kernfunctionaliteit van de chatbot direct verstoort en de gebruikerservaring negatief beïnvloedt. In het volgende hoofdstuk worden de resultaten van de incidenten geanalyseerd om een objectief beeld te vormen van deze detectienauwkeurigheid en de betrouwbaarheid van de ingestelde regels.
+
+\begin{table}[h]
+    \centering
+    \caption{Confusion matrix voor Firewall for AI-detectie}
+    \label{tab:confusion-matrix}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        & \textbf{Geblokkeerd} & \textbf{Niet geblokkeerd} \\ \hline
+        
+        \textbf{Malafide data} 
+        & True Positive (TP) 
+        & False Negative (FN) \\ \hline
+        
+        \textbf{Legitieme data} 
+        & False Positive (FP) 
+        & True Negative (TN) \\ \hline
+        
+    \end{tabular}
+\end{table}
+
+\subsection{Traceerbaarheid en Compliance}
+
+Waar traditionele evaluaties vaak focussen op systeemprestaties, richt deze PoC zich op de zichtbaarheid van de datastromen en de naleving van privacyvereisten (GDPR). Voor dit criterium wordt geëvalueerd of de integratie het gewenste niveau van observability en databescherming behaalt:
+
+\begin{itemize}
+    \item \textbf{End-to-End zichtbaarheid:} Er wordt beoordeeld of de Dynatrace OneAgent in staat is om de volledige interactieketen—van de Nginx-gateway tot de lokale Python-venv en de Java-microservices—succesvol vast te leggen in één overkoepelende trace.
+    
+    \item \textbf{Privacy-by-Design:} Er wordt kritisch geëvalueerd of de geconfigureerde Data Masking-regels (via reguliere expressies) effectief functioneren. Het doel is te bevestigen dat PII (zoals creditcardgegevens) consequent uit de logbestanden wordt gefilterd voordat deze in de dashboards van Dynatrace belanden.
+\end{itemize}
+
+\subsection{Gebruiksvriendelijkheid}
+
+De gebruiksvriendelijkheid wordt in dit onderzoek niet beoordeeld vanuit de eindgebruiker van de chatbot, maar vanuit het perspectief van de beheerder. De beoordeling is als volgt onderverdeeld:
+
+\begin{itemize}
+    \item \textbf{Configuratiegemak:} Hoe eenvoudig en intuïtief is het om specifieke applicatieregels (zoals JSONPath-inspectie en uitzonderingen) te configureren binnen het Akamai Control Center?
+    
+    \item \textbf{Integratie en zichtbaarheid:} Hoe toegankelijk is de Dynatrace-interface voor het terugvinden van specifieke traces? Is het eenvoudig om Data Masking-regels via reguliere expressies in te stellen zodat PII veilig wordt weggelaten uit de logs?
+    
+    \item \textbf{Incidentenanalyse:} Bieden de gegenereerde alerts in zowel Akamai als Dynatrace voldoende context en threat intelligence om een incident snel en effectief te analyseren?
+\end{itemize}
