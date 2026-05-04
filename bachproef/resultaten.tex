@@ -56,12 +56,59 @@ Wanneer we vervolgens in de Web Security Analytics van Akamai gaan kijken zien w
 
 \subsection{Beheer van False Positives en finetuning}
 
-Hoewel de firewall effectief bleek, is het voorkomen van False Positives cruciaal.
+Hoewel de firewall uiterst effectief bleek in het tegenhouden van kwaadaardig verkeer, is het voorkomen van \textit{False Positives}—situaties waarbij legitieme gebruikersinteracties of normale systeemprocessen onterecht worden geblokkeerd—minstens zo cruciaal. Een beveiligingsoplossing mag de bedrijfscontinuïteit en de gebruikerservaring immers niet verstoren. Tijdens de testfase kwamen enkele opvallende incidenten en semantische anomalieën aan het licht die specifieke kalibratie vereisten:
 
 \begin{itemize}
-    \item [TODO:] False positives
-    \item [TODO:]
+    \item \textbf{Bedrijfslogica versus Output-restricties (\textit{LLM-DOS-OUT}):} 
+    De beveiligingsregel voor het beperken van overmatige data-uitvoer (\textit{LLM output too long}) stond aanvankelijk te strak geconfigureerd. Wanneer de chatbot een correcte, opgevraagde lijst van de productcatalogus retourneerde (zoals een opsomming van diverse sokken en hun prijzen, zie Figuur \ref{fig:fp_dos_out}), classificeerde de firewall dit als een potentiële \textit{Denial of Service}-respons en werd de uitgaande verbinding verbroken. \textbf{Oplossing:} De maximale drempelwaarde (threshold) voor uitgaande karakterlimieten is verhoogd en nauwkeurig afgestemd op de langst mogelijke, legitieme applicatie-respons.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.85\textwidth]{img/out_long.png}
+        \caption{Akamai-registratie van de onterecht geblokkeerde catalogus-output.}
+        \label{fig:fp_dos_out}
+    \end{figure}
+
+    \item \textbf{Semantische misinterpretatie van gebruikersintentie (\textit{LLM-TOXIC-IN}):} 
+    De AI-engine beoordeelde de legitieme klantvraag \textit{"What cards do you have on me?"} onterecht als toxisch verkeer (zie Figuur \ref{fig:fp_toxic_cards}). De semantische analyse classificeerde het deel "have on me" vermoedelijk als een agressieve uitdaging of dreigement, terwijl de gebruiker slechts informeerde naar zijn opgeslagen data. \textbf{Oplossing:} De striktheid (sensitivity) van de toxiciteitsfilter is handmatig bijgesteld van 'Medium' naar 'Low', wat veel beter aansluit bij de directe taal die in een klantondersteuningscontext wordt gebruikt.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.85\textwidth]{img/in_cards.png}
+        \caption{Semantische misinterpretatie waarbij een legitieme vraag als toxisch werd gemarkeerd.}
+        \label{fig:fp_toxic_cards}
+    \end{figure}
+
+    \item \textbf{Inconsistenties bij typfouten en scheldwoorden (\textit{LLM-TOXIC-IN}):} 
+    Tijdens het testen van de \textit{abuse}-filtering vertoonde het semantische AI-model inconsistent gedrag rondom typfouten. Een opzettelijk fout gespeld scheldwoord (\textit{"bithc"}, zie Figuur \ref{fig:fp_toxic_bithc}) resulteerde in een onmiddellijke blokkade voor toxische inhoud, terwijl de correct gespelde variant in specifieke zinsconstructies verrassend genoeg niet als schadelijk werd gemarkeerd. \textbf{Oplossing:} Dit illustreert de probabilistische aard van AI-firewalls. Om dergelijke anomalieën af te dichten, is het noodzakelijk om de AI-regelgeving aan te vullen met traditionele, deterministische configuraties (zoals regex-gebaseerde \textit{custom dictionaries}) voor absolute \textit{profanity} filtering.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.85\textwidth]{img/in_toxic.png}
+        \caption{Inconsistente detectie van toxiciteit bij opzettelijke typfouten.}
+        \label{fig:fp_toxic_bithc}
+    \end{figure}
+
+\item \textbf{Gedrag bij onbekende taalstructuren (\textit{LLM-DOS-IN}):} 
+    Tijdens de validatie van de taalrestricties bleek dat een korte \textit{Lorem Ipsum}-tekst de semantische detectiemodule van de firewall 'verwarde'. De invoer werd niet herkend als een niet-toegestane taal (\textit{Non-allowed language}), waardoor het bericht ongehinderd de beveiliging passeerde. Dit leidde tot directe verwarring bij de digitale assistent: omdat de NLU-engine deze abstracte invoer niet kon koppelen aan een gekende \textit{intent}, raakte de chatbot gedesoriënteerd en werd een generieke \textit{fallback}-reactie getriggerd (zie Figuur \ref{fig:fp_lorem_bot}). De firewall greep pas in wanneer de tekst aanzienlijk werd uitgebreid (zie Figuur \ref{fig:fp_lorem_ipsum}), maar deed dit uitsluitend op basis van de \textit{LLM input too long}-regel en niet op semantische gronden. Dit toont aan dat korte, abstracte taalstructuren een risico vormen voor de stabiliteit van de interactie-logica.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.65\textwidth]{img/chatbit_lorem.png} 
+        \caption{De chatbot raakt verward door een korte, onbekende taalstructuur en triggert een fallback-reactie.}
+        \label{fig:fp_lorem_bot}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.85\textwidth]{img/fp_lorem_ipsum.png}
+        \caption{Verwarde taalherkenning, waarbij pseudo-Latijn uiteindelijk werd gestopt op lengte.}
+        \label{fig:fp_lorem_ipsum}
+    \end{figure}
+
 \end{itemize}
+
+Deze incidenten en de daaropvolgende finetuning bewijzen dat \textit{out-of-the-box} AI-beleidsregels te allen tijde contextuele kalibratie vereisen. Zelfs de meest geavanceerde Firewalls for AI zijn pas succesvol wanneer ze nauwkeurig worden afgestemd op de specifieke applicatielogica en het verwachte gedrag van de eindgebruiker.
 
 Deze finetuning bewijst dat ook voor firewalls for AI calibratie nodig is om succesvol te zijn.
 
