@@ -80,7 +80,7 @@ Hoewel de firewall uiterst effectief bleek in het tegenhouden van kwaadaardig ve
     \end{figure}
 
     \item \textbf{Inconsistenties bij typfouten en scheldwoorden (\textit{LLM-TOXIC-IN}):} 
-    Tijdens het testen van de \textit{abuse}-filtering vertoonde het semantische AI-model inconsistent gedrag rondom typfouten. Een opzettelijk fout gespeld scheldwoord (\textit{"bithc"}, zie Figuur \ref{fig:fp_toxic_bithc}) resulteerde in een onmiddellijke blokkade voor toxische inhoud, terwijl de correct gespelde variant in specifieke zinsconstructies verrassend genoeg niet als schadelijk werd gemarkeerd. \textbf{Oplossing:} Dit illustreert de probabilistische aard van AI-firewalls. Om dergelijke anomalieën af te dichten, is het noodzakelijk om de AI-regelgeving aan te vullen met traditionele, deterministische configuraties (zoals regex-gebaseerde \textit{custom dictionaries}) voor absolute \textit{profanity} filtering.
+    Tijdens het testen van de \textit{abuse}-filtering vertoonde het semantische AI-model inconsistent gedrag rondom typfouten. Een opzettelijk fout gespeld scheldwoord (\textit{"bithc"}, zie Figuur \ref{fig:fp_toxic_bithc}) resulteerde in een onmiddellijke blokkade voor toxische inhoud, terwijl de correct gespelde variant verrassend genoeg niet als schadelijk werd gemarkeerd. \textbf{Oplossing:} Dit illustreert de probabilistische aard van firewall. Om dergelijke anomalieën af te dichten, is het noodzakelijk om de AI-regelgeving aan te vullen met traditionele, deterministische configuraties (zoals regex-gebaseerde \textit{custom dictionaries}) voor absolute \textit{profanity} filtering.
     
     \begin{figure}[H]
         \centering
@@ -94,7 +94,7 @@ Hoewel de firewall uiterst effectief bleek in het tegenhouden van kwaadaardig ve
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.65\textwidth]{img/chatbit_lorem.png} 
+        \includegraphics[width=0.65\textwidth]{img/chatbot_lorem.png} 
         \caption{De chatbot raakt verward door een korte, onbekende taalstructuur en triggert een fallback-reactie.}
         \label{fig:fp_lorem_bot}
     \end{figure}
