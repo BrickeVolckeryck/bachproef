@@ -217,8 +217,8 @@ Om deze beperking te omzeilen, is er een architecturale keuze gemaakt voor een C
 
 \begin{lstlisting}[language={}, caption={Structuur van de REST-payload voor optimale WAF-inspectie}, label={lst:rasa_json}, breaklines=true, numbers=left,frame=single]
     {        
-        "sender": "gebruiker_123", 
-        "message": “Waar kan deze chatbot me mee helpen?” 
+        "sender": "user_123", 
+        "message": “What can you do?” 
     }
 \end{lstlisting}
 
@@ -382,7 +382,6 @@ Dit opstartscript \texttt{(start\_dev.sh)} automatiseert de volgende dagelijkse 
 
 echo "🚀 Starting Sock Shop & Rasa Dev Environment..."
 
-# This 'trap' catches Ctrl+C and kills all the background processes cleanly
 cleanup() {  
     echo ""    
     echo "🛑 Shutting down all services..."    
@@ -397,7 +396,7 @@ trap cleanup SIGINT SIGTERM
 echo "➡️ Starting Frontend Port-Forward (Port 8079)..."
 kubectl port-forward --address 127.0.0.1 svc/front-end 8079:80 -n sockshop-core > frontend_pf.log 2>&1 &
 
-echo "Starting Sock Shop API Port-Forwards..."
+echo "➡️ Starting Sock Shop API Port-Forwards..."
 
 # 1. Catalogue API (For getting item names/details)
 kubectl port-forward svc/catalogue 8081:80 -n sockshop-core > /dev/null 2>&1 &
@@ -417,7 +416,6 @@ kubectl port-forward svc/shipping-http 8085:80 -n sockshop-core > /dev/null 2>&1
 # 6. Payment API (HTTP REST endpoint)
 kubectl port-forward svc/payment-http 8086:80 -n sockshop-core > /dev/null 2>&1 &
 
-# === THE FIX: Move into the correct directory ===
 echo "➡️ Moving to Rasa project folder..."
 cd ~/rasa-ecommerce
 
