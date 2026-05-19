@@ -1,0 +1,19 @@
+%%=============================================================================
+%% Discussie
+%%=============================================================================
+
+\chapter{Discussie}%
+\label{ch:discussie}
+
+In dit hoofdstuk worden de implicaties van de resultaten overwogen en worden concrete aanbevelingen geformuleerd voor toekomstig onderzoek binnen het domein van AI-security en observability.
+
+\section{Aanbevelingen voor Toekomstig Onderzoek}%
+\label{sec:toekomstig-onderzoek}
+
+Dit onderzoek richtte zich voornamelijk op een intent-gebaseerd NLU-systeem (Rasa) binnen een gelaagde architectuur met Dynatrace en Akamai. Gezien de snelle evolutie richting generatieve AI en Large Language Models (LLM’s), vormt dit een belangrijk aandachtspunt voor toekomstig onderzoek. Verdere studie kan zich specifiek richten op het detecteren van complexere aanvalstechnieken, zoals geavanceerde prompt injection en de manipulatie van modelgedrag in LLM-omgevingen.
+
+Daarnaast biedt de verdere automatisering van incidentrespons een interessant perspectief. Hoewel Akamai binnen deze proof-of-concept malafide data al automatisch blokkeert op de edge, kan toekomstig onderzoek zich richten op een scenario waarin Dynatrace bij het herkennen van afwijkende patronen direct policies aanpast in de firewall. Dit maakt een dynamische en proactieve beveiligingsstrategie mogelijk waarbij het systeem zelfstandig leert en mitigeert. Ook de integratie van machine learning-algoritmen binnen Dynatrace zelf om anomalieën te detecteren en automatisch mitigatieacties te bepalen, kan een waardevolle uitbreiding zijn.
+
+Daarnaast moet worden benadrukt dat de specifieke beveiliging van de chatbot-component de noodzaak voor beveiliging van de omliggende website niet wegneemt. Hoewel de Firewall for AI effectief beschermt tegen malafide prompts en backend-gerelateerde aanvalsvectoren, blijft de front-end applicatie vatbaar voor traditionele kwetsbaarheden aan de client-side. Binnen deze proof-of-concept bleek bijvoorbeeld dat \textit{self-XSS} nog steeds mogelijk is via het chatbotvenster. Een gebruiker kan via deze weg handmatig een aangepast stylesheet of javascript-code invoegen.
+
+Tot slot kan verder onderzoek zich richten op het verbeteren van \textit{explainability} (verklaarbaarheid) binnen AI-systemen. Het is hierbij cruciaal dat niet alleen technisch zichtbaar is \textit{dat} Akamai’s Firewall for AI een specifieke prompt blokkeert (gecorreleerd aan de hand van de \texttt{rxVisitor}-cookie), maar ook de exacte semantische motivatie en achterliggende logica inzichtelijk worden gemaakt. Dit zal de betrouwbaarheid van de \textit{audit trail} en de juridische verdedigbaarheid van de \textit{chain-of-evidence} nog verder versterken.
