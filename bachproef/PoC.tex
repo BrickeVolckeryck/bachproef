@@ -17,11 +17,11 @@ De testomgeving bestaat uit een digitaal assistent-platform (Rasa) dat geïntegr
 \section{AI Firewall Regels en Configuratie}
 \label{sec:ai_firewall_rules}
 
-Net zoals in traditionele beveiligingsoplossingen vormt de configuratie van de inspectieregels de kern van de applicatiebeveiliging. Binnen deze PoC fungeert de Akamai AI Firewall als de preventieve schil rond de chatbot. Omdat de communicatie tussen de frontend en de digitale assistent verloopt via een REST API met JSON-payloads, moeten de beveiligingsregels hierop worden afgestemd.
+Net zoals in traditionele beveiligingsoplossingen vormt de configuratie van de inspectieregels de kern van de applicatiebeveiliging. Binnen deze PoC dient de Akamai AI Firewall als de preventieve schil rond de chatbot. Omdat de communicatie tussen de frontend en de digitale assistent verloopt via een REST API met JSON-payloads, moeten de beveiligingsregels hierop worden afgestemd.
 
 \subsection{Architecturale Context: Intent-gebaseerde NLU versus Generatieve AI}
 
-Hoewel Akamai semantische inspectiemodules in de markt zet als specifieke bescherming voor Large Language Models (LLM's), is het essentieel om de architecturale context van deze PoC te benadrukken. De gebruikte digitale assistent (Rasa) is een intent-gebaseerd Natural Language Understanding (NLU)-systeem en geen generatief taalmodel. Hierdoor is de applicatie van nature immuun voor LLM-specifieke kwetsbaarheden zoals Prompt Injection of Jailbreaking; onverwachte of dwingende instructies resulteren simpelweg in een intent-fallback. Desondanks bewijst deze PoC dat de inzet van deze semantische AI-filters op de inkomende en uitgaande JSON-payloads enorme waarde biedt.
+Hoewel Akamai semantische inspectiemodules in de markt zet als specifieke bescherming voor Large Language Models (LLM's), is het belangrijk om de architecturale context van deze PoC te benadrukken. De gebruikte digitale assistent (Rasa) is een intent-gebaseerd Natural Language Understanding (NLU)-systeem en geen generatief taalmodel. Hierdoor is de applicatie van nature immuun voor LLM-specifieke kwetsbaarheden zoals Prompt Injection, Jailbreaking en Language Policy Evasion. Desondanks bewijst deze PoC dat de inzet van deze semantische AI-filters op de inkomende en uitgaande JSON-payloads enorme waarde biedt.
 
 \subsection{Input Filtering (Bescherming van de backend)}
 
@@ -50,7 +50,7 @@ De eerste verdedigingslinie richt zich op het beveiligen van de inkomende gebrui
 
 \subsection{Output Filtering (Bescherming van de eindgebruiker en bedrijfsdata)}
 
-Hoewel het systeem geen probabilistische teksten genereert, volstaat het niet om enkel de invoer te controleren. De backend-database kan reeds gecompromitteerd zijn, of de bedrijfslogica kan onverwacht reageren op een query (bijvoorbeeld door te veel data op te halen). Daarom implementeert de PoC tevens output filtering, waarbij het antwoord van de chatbot wordt geïnspecteerd voordat het over het netwerk naar de eindgebruiker wordt teruggestuurd.
+Hoewel het systeem geen probabilistische teksten genereert, volstaat het niet om enkel de invoer te controleren. De backend-database kan reeds blootgesteld zijn, of de bedrijfslogica kan onverwacht reageren op een query (bijvoorbeeld door te veel data op te halen). Daarom implementeert de PoC tevens output filtering, waarbij het antwoord van de chatbot wordt geïnspecteerd voordat het over het netwerk naar de eindgebruiker wordt teruggestuurd.
 
 \begin{table}[H]
     \centering
@@ -91,7 +91,7 @@ Zoals gevisualiseerd in de \textit{Input / Output Settings} van Figuur \ref{fig:
 
 \begin{itemize}
     \item \textbf{Inkomend verkeer (Check input):} De parser isoleert het veld \texttt{\$.message} uit de inkomende POST-payload, met een strikte grens van maximaal 2048 karakters.
-    \item \textbf{Uitgaand verkeer (Check output):} De parser isoleert het veld \texttt{\$.text} uit de respons van de chatbot voordat deze de edge verlaat, eveneens gecapped op 2048 karakters.
+    \item \textbf{Uitgaand verkeer (Check output):} De parser isoleert het veld \texttt{\$.text} uit de respons van de chatbot voordat deze de edge verlaat, eveneens maximaal op 2048 karakters.
 \end{itemize}
 
 Deze grens van 2048 karakters is bewust zo ingesteld om ervoor te zorgen dat het volledige bericht wordt geanalyseerd. De werkelijke maximumlengte van de chatbotberichten ligt in de praktijk op 256 voor input en 512 voor output. Moest een gebruiker een bericht langer dan 256 karakters invoeren, zouden de eerste 2048 karakters worden geanalyseerd en zichtbaar zijn in akamai web secuity analytics, terwijl de rest van het bericht (indien aanwezig) zou worden genegeerd. Deze configuratie garandeert dat er geen relevante data buiten de inspectie valt.
@@ -118,7 +118,7 @@ Wanneer er op deze actie wordt doorgeklikt (zie Figuur \ref{fig:akamai_modify}),
     \label{fig:akamai_modify}
 \end{figure}
 
-Wanneer een gebruiker bijvoorbeeld een prompt in een vreemde taal verstuurt en daarmee de regel \texttt{LLM input includes a non-allowed language} triggert, verbreekt Akamai niet simpelweg de verbinding, maar serveert het de edge-respons uit Figuur \ref{fig:akamai_modify}:
+Wanneer een gebruiker bijvoorbeeld een prompt in een vreemde taal verstuurt en daarmee de regel \texttt{LLM input includes a non-allowed language} triggert, verbreekt Akamai niet simpelweg de verbinding, maar geeft het de edge-respons uit Figuur \ref{fig:akamai_modify}:
 
 \begin{lstlisting}[language={}, caption={Gecustomiseerde JSON-payload gegenereerd door de Akamai edge bij een taalovertreding.}, label={lst:akamai_json_resp}, breaklines=true, numbers=left, frame=single]
 {
@@ -128,12 +128,12 @@ Wanneer een gebruiker bijvoorbeeld een prompt in een vreemde taal verstuurt en d
 }
 \end{lstlisting}
 
-Deze specifieke inrichting garandeert dat de javascript-logica in de index.html van de chatbot-frontend de exacte reden van de blokkade direct kan parsen en op een gebruiksvriendelijke manier aan de eindgebruiker kan tonen.
+Deze specifieke instellingen garanderen dat de javascript-logica in de index.html van de chatbot-frontend de exacte reden van de blokkade direct kan parsen en op een gebruiksvriendelijke manier aan de eindgebruiker kan tonen.
 
 \section{Systeemarchitectuur en Integratie}
 \label{sec:systeemarchitectuur_en_integratie}
 
-De architectuur van deze Proof of Concept is ontworpen als een hybride omgeving. Dit houdt in dat de webinterface en de backend-logica draaien binnen geïsoleerde Docker-containers (pods), terwijl de chatbot (Rasa) direct op de server draait in een lokale Python-omgeving (venv). Om dit netwerkverkeer veilig en gestructureerd te routeren, volgt de datastroom een strikt pad. Een verzoek van de eindgebruiker passeert allereerst de Akamai Edge firewall ter inspectie. Daarna komt het gezuiverde verkeer aan op de on-premise host, waar Nginx dient als de centrale verkeersregelaar. Nginx verdeelt deze inkomende verzoeken vervolgens over de juiste Docker-pods en de lokale virtuele omgeving.
+De architectuur van deze Proof of Concept is ontworpen als een hybride omgeving. Dit houdt in dat de webinterface en de backend-logica draaien binnen geïsoleerde Docker-containers (pods), terwijl de chatbot (Rasa) direct op de server draait in een lokale Python-omgeving (venv). Om dit netwerkverkeer veilig en gestructureerd te routeren, volgt de datastroom een strikt pad. Een verzoek van de eindgebruiker passeert allereerst de Akamai Edge firewall ter inspectie. Daarna komt het gezuiverde verkeer aan op de host, waar Nginx dient als de centrale verkeersregelaar. Nginx verdeelt deze inkomende verzoeken vervolgens over de juiste Docker-pods en de lokale virtuele omgeving.
 
 \subsection{Hybride Infrastructuur: Kubernetes-omgeving en Virtual Environments}
 \label{sec:hybride_infrastructuur}
@@ -141,12 +141,12 @@ De architectuur van deze Proof of Concept is ontworpen als een hybride omgeving.
 Voor de uitvoering van de Proof of Concept is gekozen voor een architectuur die schaalbaarheid combineert met isolatie. De ondersteunende infrastructuur is ondergebracht in een Kubernetes-cluster, waarbij de verschillende componenten draaien als Pods. De kern van de digitale assistent draait daarentegen in een specifieke Python-omgeving op de host-machine. Deze hybride opzet bestaat uit de volgende technische componenten:
 
 \begin{itemize}
-    \item \textbf{Frontend-pod}: Een gecontaineriseerde web-widget die de gebruikersinterface ontsluit en de communicatie met de API verzorgt via een Kubernetes Service.
-    \item \textbf{Rasa NLU (Local venv)}: De digitale assistent draait binnen een Python Virtual Environment (venv) op de host-node. Dit stelt de assistent in staat om direct gebruik te maken van de systeembronnen voor intent-extractie en dialoogbeheer zonder de netwerk-overhead van een extra containerlaag binnen het cluster.
+    \item \textbf{Frontend-pod}: Een gecontaineriseerde web-widget die de gebruikersinterface bevat en de communicatie met de API verzorgt via een Kubernetes Service.
+    \item \textbf{Rasa NLU (Local venv)}: De digitale assistent draait binnen een Python Virtual Environment (venv) op de host. Dit stelt de assistent in staat om direct gebruik te maken van de systeembronnen voor intent-extractie en dialoogbeheer zonder de netwerk-overhead van een extra containerlaag binnen het cluster.
     \item \textbf{Backend-pods (Java/Helidon)}: Zes gecontaineriseerde microservices die binnen het Kubernetes-cluster de bedrijfslogica en productgegevens van de 'Sockshop' beheren.
 \end{itemize}
 
-In Listing~\ref{lst:front-end} is de definitie van de frontend-laag weergegeven middels een Kubernetes manifest. Hierin is te zien hoe de frontend als een Deployment en Service wordt gedefinieerd, waarbij Rasa bewust buiten deze omgeving is gelaten.
+In Listing~\ref{lst:front-end} is de definitie van de frontend-laag weergegeven middels een Kubernetes manifest. Hierin is te zien hoe de frontend als een Deployment en Service wordt gedefinieerd.
 
 \begin{lstlisting}[language={}, caption={Kubernetes manifest voor de frontend-laag met custom web-widget}, label={lst:front-end}, breaklines=true, numbers=left,frame=single]
 kind: Service
@@ -211,9 +211,9 @@ spec:
 \subsection{Rasa NLU \& Custom REST Channel Configuratie}
 \label{sec:rasa_nlu_configuratie}
 
-De configuratie van de digitale assistent vormt een cruciaal onderdeel van de beveiligingsketen. In de standaardconfiguratie maakt Rasa vaak gebruik van WebSockets (via Socket.IO) voor real-time communicatie. Tijdens de initiële integratietests werd echter vastgesteld dat de specifieke protocol-framing van Socket.IO (bijvoorbeeld de numerieke 42 prefix voor berichten) de JSON-structuur 'vervuilt'. Dit maakte het voor de Akamai Firewall for AI onmogelijk om de payload semantisch te parsen en de geconfigureerde JSONPath-inspectie op het \texttt{\$.message} veld toe te passen.\\
+De configuratie van de digitale assistent vormt een cruciaal onderdeel van de beveiligingsketen. In de standaardconfiguratie maakt Rasa vaak gebruik van WebSockets (via Socket.IO) voor communicatie. Tijdens de initiële integratietests werd echter vastgesteld dat de specifieke protocol-framing van Socket.IO (bijvoorbeeld de numerieke 42 prefix voor berichten) de JSON-structuur 'vervuilt'. Dit maakte het voor de Akamai Firewall for AI onmogelijk om de payload semantisch te parsen en de geconfigureerde JSONPath-inspectie op het \texttt{\$.message} veld toe te passen.\\
 
-Om deze beperking te omzeilen, is er een architecturale keuze gemaakt voor een Custom REST Channel. De frontend is zodanig geherprogrammeerd dat chatberichten als zuivere HTTP POST-requests worden verzonden. In de credentials.yml van Rasa is hiervoor het rest kanaal geactiveerd. Deze aanpassing garandeert dat de data die de Firewall for AI passeert een valide JSON-object is, zoals weergegeven in Listing~\ref{lst:rasa_json}. Hierdoor kan de firewall de inspectieregels voor XSS, SQLi en PII-detectie met maximale precisie uitvoeren op de werkelijke inhoud van het bericht.
+Om deze beperking te omzeilen, is er de keuze gemaakt voor een Custom REST Channel. De frontend is zodanig geherprogrammeerd dat chatberichten als zuivere HTTP POST-requests worden verzonden. In de credentials.yml van Rasa is hiervoor het rest kanaal geactiveerd. Deze aanpassing garandeert dat de data die de Firewall for AI passeert een valide JSON-object is, zoals weergegeven in Listing~\ref{lst:rasa_json}. Hierdoor kan de firewall de inspectieregels voor bijvoorbeeld XSS, SQLi en PII-detectie met precisie uitvoeren op de werkelijke inhoud van het bericht.
 
 \begin{lstlisting}[language={}, caption={Structuur van de REST-payload voor optimale WAF-inspectie}, label={lst:rasa_json}, breaklines=true, numbers=left,frame=single]
     {        
@@ -225,8 +225,8 @@ Om deze beperking te omzeilen, is er een architecturale keuze gemaakt voor een C
 Dit custom kanaal breidt de standaard REST-functionaliteit van Rasa uit en dient als een kanaal dat twee cruciale taken vervult:
 
 \begin{enumerate}
-    \item \textbf{OpenTelemetry-integratie en Trace Stitching:} Voor elk inkomend POST-verzoek wordt handmatig een OpenTelemetry-span (\texttt{POST /webhook/secure\_rest}) gestart. Door de actuele gedistribueerde tracing-context via het \texttt{inject()}-mechanisme als metadata aan het \texttt{UserMessage}-object mee te geven, wordt gegarandeerd dat de trace niet breekt binnen de Rasa-pijplijn. Dit maakt het mogelijk om de interactie in Dynatrace naadloos te correleren van de edge tot aan de backend microservices.
-    \item \textbf{Context-Aware Data Masking (Privacy-by-Design):} Om te voldoen aan de strikte wetgeving rond dataminimalisatie (GDPR), implementeert het kanaal een controle. Voordat de gebruikersinvoer naar de Dynatrace-span wordt geëxporteerd, raadpleegt het script asynchroon de \texttt{Rasa Tracker API} om de huidige status van de conversatie te controleren. 
+    \item \textbf{OpenTelemetry-integratie en Trace Stitching:} Voor elk inkomend POST-verzoek wordt handmatig een OpenTelemetry-span (\texttt{POST /webhook/secure\_rest}) gestart. Door de gedistribueerde tracing-context via het \texttt{inject()}-mechanisme als metadata aan het \texttt{UserMessage}-object mee te geven, wordt gegarandeerd dat de trace niet breekt binnen de Rasa-pijplijn. Dit maakt het mogelijk om de interactie in Dynatrace te correleren van de edge tot aan de backend microservices.
+    \item \textbf{Context-Aware Data Masking (Privacy-by-Design):} Om te voldoen aan de strikte wetgeving rond dataminimalisatie (GDPR), implementeert de channel een controle. Voordat de gebruikersinvoer naar de Dynatrace-span wordt geëxporteerd, raadpleegt het script asynchroon de \texttt{Rasa Tracker API} om de huidige status van de conversatie te controleren. 
 \end{enumerate}
 
 Wanneer uit deze status blijkt dat de gebruiker zich in een actieve, gevoelige gesprekslus bevindt classificeert het kanaal de invoer als potentieel privacygevoelig. In de Dynatrace-telemetrie wordt de invoertekst dan preventief gemaskeerd en overschreven met de string \texttt{[REDACTED\_DUE\_TO\_ACTIVE\_FORM]}.\\
@@ -347,7 +347,7 @@ class SecureRestInput(InputChannel):
 
 \subsection{Nginx Gateway en Routing}
 
-De Nginx-container dient als de kritieke schakel in de architectuur. Het vormt niet alleen de verbinding met de Akamai Firewall, maar verzorgt ook de routing tussen de verschillende werkomgevingen (pod naar venv). De configuratie is zodanig opgesteld dat inkomend verkeer van de Firewall wordt gedistribueerd naar de juiste laag.\\
+Nginx dient als de kritieke schakel in de architectuur. De configuratie is zodanzoig opgesteld dat inkomend verkeer van de Firewall wordt verdeeld naar de juiste laag.\\
 
 In de onderstaande configuratie is te zien hoe Nginx verzoeken doorstuurt naar de Rasa-service die buiten Docker draait, door gebruik te maken van\\ \texttt{http://localhost:5005/webhooks/secure\_rest/}.
 
@@ -367,9 +367,9 @@ Deze hybride opzet garandeert dat de Akamai AI Firewall volledige zichtbaarheid 
 
 \subsection{Geautomatiseerde Opstart van de Testomgeving}
 
-Omdat de hybride testomgeving bestaat uit meerdere losse componenten—een Kubernetes-cluster met microservices en een lokale Python-omgeving voor de chatbot—vereist het handmatig opstarten veel herhalend typewerk. Om de omgeving voor elke test snel en in een consistente staat op te leveren, is een praktisch Bash-script geschreven.\\
+Omdat de hybride testomgeving bestaat uit meerdere losse componenten zoals een Kubernetes-cluster met microservices en een lokale Python-omgeving voor de chatbot—vereist het handmatig opstarten veel herhalend typewerk. Om de omgeving voor elke test snel en in een consistente staat op te leveren, is een praktisch Bash-script geschreven.\\
 
-Dit opstartscript \texttt{(start\_dev.sh)} automatiseert de volgende dagelijkse acties:
+Dit opstartscript \texttt{(start\_dev.sh)} automatiseert de volgende acties:
 
 \begin{itemize}
     \item \textbf{Netwerktoegang (Port-Forwarding)}: Het legt verbindingen (kubectl port-forward) naar de afzonderlijke Kubernetes-services (zoals de frontend, catalogus en user-API's), zodat deze microservices bereikbaar worden op localhost.
@@ -444,7 +444,7 @@ wait
 \subsection{Interne Configuratie en Logica van de Digitale Assistent}
 \label{sec:interne_configuratie_en_logica}
 
-In tegenstelling tot generatieve taalmodellen (LLM's) die autonoom antwoorden formuleren, werkt deze chatbot op basis van een deterministische, intent-gedreven pijplijn. De configuratie is opgedeeld in drie kerncomponenten:\\
+In tegenstelling tot generatieve taalmodellen (LLM's) die autonoom antwoorden formuleren, werkt deze chatbot op basis van een deterministische, intent-gedreven chatbot. De configuratie is opgedeeld in drie kerncomponenten:\\
 
 \begin{enumerate}
     \item \textbf{Natural Language Understanding (NLU)} Inkomende tekst van de gebruiker wordt door de NLU-engine verwerkt aan de hand van de trainingsdata in het nlu.yml bestand. De engine heeft twee doelen: het classificeren van de intentie van de gebruiker (de intent, bijvoorbeeld \texttt{check\_cart}) en het extraheren van specifieke parameters (de entities, zoals een tag of \texttt{user\_id}).
@@ -458,43 +458,64 @@ class ActionCheckCart(Action):
         return "action_check_cart"
 
     def run(self, dispatcher: CollectingDispatcher,
-        tracker: Tracker,
-        domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        with tracer.start_as_current_span("CheckCart"):
-        # 1. Check the Rasa Slot first (this is where it should be stored)
-        target_id = tracker.get_slot("username")
-        print(tracker.latest_message)
-        # 2. Fallback to metadata just in case it's the very first message
-        if not target_id:
-            metadata = tracker.latest_message.get("metadata", {})
-            target_id = metadata.get("username", "guest")
+        metadata = tracker.latest_message.get("metadata", {})
+        trace_headers = metadata.get("headers", {})
+        context = extract(trace_headers)
 
-        print(f"--- FETCHING CART FOR: {target_id} ---")
+        with tracer.start_as_current_span("CheckCart", context=context) as span:
+            span.set_attribute("gen_ai.provider.name", "rasa")
+            span.set_attribute("gen_ai.operation.name", "chat")
+            user_text = tracker.latest_message.get("text", "")
+            span.set_attribute("gen_ai.input.messages", user_text)
+            message_id = tracker.latest_message.get("message_id", "unknown")
+            span.set_attribute("rasa.message_id", message_id)
+            confidence = tracker.latest_message.get("intent", {}).get("confidence", 0.0)
+            span.set_attribute("rasa.intent.confidence", float(confidence))
+            detected_intent = tracker.latest_message.get("intent", {}).get("name", "unknown")
+            span.set_attribute("rasa.intent", detected_intent)
+            session_id = tracker.sender_id
+            span.set_attribute("dt.rum.instance.id", session_id)
 
-        try:
-            res = requests.get(f"http://127.0.0.1:8082/carts/{target_id}/items", timeout=2)
-            if res.status_code == 200:
-                items = res.json()
-                if items and len(items) > 0:
-                    response = f"I found {len(items)} item(s) in your cart:\n"
-                    for i in items:
-                        name = i.get("itemId")
-                        try:
-                            cat = requests.get(f"http://127.0.0.1:8081/catalogue/{name}", timeout=1).json()
-                            name = cat.get("name", name)
-                        except:
-                            pass
-                        response += f"* {i.get('quantity')}x **{name}**\n"
-                    dispatcher.utter_message(text=response)
+            # 1. Check the Rasa Slot first (this is where it should be stored)
+            target_id = tracker.get_slot("username")
+            # 2. Fallback to metadata just in case it's the very first message
+            if not target_id:
+                metadata = tracker.latest_message.get("metadata", {})
+                target_id = metadata.get("username", "guest")
+
+                span.set_attribute("rasa.username", target_id)
+
+            print(f"--- FETCHING CART FOR: {target_id} ---")
+            try:
+                res = traced_request("GET", f"http://127.0.0.1:8082/carts/{target_id}/items", timeout=2)
+                if res.status_code == 200:
+                    items = res.json()
+                    if items and len(items) > 0:
+                        response = f"I found {len(items)} item(s) in your cart:\n"
+                        for i in items:
+                            name = i.get("itemId")
+                            try:
+                                cat = traced_request("GET", f"http://127.0.0.1:8081/catalogue/{name}", timeout=1).json()
+                                name = cat.get("name", name)
+                            except:
+                                pass
+                            response += f"* {i.get('quantity')}x **{name}**\n"
+                        span.set_attribute("gen_ai.output.messages", response)
+                        dispatcher.utter_message(text=response)
+                    else:
+                        span.set_attribute("gen_ai.output.messages", f"Your cart is empty. (User: {target_id})")
+                        dispatcher.utter_message(text=f"Your cart is empty. (User: {target_id})")
                 else:
-                    dispatcher.utter_message(text=f"Your cart is empty. (User: {target_id})")
-                else:
+                    span.set_attribute("gen_ai.output.messages", "I can't reach your cart right now.")
                     dispatcher.utter_message(text="I can't reach your cart right now.")
             except Exception as e:
                 print(f"Error fetching cart: {e}")
+                span.set_attribute("gen_ai.output.messages", "Warehouse connection error.")
+                span.set_attribute("error.type","timeout")
                 dispatcher.utter_message(text="Warehouse connection error.")
-
             return []
 \end{lstlisting}
 
@@ -507,11 +528,11 @@ Waar de Akamai firewall dient als het preventieve schild aan de rand van het net
 \subsection{Gedistribueerde Tracing via OneAgent}
 \label{sec:gedistribueerde_tracing_via_oneagent}
 
-Voor de implementatie van deze observability-laag is een bewuste architecturale keuze gemaakt. In plaats van handmatige code-instrumentatie per applicatie of een Kubernetes-gebaseerde uitrol, is de Dynatrace OneAgent geïnstalleerd op host-niveau via het OS-servicebeheer (systemctl).\\
+Voor de implementatie van deze observability-laag is een bewuste keuze gemaakt. In plaats van handmatige code-instrumentatie per applicatie of een Kubernetes-gebaseerde uitrol, is de Dynatrace OneAgent geïnstalleerd op host-niveau via het OS-servicebeheer (systemctl).\\
 
-Deze Full-Stack benadering is specifiek ontworpen om de hybride architectuur (zoals beschreven in \ref{sec:systeemarchitectuur_en_integratie}) te ondersteunen. De OneAgent maakt gebruik van auto-instrumentation en injecteert zichzelf automatisch in alle actieve processen op de host. Hierdoor worden zowel de geïsoleerde Docker-containers (Nginx en de Java-backend) als de lokale Python-processen (de Rasa venv) zonder problemen tegelijkertijd geobserveerd.\\
+Deze Full-Stack benadering is specifiek ontworpen om de hybride architectuur (zoals beschreven in \ref{sec:systeemarchitectuur_en_integratie}) te ondersteunen. De OneAgent maakt gebruik van auto-instrumentation en injecteert zichzelf automatisch in alle actieve processen op de host. Hierdoor worden zowel de geïsoleerde Docker-containers (frontend en de Java-backend) als de lokale Python-processen (de Rasa venv) zonder problemen tegelijkertijd geobserveerd.\\
 
-Wanneer een HTTP POST-request de edge-firewall passeert, capteert Dynatrace dit verzoek direct op netwerkniveau. Het systeem genereert vervolgens een trace, waarbij een uniek trace-ID aan het verzoek wordt gekoppeld. Hierdoor wordt de volledige keten visueel en technisch inzichtelijk: van de binnenkomst op de Nginx-gateway, de intentie-extractie binnen de lokale virtuele omgeving, tot aan de resulterende query's in de backend-pod. Dit is cruciaal voor incidentenanalyse, omdat een geblokkeerd of gemanipuleerd verzoek direct kan worden gecorreleerd aan de juiste microservice.
+Wanneer een HTTP POST-request de edge-firewall passeert, capteert Dynatrace dit verzoek direct op netwerkniveau. Het systeem genereert vervolgens een trace, waarbij een uniek trace-ID aan het verzoek wordt gekoppeld. Hierdoor wordt de volledige keten visueel en technisch inzichtelijk: van de binnenkomst op de Nginx-gateway, de intentie-extractie binnen de lokale virtuele omgeving, tot aan de resulterende query's in de backend-pod.
 
 \subsection{Akamai SIEM-Extensie via de Dynatrace ActiveGate}
 \label{sec:akamai_siem_extensie_via_dynatrace_activegate}
@@ -529,7 +550,7 @@ Om de stabiliteit, prestaties en beveiliging van de core-infrastructuur (het Kub
 \end{figure}
 
 \subsubsection*{2. API-Koppeling en Akamai SIEM API-integratie}
-De ActiveGate VM maakt via het beveiligde \textit{Akamai EdgeGrid}-authenticatieprotocol rechtstreeks verbinding met de SIEM API van Akamai (zie Figuur \ref{fig:dt_akamai_config}). De extensie op de VM pollt dit cloud-eindpunt periodiek om nieuwe beveiligingslogs op te halen. Door de configuratie van het unieke SIEM-configuratie-ID van de chatbot, wordt gegarandeerd dat uitsluitend de relevante security-events van de Firewall for AI worden binnengehaald en geanalyseerd.
+De ActiveGate VM maakt via het beveiligde \textit{Akamai EdgeGrid}-authenticatieprotocol rechtstreeks verbinding met de SIEM API van Akamai (zie Figuur \ref{fig:dt_akamai_config}). De extensie op de VM pollt dit cloud-endpoint periodiek om nieuwe beveiligingslogs op te halen. Door de configuratie van het unieke SIEM-configuratie-ID van de chatbot, wordt gegarandeerd dat uitsluitend de relevante security-events van de Firewall for AI worden binnengehaald en geanalyseerd.
 
 \begin{figure}[H]
     \centering
@@ -551,7 +572,7 @@ Zodra de ActiveGate de rauwe security-logs heeft verwerkt, worden de incidenten 
 De netwerkblokkades van de edge worden in de tabel vertaald naar security-events binnen dynatrace.
 
 \subsubsection*{4. Forensische dieptestudie van de geblokkeerde payload}
-Wanneer er binnen de tabel doorklikt naar de details van een specifiek incident, ontsluit Dynatrace de volledige forensische drill-down weergave (zie Figuur \ref{fig:dt_finding_detail}). Omdat de ActiveGate de exacte metadata van de blokkade synchroniseert met de interne applicatie-telemetrie, krijgt de beheerder in dit venster direct inzage in de exacte tekst of invoerstring die door de Firewall for AI is tegengehouden. Dit maakt een snelle en diepgaande root-cause analyse mogelijk zonder dat er handmatig logs uit verschillende systemen gecorreleerd hoeven te worden.
+Wanneer er binnen de tabel doorklikt naar de details van een specifiek incident, laat Dynatrace de volledige forensische drill-down weergave zien (zie Figuur \ref{fig:dt_finding_detail}). Omdat de ActiveGate de exacte metadata van de blokkade synchroniseert met de interne applicatie-telemetrie, krijgt de beheerder in dit venster direct inzage in het exacte bericht die door de Firewall for AI is tegengehouden. Dit maakt een snelle en diepgaande analyse mogelijk zonder dat er handmatig logs uit verschillende systemen gecorreleerd hoeven te worden.
 
 \begin{figure}[H]
     \centering
@@ -564,10 +585,10 @@ Wanneer er binnen de tabel doorklikt naar de details van een specifiek incident,
 \subsection{Privacy-by-Design: Upstream Data Masking en Geheugensanitisatie}
 \label{sec:privacy_by_design}
 
-Hoewel het Custom REST Channel op applicatieniveau al functionele voorzorgsmaatregelen treft, vereist een sluitende \textit{Privacy-by-Design}-architectuur een onafhankelijke, infrastructurele vangnetlaag. Daarom is er een geavanceerde OpenTelemetry Collector uitgerold binnen het Kubernetes-cluster, specifiek geconfigureerd om alle telemetrie van de Rasa-chatbot te verwerken voordat deze naar Dynatrace wordt geëxporteerd. Deze collector dient als een centrale data-sanitizer, waarbij krachtige OTTL-regels worden toegepast om gevoelige informatie te maskeren op basis van zowel gestructureerde metadata als ongestructureerde tekstinhoud.
+Hoewel het Custom REST Channel op applicatieniveau al functionele voorzorgsmaatregelen treft, vereist een sluitende \textit{Privacy-by-Design}-architectuur een onafhankelijke, infrastructurele vangnetlaag. Daarom is er een geavanceerde OpenTelemetry Collector uitgerold binnen het Kubernetes-cluster, specifiek geconfigureerd om alle telemetrie van de Rasa-chatbot te verwerken voordat deze naar Dynatrace wordt geëxporteerd. Deze collector dient als een centrale data-sanitizer, waarbij OTTL-regels worden toegepast om gevoelige informatie te maskeren op basis van zowel gestructureerde metadata als ongestructureerde tekstinhoud.
 
 \subsubsection*{1. Architectuur van de OpenTelemetry Collector Deployment}
-Zoals gedefinieerd in het Kubernetes Custom Resource manifest \texttt{crd-dynatrace-collector.yaml}, is de collector uitgerold als een actieve \texttt{deployment}. De container maakt gebruik van de specifieke \texttt{dynatrace-otel-collector:0.48.0} image en is geconfigureerd met een strikt geheugenlimiet van 512Mi ter voorkoming van resource-uitputting binnen het cluster.\\
+Zoals gedefinieerd in het Kubernetes Custom Resource manifest \texttt{crd-dynatrace-collector.yaml}, is de collector uitgerold als een actieve \texttt{deployment}. De container maakt gebruik van de specifieke \texttt{dynatrace-otel-collector:0.48.0} image en is geconfigureerd met een geheugenlimiet van 512Mi om resource-uitputting binnen het cluster te voorkomen.\\
 
 De ingebouwde \texttt{otlp}-receiver luistert op het netwerkadres \texttt{0.0.0.0} via zowel gRPC (poort 4317) als HTTP REST (poort 4318) om alle inkomende telemetrie-datastromen van de Rasa-engine op te vangen. Alvorens de traces via de \texttt{otlp\_http}-exporter veilig naar de Dynatrace endpoint worden verzonden, passeert de data de \texttt{transform}-processor voor grondige PII-sanitisatie.
 
@@ -576,16 +597,16 @@ De transformatie-pijplijn binnen de collector gebruikt 2 technieken om gestructu
 
 \begin{itemize}
     \item \textbf{De 'Sniper'-aanpak (Gerichte Attribuutverwijdering \& Failsafe):} 
-    Wanneer specifieke backend-microservices of Custom Actions expliciete sleutel-waardeparen exporteren, targets de transformator deze attributen met chirurgische precisie. Indien er gestructureerde velden zoals \texttt{rasa.password}, \texttt{rasa.card\_longNum} of \texttt{rasa.email} in de span-metadata aanwezig zijn, worden de werkelijke waarden direct geëvalueerd en overschreven met statische indicators zoals \texttt{[REDACTED]} of \texttt{[REDACTED\_CC]}.\\
+    Wanneer specifieke backend-microservices of Custom Actions expliciete sleutels exporteren, target de transformator deze attributen. Indien er gestructureerde velden zoals \texttt{rasa.password}, \texttt{rasa.card\_longNum} of \texttt{rasa.email} in de span-metadata aanwezig zijn, worden de werkelijke waarden direct geëvalueerd en overschreven met statische indicators zoals \texttt{[REDACTED]} of \texttt{[REDACTED\_CC]}.\\
     
-    Het attribuut \texttt{rasa.card\_ccv} vormt hierbij een voorbeeld van een \textit{failsafe} binnen een \textit{Defense-in-Depth} strategie. Binnen de applicatielogica van de Custom Actions (\texttt{actions.py}) is reeds ingesteld dat de CVC-waarde bij de registratie van de span handmatig wordt aangepast naar \texttt{[REDACTED\_CVC]}. De transformatieregel binnen de OpenTelemetry Collector dientr hier als de ultieme achtervang: mocht de applicatielaag door een code-wijziging falen in het maskeren, dan garandeert de netwerkperimeter dat de gevoelige driecijferige code alsnog onherroepelijk wordt gezuiverd.
+    Het attribuut \texttt{rasa.card\_ccv} is hierbij een voorbeeld van een \textit{failsafe} binnen een \textit{Defense-in-Depth} strategie. Binnen de applicatielogica van de Custom Actions (\texttt{actions.py}) is reeds ingesteld dat de CVC-waarde bij de registratie van de span handmatig wordt aangepast naar \texttt{[REDACTED\_CVC]}, daarnaast wordt het in de custom Rest channel ook al verborgen doordat het in een formulier wordt ingevuld. De transformatieregel binnen de OpenTelemetry Collector dient hier als de ultieme failsafe: mocht de applicatielaag door een code-wijziging falen in het maskeren, dan garandeert de netwerkperimeter dat de gevoelige driecijferige code alsnog wordt verborgen.
     
     \item \textbf{De 'Shotgun'-aanpak (Regex Patroonvervanging op Vrije Tekst):} 
     De grootste uitdaging bij chatbots ligt in het verwerken van ongestructureerde natuurlijke taal binnen de attributen \texttt{gen\_ai.input.messages} en \texttt{gen\_ai.output.messages}. Omdat eindgebruikers onbewust gevoelige gegevens kunnen typen in het vrije chatveld, voert de processor via \texttt{replace\_pattern} krachtige reguliere expressies uit op de volledige tekstinhoud:
     \begin{enumerate}
         \item \textit{E-mailsanitisatie:} Alle tekststructuren die matchen met het patroon \texttt{[a-zA-Z0-9.\_\%+-]+@[a-zA-Z0-9.-]+\textbackslash \textbackslash .[a-zA-Z]\{2,\}} worden direct aangepast naar \texttt{[REDACTED\_EMAIL]}.
-        \item \textit{Financiële Transactiebeveiliging:} Ketenreeksen van 13 tot 16 opeenvolgende cijfers (met of zonder spaties en koppeltekens) worden gedetecteerd als potentiële creditcardnummers en omgezet naar \texttt{[REDACTED\_CC]}.
-        \item \textit{Context-gevoelige CVC/CVV Filters:} Om te voorkomen dat willekeurige getallen (zoals bestelhoeveelheden) ten onrechte worden gemaskeerd, zoekt de filter specifiek naar contextwoorden. De expressie \texttt{(?i)(cvv|cvc|security code)\textbackslash \textbackslash s*:?\textbackslash \textbackslash s*\textbackslash \textbackslash d\{3,4\}} zorgt ervoor dat uitsluitend combinaties in de directe nabijheid van deze trefwoorden worden gecensureerd tot \texttt{[REDACTED\_CVC]}.
+        \item \textit{Financiële Transactiebeveiliging:} reeksen van 13 tot 16 opeenvolgende cijfers (met of zonder spaties en koppeltekens) worden gedetecteerd als potentiële creditcardnummers en omgezet naar \texttt{[REDACTED\_CC]}.
+        \item \textit{Context-gevoelige CVC/CVV Filters:} Om te voorkomen dat willekeurige getallen (zoals bestelhoeveelheden) fout worden gemaskeerd, zoekt de filter specifiek naar contextwoorden. De expressie \texttt{(?i)(cvv|cvc|security code)\textbackslash \textbackslash s*:?\textbackslash \textbackslash s*\textbackslash \textbackslash d\{3,4\}} zorgt ervoor dat uitsluitend combinaties in de directe nabijheid van deze trefwoorden worden gecensureerd tot \texttt{[REDACTED\_CVC]}.
         \item \textit{Wachtwoord-Scrubbing:} Constructies zoals "my password is ..." worden via hoofdletterongevoelige patroonherkenning gedetecteerd en overschreven met \texttt{[REDACTED\_PASSWORD]}.
     \end{enumerate}
 \end{itemize}
@@ -620,18 +641,15 @@ spec:
         trace_statements:
           - context: span
             statements:
-              # --- THE SNIPER: Wipe known sensitive attributes entirely ---
               - 'set(attributes["rasa.password"], "[REDACTED]") where attributes["rasa.password"] != nil'
               - 'set(attributes["rasa.card_longNum"], "[REDACTED_CC]") where attributes["rasa.card_longNum"] != nil'
               - 'set(attributes["rasa.email"], "[REDACTED_EMAIL]") where attributes["rasa.email"] != nil'
 
-              # --- THE SHOTGUN: Scrub the raw chat history (INPUT) ---
               - 'replace_pattern(attributes["gen_ai.input.messages"], "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", "[REDACTED_EMAIL]")'
               - 'replace_pattern(attributes["gen_ai.input.messages"], "\\b(?:\\d[ -]*?){13,16}\\b", "[REDACTED_CC]")'
               - 'replace_pattern(attributes["gen_ai.input.messages"], "(?i)(cvv|cvc|security code)\\s*:?\\s*\\d{3,4}", "$1: [REDACTED_CVC]")'
               - 'replace_pattern(attributes["gen_ai.input.messages"], "(?i)(password|pass|pw)\\s*(is|:)?\\s*\\S+", "$1 $2 [REDACTED_PASSWORD]")'
 
-              # --- THE SHOTGUN: Scrub the raw chat history (OUTPUT) ---
               - 'replace_pattern(attributes["gen_ai.output.messages"], "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", "[REDACTED_EMAIL]")'
               - 'replace_pattern(attributes["gen_ai.output.messages"], "\\b(?:\\d[ -]*?){13,16}\\b", "[REDACTED_CC]")'
     exporters:
@@ -654,41 +672,39 @@ spec:
 \subsubsection*{3. Applicatieve Geheugensanitisatie via Custom Actions}
 Het technisch afdwingen van gegevensbescherming binnen dit framework beperkt zich niet uitsluitend tot de infrastructurele netwerkperimeter. Een deel van het \textit{Privacy-by-Design} principe is het minimaliseren van de levensduur van gevoelige persoonsgegevens binnen het actieve geheugen van de applicatie zelf.\\
 
-Tijdens de afhandeling van bedrijfskritische interacties binnen de \texttt{Sockshop}-architectuur—zoals gebruikersregistraties of het koppelen van betaalkaarten—worden PII-gegevens tijdelijk opgeslagen in zogenaamde Rasa \textit{Slots}. Deze slots dienen als tijdelijke geheugenlocaties binnen de \textit{Rasa Tracker} om de data te transporteren naar de backend-microservices via API POST-aanroepen.\\
+Tijdens de afhandeling van bedrijfskritische interacties binnen de \texttt{Sockshop}-architectuur worden PII-gegevens tijdelijk opgeslagen in zogenaamde Rasa \textit{Slots}. Deze slots dienen als tijdelijke geheugenlocaties binnen de \textit{Rasa Tracker} om de data te transporteren naar de backend-microservices via API POST-aanroepen.\\
 
-Om te voorkomen dat deze data persistent in het RAM-geheugen aanwezig blijft (wat een risico vormt bij eventuele geheugendumps), implementeert de applicatielogica in \texttt{actions.py} een initiële sanitisatie. Onmiddellijk nadat de transactie succesvol via de Action Server is afgehandeld, dwingt de code een onmiddellijke wis-instructie af door de actieve slots via het \texttt{SlotSet}-commando terug te flushen naar \texttt{None}. Door deze applicatieve slots direct naar \texttt{None} te overschrijven, leeft de ongemaskeerde PII uitsluitend gedurende de milliseconden die vereist zijn voor de backend-API-transactie. 
+Om te voorkomen dat deze data persistent in het RAM-geheugen aanwezig blijft (wat een risico vormt bij eventuele geheugendumps), implementeert de applicatielogica in \texttt{actions.py} een initiële sanitisatie. Onmiddellijk nadat de transactie succesvol via de Action Server is afgehandeld, dwingt de code een onmiddellijke wis-instructie af door de actieve slots via het \texttt{SlotSet}-commando terug te flushen naar \texttt{None}. Door deze applicatieve slots direct naar \texttt{None} te overschrijven, leeft de ongemaskeerde PII enkel gedurende de milliseconden die vereist zijn voor de backend-API-transactie. 
 
 \subsection{Privacy-by-Design en Data Masking}
 
-Omdat de volledige anoniemiserings- en maskeerlogica proactief en upstream is ingericht—binnen het Custom REST Channel (Sectie \ref{sec:rasa_nlu_configuratie})), de Custom Actions (Sectie \ref{sec:interne_configuratie_en_logica})) en de OpenTelemetry Collector (Sectie \ref{sec:privacy_by_design})—is de data-inname op platformniveau binnen Dynatrace \textit{Secure-by-Design}. Dit houdt in dat er binnen de Dynatrace-console zelf geen aanvullende log-maskingregels of filters geconfigureerd hoefden te worden; de telemetrie arriveert immers al volledig ontdaan van inhoudelijke persoonsgegevens op de SaaS-tenant.\\
+Omdat de volledige anoniemiserings- en maskeerlogica proactief en upstream is ingericht binnen het Custom REST Channel (Sectie \ref{sec:rasa_nlu_configuratie})), de Custom Actions (Sectie \ref{sec:interne_configuratie_en_logica})) en de OpenTelemetry Collector (Sectie \ref{sec:privacy_by_design}) is de data-inname op platformniveau binnen Dynatrace \textit{Secure-by-Design}. Dit houdt in dat er binnen de Dynatrace-console zelf geen aanvullende log-maskingregels of filters geconfigureerd hoefden te worden.\\
 
-De native verwerking van deze gecensureerde datastroom binnen het Dynatrace-platform rust op twee fundamentele aspecten:
+De verwerking van deze datastroom binnen het Dynatrace-platform rust op twee fundamentele aspecten:
 
 \begin{enumerate}
-    \item \textbf{Behoud van Context zonder Inhoudelijk Privacyrisico:} Wanneer de OpenTelemetry Collector de traces overdraagt naar de Dynatrace-tenant, worden de gestandaardiseerde attributen (zoals \texttt{gen\_ai.input.messages} en \texttt{gen\_ai.output.messages}) direct geïndexeerd. Omdat de werkelijke PII (zoals e-mailadressen of creditcardnummers) al is overschreven met strings zoals \texttt{[REDACTED\_EMAIL]} of \texttt{[REDACTED\_CC]}, kan Dynatrace deze data veilig opslaan en visualiseren. Er bestaat voor operators of SecOps-beheerders geen enkele technische mogelijkheid om de oorspronkelijke, gevoelige inhoud vanuit de dashboards te reconstrueren of te \textit{reverse-engineeren}.
+    \item \textbf{Behoud van Context zonder Inhoudelijk Privacyrisico:} Wanneer de OpenTelemetry Collector de traces overdraagt naar de Dynatrace-tenant, worden de gestandaardiseerde attributen (zoals \texttt{gen\_ai.input.messages} en \texttt{gen\_ai.output.messages}) direct geïndexeerd. Omdat de werkelijke PII (zoals e-mailadressen of creditcardnummers) al is overschreven met strings zoals \texttt{[REDACTED\_EMAIL]} of \texttt{[REDACTED\_CC]}, kan Dynatrace deze data veilig opslaan en visualiseren. Er bestaat voor operators geen enkele technische mogelijkheid om de oorspronkelijke, gevoelige inhoud vanuit de dashboards te reconstrueren.
     \item \textbf{Doelgerichte Attributie en Aansprakelijkheid via Identificatie:} In tegenstelling tot de inhoudelijke chatberichten, is er bewust voor gekozen om de gebruikersnaam (\texttt{sender\_id} of \texttt{username}) \textit{niet} te maskeren of te verbergen binnen de telemetrie-attributen. Vanuit een compliancestandpunt is het anonimiseren van de gebruikersidentiteit niet gewenst, hierdoor verliezen we de mogelijkheid gebruikers aansprakelijk te stellen voor hun acties binnen de chatbot. 
 \end{enumerate}
 
 \section{Uitvoering van Aanvalssimulaties en Beveiligingstesten}
 \label{sec:aanvalssimulaties_en_beveiligingstesten}
 
-Om de effectiviteit van de geconfigureerde AI/LLM-specifieke regels objectief te valideren, is een reeks geautomatiseerde tests uitgevoerd via de Command-Line Interface (CLI). Deze testfase richt zich specifiek op de risico's omtrent generatieve AI-modellen en applicatie-logica. De primaire focus ligt hierbij op het filteren van inkomend verkeer (Input Filtering).
+Om de effectiviteit van de geconfigureerde regels objectief te valideren, is een reeks geautomatiseerde tests uitgevoerd via de Command-Line Interface (CLI). Deze testfase richt zich specifiek op de risico's omtrent generatieve AI-modellen en applicatie-logica. De primaire focus ligt hierbij op het filteren van inkomend verkeer (Input Filtering).
 
 \subsection{Simulatie: Applicatielaag Injecties en Input Filtering}
 
-De effectiefste verdedigingslinie voor een digitale assistent is het voorkomen dat malafide of ongewenste prompts het taalmodel of de backend überhaupt bereiken. De Firewall dient hier als de absolute poortwachter. Op basis van de regels geïllustreerd in sectie \ref{sec:ai_firewall_rules}) (zoals Toxic content en Code detected), is een iteratief Bash-script opgesteld dat vier specifieke aanvalsvectoren op de input simuleert:
+De effectiefste verdedigingslinie voor een digitale assistent is het voorkomen dat malafide of ongewenste prompts het taalmodel of de backend bereiken. De Firewall dient hier als de toezichthouder. Op basis van de regels geïllustreerd in sectie \ref{sec:ai_firewall_rules}) (zoals Toxic content en Code detected), is een Bash-script opgesteld dat vier specifieke aanvalsvectoren op de input simuleert:
 
 \begin{itemize}
-    \item \textbf{Buffer Exhaustion (LLM input too long)}: Een payload die de maximale karakterlimiet ruim overschrijdt. Dit test de weerbaarheid tegen resource-uitputting, waarbij een aanvaller probeert de NLU-engine te overbelasten met gigantische lappen tekst.
+    \item \textbf{Buffer Exhaustion (LLM input too long)}: Een payload die de maximale karakterlimiet ruim overschrijdt. Dit test de weerbaarheid tegen resource-uitputting, waarbij een aanvaller probeert de NLU-engine te overbelasten met gigantische stukken tekst.
     \item \textbf{Prompt Toxicity (Toxic content on LLM input)}: Invoer die ongepast, agressief of grof taalgebruik bevat, om reputatieschade en ongewenst modelgedrag te voorkomen.
-    \item \textbf{Language Policy Evasion (LLM input includes a non-allowed language)}: Een prompt in een niet-ondersteunde of verboden taal (bijv. Russisch). Aanvallers gebruiken vaak vreemde talen om semantische beveiligingsfilters (die vaak op Engels of Nederlands zijn afgesteld) te omzeilen.
+    \item \textbf{Language Policy Evasion (LLM input includes a non-allowed language)}: Een prompt in een niet-ondersteunde of verboden taal (bijv. Russisch). Aanvallers gebruiken vaak vreemde talen om semantische beveiligingsfilters (die vaak op Engels of Nederlands zijn afgesteld) te omzeilen. Ook al is het NLU-model hier niet vatbaar voor, toont dit toch de effectiviteit van de taalregels binnen de Firewall for AI.
     \item \textbf{Code Injection (Code detected on LLM input)}: Het meesturen van uitvoerbare programmeercode (zoals JavaScript of Python) in het chatbericht om eventuele (stored) XSS of evaluatiefouten te misbruiken.
 \end{itemize}
 
 \begin{lstlisting}[language={bash}, caption={Bash-script voor geautomatiseerde validatie van LLM Input-regels}, label={lst:input.sh}, breaklines=true, numbers=left,frame=single]
 #!/bin/bash
-
-# Iteratieve WAF-validatie voor AI-specifieke invoerbeperkingen
 
 echo "Starten van API Input Filtering simulaties..."
 
@@ -741,7 +757,7 @@ Voor een gebruiker van de chatbot gaat dit er natuurlijk anders uit zien. Hiervo
 
 \subsection{De Rol en Beperkingen van Output Filtering}
 
-Waar de geautomatiseerde CLI-tests succesvol aantonen dat schadelijke input geblokkeerd wordt, hanteert Akamai eveneens beleidsregels voor Output Filtering (zoals "Toxic content on LLM output" en "Code detected on LLM output"). Het valideren van deze output-regels vereist echter een fundamenteel andere, minder automatiseerbare aanpak.\\
+Waar de geautomatiseerde CLI-tests succesvol aantonen dat schadelijke input geblokkeerd wordt, heeft Akamai eveneens beleidsregels voor Output Filtering (zoals ''Toxic content on LLM output'' en ''Code detected on LLM output''). Het valideren van deze output-regels vereist echter een andere, minder automatiseerbare aanpak.\\
 
 Output vormt in de kern pas een direct gevaar wanneer de onderliggende database of backend al blootgesteld is. Een chatbot zal uit zichzelf niet snel malafide code of ernstige PII genereren, tenzij deze data al in de aangesproken systemen zit (bijvoorbeeld door een eerdere Stored XSS-aanval via een onbeveiligd admin-paneel, of door foutieve brondata).\\
 
@@ -749,13 +765,13 @@ Wanneer een gebruiker de chatbot een legitieme vraag stelt, en de bot haalt verv
 
 \section{Dashboards en Rapportage}
 
-De effectiviteit van een gelaagde beveiligingsarchitectuur is sterk afhankelijk van de mate waarin incidenten inzichtelijk worden gemaakt voor beheerders. De integratie van Akamai en Dynatrace genereert een enorme hoeveelheid ruwe telemetrie- en netwerkdata. Om deze data om te zetten in bruikbare actionable insights, zijn op maat gemaakte dashboards geconfigureerd. Deze dashboards vormen de tastbare deliverables van de observability- en security-monitoring en bieden in één oogopslag inzicht in de gezondheid en veiligheid van de applicatie.
+De integratie van Akamai en Dynatrace genereert een enorme hoeveelheid ruwe telemetrie- en netwerkdata. Om deze data om te zetten in bruikbare actionable insights, zijn op maat gemaakte dashboards geconfigureerd. Deze dashboards vormen de tastbare deliverables van de observability- en security-monitoring en bieden in één oogopslag inzicht in de gezondheid en veiligheid van de applicatie.
 
 \subsection{Akamai Security-Dashboard}
 
 Het Akamai Security Center dient als het primaire controlepaneel voor netwerk- en applicatiebeveiliging. Dit dashboard visualiseert alle interventies die door de Edge Firewall zijn uitgevoerd, met een specifieke nadruk op de recent geconfigureerde AI/LLM-regels.\\
 
-Wanneer het script uit sectie \ref{sec:aanvalssimulaties_en_beveiligingstesten}) een malafide payload (zoals een Toxic Content of Code Injection prompt) verstuurt, genereert Akamai direct een Security Event. In het dashboard worden deze events geaggregeerd en geclassificeerd. Het toont niet alleen het totale volume aan geblokkeerde verzoeken, maar biedt ook gedetailleerde threat intelligence. Zo can een beheerder per incident de herkomst (IP-adres en geolocatie), de getriggerde Firewall for AI-regel (bijv. "LLM input includes a non-allowed language") en de unieke Reference Error String inzien. Deze referentiecode correspondeert exact met de 403 Forbidden body die de aanvaller of frontend ontvangt, wat snelle correlatie en root-cause analysis bij false positives mogelijk maakt.\\
+Wanneer het script uit sectie \ref{sec:aanvalssimulaties_en_beveiligingstesten} een malafide payload (zoals een Toxic Content of Code Injection prompt) verstuurt, genereert Akamai direct een Security Event. In het dashboard worden deze events verzameld en geclassificeerd. Het toont niet alleen het totale volume aan geblokkeerde verzoeken, maar biedt ook gedetailleerde threat intelligence. Zo kan een beheerder per incident de herkomst (IP-adres en geolocatie) en de getriggerde Firewall for AI-regel (bijv. "LLM input includes a non-allowed language") zien.\\
 
 \begin{figure}[H]
     \centering
@@ -771,9 +787,9 @@ Waar de beveiligingsomgeving van Akamai puur focust op de buitenkant van de appl
 Het Dynatrace-geheel is opgebouwd uit twee delen:\\
 
 \subsubsection*{1. Live Conversatielogging en AI-Attributen}
-In de centrale logviewer van het dashboard (zie Figuur \ref{fig:dt_ai_observability}) is te zien hoe alle interacties op het endpoint \texttt{/webhook/secure\_rest} binnenkomen voor de \texttt{rasa-core} service. Dynatrace vangt hier de OpenTelemetry-velden op. Per chatbericht wordt de exacte starttijd, de verwerkingstijd (duration) en de status bijgehouden. \\
+In de centrale logviewer van het dashboard (zie Figuur \ref{fig:dt_ai_observability}) is te zien hoe alle interacties op het endpoint \texttt{/webhook/secure\_rest} binnenkomen voor de \texttt{rasa-core} service. Dynatrace vangt hier de OpenTelemetry-velden op. Per chatbericht wordt de exacte starttijd, de verwerkingstijd en de status bijgehouden. \\
 
-Wat deze weergave sterk maakt, is dat de invoer van de gebruiker (\texttt{Gen ai input messages}) Dit zorgt ervoor dat reguliere berichten (zoals \textit{"Good I like to buy some socks"} of intents zoals \texttt{/greet}) volledig leesbaar zijn voor debugging, terwijl de privacygevoelige formulieren via onze eerdere masking-regels netjes worden afgeschermd.
+Dit zorgt ervoor dat normale berichten (zoals \textit{"Good I like to buy some socks"} of intents zoals \texttt{/greet}) volledig leesbaar zijn voor debugging, terwijl de privacygevoelige formulieren via onze eerdere masking-regels netjes worden afgeschermd.
 
 \begin{figure}[H]
     \centering
@@ -783,7 +799,7 @@ Wat deze weergave sterk maakt, is dat de invoer van de gebruiker (\texttt{Gen ai
 \end{figure}
 
 \subsubsection*{2. Distributed Tracing en Latency Breakdown}
-Wanneer een beheerder in de tabel doorklikt op een specifieke interactie, opent Dynatrace de volledige \textit{Distributed Trace} onder het tabblad 'Prompts' (zie Figuur \ref{fig:dt_trace_prompts}). Dit venster legt de exacte route en de responstijden bloot die een chatbericht aflegt door de hybride infrastructuur.\\
+Wanneer een beheerder in de tabel doorklikt op een specifieke interactie, opent Dynatrace de volledige \textit{Distributed Trace} onder het tabblad 'Prompts' (zie Figuur \ref{fig:dt_trace_prompts}).
 
 Aan de linkerkant is de volledige boomstructuur (\textit{call tree}) te zien van het verzoek \texttt{POST /webhook/secure\_rest}, dat in totaal 215.85 ms in beslag neemt. Je ziet precies hoe de chatbot-actie \texttt{AddToCart} (101.55 ms) de backend microservices aanspreekt: eerst wordt een \texttt{GET} uitgevoerd naar de \texttt{CatalogApi} via \texttt{getSocks} (13.14 ms) om het product te controleren, en daarna volgt een \texttt{POST} naar de \texttt{ItemsApi} via \texttt{addItem} (33.79 ms) om de winkelwagen bij te werken. Aan de rechterkant koppelt Dynatrace de exacte tekstinhoud aan deze trace: de gebruiker typte \textit{"add 1 magic sock to my cart"}, waarop de bot antwoordde met \textit{"Added 1x **Holy** to your cart!"}.
 
@@ -797,7 +813,7 @@ Aan de linkerkant is de volledige boomstructuur (\textit{call tree}) te zien van
 \subsubsection*{3. Extractie van Rasa NLU-Metadata}
 Om te controleren of de chatbot de input grammaticaal en semantisch goed heeft begrepen, kan de beheerder doorklikken naar de specifieke metadata (zie Figuur \ref{fig:dt_rasa_metadata}). In dit overzicht worden de OpenTelemetry-attributen uitgelezen die door ons custom channel in de metadata zijn geïnjecteerd.\\
 
-Hier is te zien dat de \texttt{rasa.username} correct is geregistreerd als "user" ten behoeve van de aansprakelijkheid en tracking. Daarnaast toont het platform de unieke \texttt{rasa.message\_id} en de geclassificeerde intentie (\texttt{add\_to\_cart}). De betrouwbaarheid van de NLU-engine wordt direct onderbouwd door de \texttt{rasa.intent.confidence} score, die in dit geval op \texttt{0.9904} ligt. Dit bewijst dat de chatbot met een zekerheid van 99\% heeft bepaald dat de gebruiker een product wilde toevoegen. De chatbot is voorzien van een fallback-mechanisme dat in werking treedt wanneer de confidence score onder 0,7 zakt.
+Hier is te zien dat de \texttt{rasa.username} correct is geregistreerd als "user" voor de aansprakelijkheid en tracking. Daarnaast toont het platform de unieke \texttt{rasa.message\_id} en de geclassificeerde intentie (\texttt{add\_to\_cart}). De betrouwbaarheid van de NLU-engine wordt direct onderbouwd door de \texttt{rasa.intent.confidence} score, die in dit geval op \texttt{0.9904} ligt. Dit bewijst dat de chatbot met een zekerheid van 99\% heeft bepaald dat de gebruiker een product wilde toevoegen. De chatbot is voorzien van een fallback-mechanisme dat in werking treedt wanneer de confidence score onder 0,7 zakt.
 
 \begin{figure}[H]
     \centering
@@ -807,23 +823,23 @@ Hier is te zien dat de \texttt{rasa.username} correct is geregistreerd als "user
 \end{figure}
 
 \subsubsection*{Conclusie van de Dynatrace Integratie}
-Door deze schermen te combineren met het \textit{Detection Findings}-dashboard van Akamai, is de monitoring compleet. Als een gebruiker vastloopt, de chatbot traag reageert of Akamai een kwaadaardig bericht blokkeert, hoeft de beheerder niet langer handmatig te zoeken in verschillende servers. Het dashboard toont direct de relatie tussen de getypte tekst, de beslissing van de firewall en de reactie van de backend-microservices. Dit zorgt voor een snelle foutopsporing en overzicht.\\
+Door deze schermen te combineren met het \textit{Detection Findings}-dashboard van de Akamai extension, is de monitoring compleet. Als een gebruiker vastloopt, de chatbot traag reageert of Akamai een kwaadaardig bericht blokkeert, hoeft de beheerder niet langer handmatig te zoeken in verschillende servers. Het dashboard toont direct de relatie tussen de getypte tekst, de beslissing van de firewall en de reactie van de backend-microservices. Dit zorgt voor een snelle foutopsporing en overzicht.\\
 
 \section{GDPR Compliance en Privacy-by-Design}
 
-Voor een applicatie die natural language verwerkt—zoals een digitale assistent—is gegevensbescherming een complexe uitdaging. Gebruikers kunnen in een vrij tekstveld onbewust, of uit onwetendheid, gevoelige persoonsgegevens (PII) invoeren, zoals wachtwoorden, rijksregisternummers of medische context. Om te voldoen aan de Algemene Verordening Gegevensbescherming (AVG/GDPR), is het principe van Privacy-by-Design vanaf de basis in de hybride architectuur verwerkt.
+Voor een applicatie die natural language verwerkt is gegevensbescherming een complexe uitdaging. Gebruikers kunnen in een vrij tekstveld onbewust, of uit onwetendheid, gevoelige persoonsgegevens (PII) invoeren, zoals wachtwoorden, rijksregisternummers of medische context. Om te voldoen aan de Algemene Verordening Gegevensbescherming (AVG/GDPR), is het principe van Privacy-by-Design vanaf de basis in de hybride architectuur verwerkt.
 
 \subsection{Data Masking en Dataminimalisatie}
 
 Naast de technische werking van de OpenTelemetry-transformator en de \texttt{SlotSet}-functies, moet deze datastroom ook vertaald worden naar concrete privacybescherming. Door vanaf het begin te ontwerpen volgens het \textit{Privacy-by-Design}-principe, is de bescherming van gegevens een vast onderdeel van de opgebouwde architectuur geworden.\\
 
-In de praktijk betekent dit dat dataminimalisatie direct aan de bron wordt toegepast. Gevoelige tekst verlaat de eigen serveromgeving dus simpelweg niet. Omdat deze ruwe data de externe Dynatrace SaaS-omgeving nooit bereikt, is het risico op een datalek binnen het monitoringsplatform uitgesloten. Dit zorgt ervoor dat het IT-team alle nodige meetgegevens behoudt, zonder dat er privacygevoelige informatie vrijkomt.
+In de praktijk betekent dit dat dataminimalisatie direct aan de bron wordt toegepast. Gevoelige tekst verlaat de eigen serveromgeving dus simpelweg niet. Omdat deze ruwe data de externe Dynatrace omgeving nooit bereikt, is het risico op een datalek binnen het monitoringsplatform uitgesloten. Dit zorgt ervoor dat het IT-team alle nodige meetgegevens behoudt, zonder dat er privacygevoelige informatie vrijkomt.
 
 \subsection{Right to be Forgotten}
 
 Eindgebruikers moeten de mogelijkheid hebben om te eisen dat hun persoonsgegevens worden gewist uit de systemen van een organisatie. Binnen deze Proof of Concept is dit recht op gegevenswissing opgedeeld in twee categorieën:
 
 \begin{enumerate}
-    \item \textbf{Functionele Applicatiedata (Volledige naleving):} De backend-architectuur (de Java/Helidon microservices van de \texttt{Sockshop}) is volledig ingericht op het recht op gegevenswissing. Indien een gebruiker een legitiem verzoek indient, is het platform in staat om het volledige gebruikersprofiel te verwijderen.
+    \item \textbf{Functionele Applicatiedata (Volledige naleving):} De backend-architectuur (de Java/Helidon microservices van de \texttt{Sockshop}) zijn volledig ingericht op het recht op gegevenswissing. Indien een gebruiker een legitiem verzoek indient, is het platform in staat om het volledige gebruikersprofiel te verwijderen.
     \item \textbf{Operationele Telemetrie- en Securitylogs (Gecontroleerde retentie):} In tegenstelling is het binnen deze Proof of Concept bewust \textit{niet} mogelijk om historische logs en traces handmatig uit Dynatrace te verwijderen op verzoek van een eindgebruiker. Vanuit een security standpunt is het wissen van audit trails onacceptabel. Indien een kwaadwillende actor een cyberaanval uitvoert, mag deze niet in staat zijn om direct daarna zijn eigen forensische sporen te wissen. 
 \end{enumerate}

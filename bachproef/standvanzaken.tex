@@ -5,7 +5,16 @@ Dit hoofdstuk situeert de bachelorproef binnen het bestaande wetenschappelijke e
 
 De literatuurstudie onderzoekt daarom de onderliggende concepten, architecturen en beveiligingsuitdagingen die relevant zijn voor het ontwerpen van een geïntegreerde oplossing. Eerst wordt de werking en evolutie van AI-chatbots besproken, gevolgd door de architecturale kenmerken van Large Language Models in enterprise-context. Vervolgens worden de belangrijkste securityrisico’s en AI-firewall\-mechanismen behandeld. Daarna wordt ingezoomd op observability, logging en eventcorrelatie binnen gedistribueerde systemen. Tot slot worden privacy- en ethische aspecten besproken en wordt het voorgestelde framework gepositioneerd ten opzichte van bestaande oplossingen.\\
 
+De nadrukkelijke theoretische focus op Large Language Models (LLM’s) binnen deze literatuurstudie komt door het feit dat moderne AI-beveiligingsmechanismen (zoals Akamai’s Firewall for AI) specifiek zijn ontwikkeld om de unieke semantische risico's van generatieve taalmodellen te mitigeren. Voor de praktische uitvoering van de Proof of Concept (PoC) is echter bewust gekozen voor een intent-gebaseerd Natural Language Understanding (NLU)-systeem via Rasa. Omdat een NLU-engine deterministisch opereert op basis van gestructureerde trainingsdata en vooraf gedefinieerde intenties, is de applicatie van nature immuun voor LLM-specifieke kwetsbaarheden zoals \textit{prompt injection} of \textit{jailbreaking}. Mislukte of kwaadaardige instructies resulteren hier simpelweg in een gecontroleerde \textit{intent-fallback}. \\
+
+Een directe transitie naar een LLM zonder een dergelijke NLU-nulmeting vergroot het risico op hallucinaties aanzienlijk. De fundamentele architectuur van generatieve AI stuurt immers primair op taalkundige vloeiendheid en probabilistische coherentie, zonder dat het model een feitelijk of logisch begrip van de onderliggende data bezit \cite{bender2021dangers}. Een NLU-model kan eenvoudige, repetitieve workflows met een minimale inzet van resources afhandelen, waar de directe inzet van een rekenintensief en kostbaar LLM overdreven en inefficiënt zou zijn \cite{ijfmr2024intent}.
+
+Ondanks dat de chatbot door zijn NLU-structuur inherent immuun is voor semantische manipulaties, toont Akamai's Firewall for AI binnen de PoC aan dat hij deze aanvalsvectoren (zoals code-injecties en toxisch taalgebruik) al effectief op de edge kan herkennen en proactief blokkeren nog voordat ze de API bereiken. Rasa dient zo als de ideale, veilige \textit{stepping stone} binnen het gelaagde \textit{Defense-in-Depth} framework. Het maakt het mogelijk om de end-to-end traceerbaarheid via Dynatrace en de semantische inspectie van Akamai op inkomende en uitgaande JSON-payloads objectief te testen en te kalibreren, zonder dat de testresultaten worden verstoord door de inherente onvoorspelbaarheid en dynamische output van een live generatief model. \\
+
+Hoewel de industrie een hybride architectuur aanbeveelt waarin een LLM fungeert als flexibele fallback bij een lage \textit{confidence score} \cite{rasa2026}, is deze generatieve laag binnen de huidige PoC bewust weggelaten. Hiermee wordt voorkomen dat de assistent onvoorspelbaar reageert op willekeurige of out-of-scope gebruikersvragen (zoals \textit{"What time is it?"}), waardoor de gestructureerde NLU via \textit{Flows} de absolute controle over de bedrijfslogica behoudt. Vanaf dit technisch in orde is, kan de organisatie de overstap naar een volledige LLM-omgeving risicoloos en gecontroleerd realiseren.\\
+
 Dit hoofdstuk vormt de conceptuele basis voor de methodologie in het volgende hoofdstuk, waarin wordt toegelicht hoe deze inzichten worden toegepast in het ontwerp en de implementatie van de proof-of-concept.\\
+
 
 \section{Inleiding tot AI-gedreven Conversatiesystemen}
 
@@ -169,18 +178,18 @@ Daardoor volstaat klassieke perimeterbeveiliging niet. Er is nood aan:
     \item Correlatie van security-events met gebruikerssessies
 \end{itemize}
 
-Deze vaststellingen vormen de theoretische onderbouwing voor het implementeren van een AI-firewall in combinatie met een observabilitylaag, zoals voorgesteld in deze bachelorproef.
+Deze vaststellingen vormen de theoretische onderbouwing voor het implementeren van een Firewall for AI in combinatie met een observabilitylaag, zoals voorgesteld in deze bachelorproef.
 
 
 \section{AI-Firewalls en Prompt Filtering}
 
-De opkomst van generatieve AI heeft geleid tot de ontwikkeling van gespecialiseerde beveiligingsmechanismen die specifiek gericht zijn op Large Language Model (LLM)-toepassingen. In tegenstelling tot traditionele beveiligingsoplossingen, die zich focussen op netwerk- of applicatieniveau, richten AI-firewalls zich op semantische analyse van taalinput en -output.\\
+De opkomst van generatieve AI heeft geleid tot de ontwikkeling van gespecialiseerde beveiligingsmechanismen die specifiek gericht zijn op Large Language Model (LLM)-toepassingen. In tegenstelling tot traditionele beveiligingsoplossingen, die zich focussen op netwerk- of applicatieniveau, richten Firewalls for AI zich op semantische analyse van taalinput en -output.\\
 
 Aangezien dreigingen zoals prompt injection en jailbreaking niet gebaseerd zijn op syntactische kwetsbaarheden maar op semantische manipulatie, is een aanvullende beveiligingslaag noodzakelijk \autocite{owasp2023llm}. Dit hoofdstuk bespreekt de werking, architectuur en beperkingen van AI-firewalls binnen enterprise-omgevingen.\\
 
-\subsection{Definitie en Werking van AI-Firewalls}
+\subsection{Definitie en Werking van een Firewall voor AI}
 
-Een AI-firewall kan worden gedefinieerd als een beveiligingscomponent die inkomende en uitgaande interacties met een AI-model analyseert, evalueert en indien nodig filtert voordat deze het model bereiken of de gebruiker terugkoppelen. In tegenstelling tot klassieke firewalls inspecteert een AI-firewall geen netwerkpakketten, maar taalinhoud.\\
+Een Firewall for AI kan worden gedefinieerd als een beveiligingscomponent die inkomende en uitgaande interacties met een AI-model analyseert, evalueert en indien nodig filtert voordat deze het model bereiken of de gebruiker terugkoppelen. In tegenstelling tot klassieke firewalls inspecteert een Firewall for AI geen netwerkpakketten, maar taalinhoud.\\
 
 De kernfunctionaliteiten zijn:
 
@@ -191,18 +200,18 @@ De kernfunctionaliteiten zijn:
     \item Logging van verdachte interacties
 \end{itemize}
 
-Onderzoek benadrukt dat dergelijke beveiligingslagen essentieel zijn om foundation models veilig te integreren in bedrijfsprocessen \autocite{bommasani2021opportunities}.
+Onderzoek benadrukt dat dergelijke beveiligingslagen essentieel zijn om modellen veilig te integreren in bedrijfsprocessen \autocite{bommasani2021opportunities}.
 
 \subsection{Input Filtering en Output Filtering}
 
-AI-firewalls opereren doorgaans op twee niveaus:
+Firewalls for AI werken op twee niveaus:
 
 \paragraph{Input Filtering}
 Hier wordt de gebruikersprompt geanalyseerd voordat deze naar het model wordt doorgestuurd. Mechanismen kunnen bestaan uit:
 \begin{itemize}
     \item Toxiciteitsdetectie
     \item Detectie van prompt injection-patronen
-    \item Analyse van afwijkende instructiestructuren
+    \item Analyse van afwijkende instructies
 \end{itemize}
 
 Door inputvalidatie kan worden voorkomen dat het model ongewenste context ontvangt.
@@ -217,7 +226,7 @@ Output filtering kan onder meer bestaan uit:
     \item Anomaliedetectie in gegenereerde tekst
 \end{itemize}
 
-Deze tweelaagse aanpak sluit aan bij het principe van defence-in-depth.
+Deze aanpak sluit aan bij het principe van defence-in-depth.
 
 \subsection{Detectie van Toxiciteit en Ongepaste Inhoud}
 
@@ -321,12 +330,6 @@ Onderzoekers benadrukken dat het gebrek aan transparantie in AI-modellen (de zog
 
 Een geïntegreerde aanpak waarbij logs, metrics en security-events worden gecorreleerd, is daarom essentieel om betrouwbare en veilige AI-systemen te realiseren.
 
-
-
-
-
-
-
 \section{Logging, Traceerbaarheid en Monitoring van AI-Systemen}
 
 De integratie van AI-systemen binnen enterprise-architecturen vereist een gestructureerde aanpak voor logging en traceerbaarheid. In tegenstelling tot traditionele applicaties genereren Large Language Models (LLM’s) probabilistische output, waardoor het gedrag van het systeem niet volledig deterministisch is. Dit bemoeilijkt auditing, foutanalyse en incidentonderzoek.\\
@@ -335,7 +338,7 @@ Recente literatuur benadrukt dat observability bij AI-systemen verder moet gaan 
 
 \subsection{Structurering van Conversatielogs}
 
-Voor AI-chatbots is het onvoldoende om enkel technische systeemlogs bij te houden. Ook inhoudelijke interacties moeten worden geregistreerd, met inachtneming van privacyprincipes. Een gestructureerde logregistratie omvat doorgaans:
+Voor AI-chatbots is het onvoldoende om enkel technische systeemlogs bij te houden. Ook inhoudelijke interacties moeten worden geregistreerd, rekening houdend met privacyprincipes. Een gestructureerde logregistratie omvat doorgaans:
 
 \begin{itemize}
     \item Gebruikersprompt
@@ -465,7 +468,7 @@ Binnen AI-omgevingen kan een SIEM-achtige aanpak worden toegepast op:
     \item Detecties van AI-firewallcomponenten
 \end{itemize}
 
-Door deze gegevensstromen te centraliseren ontstaat een uniform analysepunt waarin verdachte interactiepatronen kunnen worden geïdentificeerd.
+Door deze gegevensstromen te centraliseren ontstaat een centraal analysepunt waarin verdachte interactiepatronen kunnen worden geïdentificeerd.
 
 \subsection{Detectie van Afwijkende Interactiepatronen}
 
@@ -503,7 +506,7 @@ De combinatie van eventcorrelatie, threat intelligence en observabilitydata maak
 
 De integratie van monitoring- en beveiligingsmechanismen binnen AI-systemen brengt belangrijke privacy- en ethische uitdagingen met zich mee. Aangezien chatbotinteracties vaak persoonsgegevens en gevoelige informatie bevatten, moet het verzamelen, opslaan en analyseren van deze gegevens voldoen aan strikte regelgeving. In Europa vormt de General Data Protection Regulation (GDPR) het centrale kader voor gegevensbescherming en privacy \autocite{gdpr2016}.\\
 
-Het dilemma tussen uitgebreide monitoring enerzijds en privacybescherming anderzijds maakt dit domein bijzonder complex. Langs de ene kant is gedetailleerde logging noodzakelijk voor traceerbaarheid en beveiliging, anderzijds moet dataverwerking beperkt blijven tot wat strikt noodzakelijk is.
+Het dilemma tussen uitgebreide monitoring enerzijds en privacybescherming anderzijds maakt dit bijzonder complex. Langs de ene kant is gedetailleerde logging noodzakelijk voor traceerbaarheid en beveiliging, anderzijds moet dataverwerking beperkt blijven tot wat strikt noodzakelijk is.
 
 \subsection{GDPR en Dataminimalisatie}
 
@@ -544,7 +547,7 @@ Binnen AI-monitoring moet een balans worden gevonden tussen:
     \item Beperking van opslagduur om privacyrisico’s te minimaliseren
 \end{itemize}
 
-Het definiëren van een duidelijk Gegevensbehoudbeleid  is daarom essentieel binnen een compliant systeemarchitectuur.
+Het definiëren van een duidelijk Gegevensbehoudbeleid is daarom essentieel binnen een compliant systeemarchitectuur.
 
 \subsection{Transparantie en Gebruikersrechten}
 
@@ -613,7 +616,7 @@ Typische functionaliteiten zijn:
     \item Bescherming tegen misbruik van AI-modellen en data-exfiltratie
 \end{itemize}
 
-Hoewel dergelijke systemen effectief zijn in het detecteren en blokkeren van verdachte interacties, functioneren zij vaak als een afzonderlijke beveiligingslaag. Hierdoor ontbreekt een directe koppeling met observabilitydata, wat de analyse en reconstructie van incidenten bemoeilijkt.
+Hoewel dergelijke systemen effectief zijn in het detecteren en blokkeren van verdachte interacties, functioneren zij vaak als een afzonderlijke beveiligingslaag. Hierdoor ontbreekt een directe koppeling met observabilitydata, wat de analyse en reconstructie van incidenten moeilijk maakt.
 
 \subsection{Enterprise Monitoring Frameworks}
 
@@ -628,12 +631,6 @@ Deze frameworks bieden:
 \end{itemize}
 
 Hoewel deze systemen sterk zijn in algemene monitoring en analyse, zijn ze niet specifiek ontworpen voor de semantische complexiteit van AI-interacties. Hierdoor ontbreekt vaak ondersteuning voor AI-specifieke dreigingen en interpretatie van conversatie-inhoud.
-
-
-
-
-
-
 
 \subsection{Vergelijkende Analyse van Bestaande Benaderingen}
 

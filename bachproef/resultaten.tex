@@ -6,11 +6,11 @@ In dit hoofdstuk worden de bevindingen van de uitgevoerde Proof of Concept (PoC)
 
 De primaire doelstelling van de Firewall is het effectief neutraliseren van applicatielaag-dreigingen en LLM-specifieke kwetsbaarheden, zonder legitiem verkeer onnodig te verstoren.\\
 
-Tijdens de testfase zijn de geautomatiseerde Bash-scripts (zoals beschreven in sectie~5.5) succesvol afgevuurd op de on-premise infrastructuur. Uit de algemene resultaten blijkt dat de Akamai's Firewall for AI in staat is om de JSON-payloads accuraat te ontleden en kwaadaardige invoer proactief te blokkeren (True Positives).
+Tijdens de testfase zijn de geautomatiseerde Bash-scripts (zoals beschreven in sectie \ref{sec:aanvalssimulaties_en_beveiligingstesten}) succesvol afgevuurd op de on-premise infrastructuur. Uit de algemene resultaten blijkt dat de Akamai's Firewall for AI in staat is om de JSON-payloads accuraat te ontleden en kwaadaardige invoer proactief te blokkeren (True Positives).
 
 \subsection{Samenvatting van de geteste use-cases (True Positives)}
 
-Om de correctheid van de Firewall structureel te valideren, zijn alle acht use-cases uit de risicoanalyse onderworpen aan gesimuleerde aanvallen. Aangezien de firewall is geconfigureerd om bij elke regelovertreding in de preventieve modus in te grijpen, resulteerde elke succesvolle detectie in een blokkade.
+Om de correctheid van de Firewall structureel te valideren, zijn alle 9 use-cases uit de risicoanalyse onderworpen aan gesimuleerde aanvallen. Aangezien de firewall is geconfigureerd om bij elke regelovertreding in te grijpen, resulteerde elke succesvolle detectie in een blokkade.
 
 \begin{table}[h]
     \centering
@@ -33,7 +33,7 @@ Om de correctheid van de Firewall structureel te valideren, zijn alle acht use-c
 
 \subsection{Visueel bewijs van interventie}
 
-Om de mechanismen achter de in Tabel~\ref{tab:waf-results} genoteerde successen te verifiëren, is het cruciaal om de incidenten vanuit twee perspectieven te belichten: het standpunt van de aanvaller en dat van de verdedigende infrastructuur.\\
+Om de mechanismen achter de in Tabel~\ref{tab:waf-results} genoteerde successen te verifiëren, is het cruciaal om de incidenten vanuit twee perspectieven te bekijken: het standpunt van de aanvaller en dat van de verdedigende infrastructuur.\\
 
 Wanneer het Bash-script een malafide payload verstuurt (bijvoorbeeld Toxic content), verbreekt de Firewall de verbinding voordat deze de Nginx-gateway bereikt. Listing~\ref{lst:waf403} toont de respons die de aanvaller ontvangt.
 
@@ -56,11 +56,11 @@ Wanneer we vervolgens in de Web Security Analytics van Akamai gaan kijken zien w
 
 \subsection{Beheer van False Positives en finetuning}
 
-Hoewel de firewall uiterst effectief bleek in het tegenhouden van kwaadaardig verkeer, is het voorkomen van \textit{False Positives}—situaties waarbij legitieme gebruikersinteracties of normale systeemprocessen onterecht worden geblokkeerd—minstens zo cruciaal. Een beveiligingsoplossing mag de bedrijfscontinuïteit en de gebruikerservaring immers niet verstoren. Tijdens de testfase kwamen enkele opvallende incidenten en semantische anomalieën aan het licht die specifieke kalibratie vereisten:
+Hoewel de firewall uiterst effectief bleek in het tegenhouden van kwaadaardig verkeer, is het voorkomen van \textit{False Positives} minstens zo cruciaal. Een beveiligingsoplossing mag de bedrijfscontinuïteit en de gebruikerservaring immers niet verstoren. Tijdens de testfase kwamen enkele opvallende incidenten en semantische anomalieën aan het licht die specifieke kalibratie vereisten:
 
 \begin{itemize}
     \item \textbf{Bedrijfslogica versus Output-restricties (\textit{LLM-DOS-OUT}):} 
-    De beveiligingsregel voor het beperken van overmatige data-uitvoer (\textit{LLM output too long}) stond aanvankelijk te strak geconfigureerd. Wanneer de chatbot een correcte, opgevraagde lijst van de productcatalogus retourneerde (zoals een opsomming van diverse sokken en hun prijzen, zie Figuur \ref{fig:fp_dos_out}), classificeerde de firewall dit als een potentiële \textit{Denial of Service}-respons en werd de uitgaande verbinding verbroken. \textbf{Oplossing:} De maximale drempelwaarde (threshold) voor uitgaande karakterlimieten is verhoogd en nauwkeurig afgestemd op de langst mogelijke, legitieme applicatie-respons.
+    De beveiligingsregel voor het beperken van overmatige data-uitvoer (\textit{LLM output too long}) stond aanvankelijk te strak geconfigureerd. Wanneer de chatbot een correcte, opgevraagde lijst van de productcatalogus retourneerde (zoals een opsomming van diverse sokken en hun prijzen, zie Figuur \ref{fig:fp_dos_out}), classificeerde de firewall dit als een potentiële \textit{Denial of Service}-respons en werd de uitgaande verbinding verbroken. \textbf{Oplossing:} De maximale drempelwaarde voor uitgaande karakterlimieten is verhoogd en nauwkeurig afgestemd op de langst mogelijke, legitieme applicatie-respons.
 
     \begin{figure}[H]
         \centering
@@ -70,7 +70,7 @@ Hoewel de firewall uiterst effectief bleek in het tegenhouden van kwaadaardig ve
     \end{figure}
 
     \item \textbf{Semantische misinterpretatie van gebruikersintentie (\textit{LLM-TOXIC-IN}):} 
-    De AI-engine beoordeelde de legitieme klantvraag \textit{"What cards do you have on me?"} onterecht als toxisch verkeer (zie Figuur \ref{fig:fp_toxic_cards}). De semantische analyse classificeerde het deel "have on me" vermoedelijk als een agressieve uitdaging of dreigement, terwijl de gebruiker slechts informeerde naar zijn opgeslagen data. \textbf{Oplossing:} De striktheid (sensitivity) van de toxiciteitsfilter is handmatig bijgesteld van 'Medium' naar 'Low', wat veel beter aansluit bij de directe taal die in een klantondersteuningscontext wordt gebruikt.
+    De AI-engine beoordeelde de legitieme klantvraag \textit{"What cards do you have on me?"} onterecht als toxisch verkeer (zie Figuur \ref{fig:fp_toxic_cards}). De semantische analyse classificeerde het deel "have on me" vermoedelijk als een agressieve uitdaging of dreigement, terwijl de gebruiker slechts informeerde naar zijn opgeslagen data. \textbf{Oplossing:} De striktheid (sensitivity) van de toxiciteitsfilter is handmatig bijgesteld van 'Medium' naar 'Low'.
 
     \begin{figure}[H]
         \centering
@@ -90,7 +90,7 @@ Hoewel de firewall uiterst effectief bleek in het tegenhouden van kwaadaardig ve
     \end{figure}
 
 \item \textbf{Gedrag bij onbekende taalstructuren (\textit{LLM-DOS-IN}):} 
-    Tijdens de validatie van de taalrestricties bleek dat een korte \textit{Lorem Ipsum}-tekst de semantische detectiemodule van de firewall 'verwarde'. De invoer werd niet herkend als een niet-toegestane taal (\textit{Non-allowed language}), waardoor het bericht ongehinderd de beveiliging passeerde. Dit leidde tot directe verwarring bij de digitale assistent: omdat de NLU-engine deze abstracte invoer niet kon koppelen aan een gekende \textit{intent}, raakte de chatbot gedesoriënteerd en werd een generieke \textit{fallback}-reactie getriggerd (zie Figuur \ref{fig:fp_lorem_bot}). De firewall greep pas in wanneer de tekst aanzienlijk werd uitgebreid (zie Figuur \ref{fig:fp_lorem_ipsum}), maar deed dit uitsluitend op basis van de \textit{LLM input too long}-regel en niet op semantische gronden. Dit toont aan dat korte, abstracte taalstructuren een risico vormen voor de stabiliteit van de interactie-logica.
+    Tijdens de validatie van de taalrestricties bleek dat een korte \textit{Lorem Ipsum}-tekst de semantische detectiemodule van de firewall 'verwarde'. De invoer werd niet herkend als een niet-toegestane taal (\textit{Non-allowed language}), waardoor het bericht ongehinderd de beveiliging passeerde. Dit leidde tot directe verwarring bij de digitale assistent: omdat de NLU-engine deze abstracte invoer niet kon koppelen aan een gekende \textit{intent}, raakte de chatbot gedesoriënteerd en werd een generieke \textit{fallback}-reactie getriggerd (zie Figuur \ref{fig:fp_lorem_bot}). De firewall greep pas in wanneer de tekst aanzienlijk werd uitgebreid (zie Figuur \ref{fig:fp_lorem_ipsum}), maar deed dit uitsluitend op basis van de \textit{LLM input too long}-regel. Dit toont aan dat korte, vreemde taalstructuren een risico vormen voor de stabiliteit van de interactie-logica.
 
     \begin{figure}[H]
         \centering
@@ -130,7 +130,7 @@ Als de gebruikersnaam volledig geanonimiseerd zou zijn, zou het voor een beheerd
 Het recht op gegevenswissing is geëvalueerd als een gedeelde verantwoordelijkheid tussen de applicatielaag en de monitoringlaag:
 \begin{itemize}
     \item \textbf{Applicatiedata:} Een verzoek tot gegevenswissing kan volledig worden uitgevoerd binnen de backend van de \texttt{Sockshop}. Gebruikersprofielen en opgeslagen klantgegevens worden op verzoek direct en definitief uit de Java/Helidon-databases gewist.
-    \item \textbf{Telemetriedata:} In de monitoringomgeving is het bewust onmogelijk gemaakt om ad-hoc logs of traces te wissen. Dit voorkomt dat een aanvaller na een incident zijn eigen forensische sporen kan uitwissen door een verwijderverzoek in te dienen. Compliance wordt hier behaald via de ingestelde retentieperiode: alle telemetrie binnen Dynatrace wordt na maximaal 30 dagen automatisch en verwijderd.
+    \item \textbf{Telemetriedata:} In de monitoringomgeving is het bewust onmogelijk gemaakt om zelf logs of traces te wissen. Dit voorkomt dat een aanvaller na een incident zijn eigen forensische sporen kan uitwissen door een verwijderverzoek in te dienen. Compliance wordt hier behaald via de ingestelde retentieperiode: alle telemetrie binnen Dynatrace wordt na maximaal 30 dagen automatisch en verwijderd.
 \end{itemize}
 
 \section{Gebruiksvriendelijkheid (beheerder perspectief)}
@@ -151,4 +151,4 @@ De integratie via de ActiveGate en de OpenTelemetry Collector zorgt voor een vol
 
 Binnen de weergave van de gedistribueerde traces is de call tree direct inzichtelijk. Bij een chatbot-interactie ziet de beheerder niet alleen de exacte responstijd, maar ook hoe die tijd is verdeeld over de chatbot-actie (\texttt{AddToCart}) en de backend-pods (\texttt{CatalogApi} en \texttt{ItemsApi}). \\
 
-Het feit dat de metadata (zoals de NLU confidence score en de herkende intentie) direct aan de trace is gekoppeld, verhoogt de waarde van deze oplossing. Als de chatbot traag reageert of een verkeerd antwoord geeft, kan een beheerder snel zien of dit te wijten is aan een haperende microservice, een onduidelijke gebruikersprompt, of een ingreep van de AI-firewall aan de edge. Dit versnelt de foutopsporing binnen de hybride architectuur drastisch.
+Het feit dat de metadata (zoals de NLU confidence score en de herkende intentie) direct aan de trace is gekoppeld, verhoogt de waarde van deze oplossing. Als de chatbot traag reageert of een verkeerd antwoord geeft, kan een beheerder snel zien of dit afkomstig is van een haperende microservice, een onduidelijke gebruikersprompt, of een ingreep van de AI-firewall aan de edge. Dit versnelt de foutopsporing binnen de hybride architectuur.

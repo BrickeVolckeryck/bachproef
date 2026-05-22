@@ -48,6 +48,24 @@ De resultaten worden gecategoriseerd op een schaal van 1 tot 25, waarbij scores 
     \end{tabular}
 \end{table}
 
+\subsection{Bepaling van de Waarschijnlijkheid en Impact}%
+\label{sub:bepaling_parameters}
+
+\subsection{Bepaling van de Waarschijnlijkheid en Impact}%
+\label{sub:bepaling_parameters}
+
+Om de risicoscores objectief te onderbouwen, gebruiken we de richtlijnen uit \textcite{nist80030}. De score voor \textit{Waarschijnlijkheid} (1 tot 5) hangt af van hoe complex de aanval is, of er al exploits beschikbaar zijn en hoe kwetsbaar de chatbot is omdat deze direct aan het internet hangt. De verdeling ziet er als volgt uit:
+
+\begin{itemize}
+    \item \textbf{1 (Zeer laag):} De aanval is puur theoretisch of zo ingewikkeld dat er een gecoördineerd team met geavanceerde middelen voor nodig is.
+    \item \textbf{2 (Laag):} Misbruik is mogelijk, maar een aanvaller moet specifieke expertise hebben, de backend-architectuur goed begrijpen en een duidelijke motivatie hebben.
+    \item \textbf{3 (Gemiddeld):} De kwetsbaarheid is bekend en er zijn standaardtactieken voor beschikbaar. Een hacker met gemiddelde ervaring kan de aanval handmatig uitvoeren.
+    \item \textbf{4 (Hoog):} De kwetsbaarheid is eenvoudig te vinden en te misbruiken. Omdat de chatbot direct aan het internet is blootgesteld, is de kans op een opportunistische aanval groot.
+    \item \textbf{5 (Zeer hoog):} De dreiging hoort simpelweg bij het online karakter van de applicatie, of wordt continu aangestuurd door automatische scripts en internetscanners.
+\end{itemize}
+
+De score voor \textit{Impact} (1 tot 5) weerspiegelt de potentiële schade voor de organisatie. Hierbij kijken we naar de vertrouwelijkheid van gegevens (zoals GDPR-compliance), data-integriteit en de beschikbaarheid van de chatbot. Een score van 5 staat voor een kritiek datalek of een volledige systeemuitval.
+
 \section{Analyse van de Baseline versus Mitigatie}
 
 Om de effectiviteit van het voorgestelde framework te bewijzen, worden de drie meest kritieke risico's hieronder nader toegelicht in een "voor-en-na" scenario.
