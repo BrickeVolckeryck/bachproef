@@ -1,4 +1,5 @@
 \chapter{Resultaten}
+\label{ch:resultaten}
 
 In dit hoofdstuk worden de bevindingen van de uitgevoerde Proof of Concept (PoC) gepresenteerd en getoetst aan de evaluatiecriteria die in hoofdstuk~\ref{ch:Evaluatie} zijn vastgelegd. De resultaten zijn enerzijds gebaseerd op de geautomatiseerde aanvalssimulaties en handmatige testen, en anderzijds op de gegenereerde telemetrie in de dashboards van de Akamai Firewall for AI en Dynatrace.
 
@@ -119,7 +120,7 @@ De evaluatie van de privacy- en compliancedoelstellingen laat zien dat een gelaa
 \subsection{Upstream Dataminimalisatie}
 De combinatie van het custom REST-kanaal en de OpenTelemetry Collector bleek in de praktijk volledig effectief om privacygevoelige gegevens buiten de monitoringomgeving te houden. Door de status van de conversatie via de Rasa Tracker API te controleren, maskeert het custom rest channel invoer direct zodra een gebruiker een gevoelig formulier activeert. \\
 
-De OpenTelemetry Collector vult dit aan. Tijdens de tests met e-mailadressen en creditcardnummers in de vrije chatinvoer, heeft de transformator (via de OTTL-regels) alle patronen succesvol veranderd naar \texttt{[REDACTED\_EMAIL]} en \texttt{[REDACTED\_CC]}. Omdat deze gevoelige data de server nooit verlaat, is het risico op data-leakage in de Dynatrace zo goed als uitgesloten.
+De OpenTelemetry Collector vult dit aan. Tijdens de tests met e-mailadressen en creditcardnummers in de vrije chatinvoer, heeft de transformator (via de OTTL-regels) alle patronen succesvol veranderd naar \texttt{[REDACTED\_EMAIL]} en \texttt{[REDACTED\_CC]}. Omdat deze gevoelige data de server nooit verlaat, is het risico op data-leakage in de Dynatrace omgeving zo goed als uitgesloten.
 
 \subsection{Attributie en Aansprakelijkheid}
 Bij de beoordeling van de traceerbaarheid is de bewuste keuze gemaakt om de gebruikersnaam (\texttt{rasa.username}) expliciet \textit{niet} te maskeren. De testresultaten tonen aan dat dit cruciaal is voor de bruikbaarheid van de audit trail. Wanneer er via het aanvalsscript (zie Sectie \ref{sec:aanvalssimulaties_en_beveiligingstesten}) kwaadaardig verkeer werd verstuurd, kon het incident in Dynatrace direct aan een specifieke user worden gekoppeld. \\
@@ -130,12 +131,12 @@ Als de gebruikersnaam volledig geanonimiseerd zou zijn, zou het voor een beheerd
 Het recht op gegevenswissing is geëvalueerd als een gedeelde verantwoordelijkheid tussen de applicatielaag en de monitoringlaag:
 \begin{itemize}
     \item \textbf{Applicatiedata:} Een verzoek tot gegevenswissing kan volledig worden uitgevoerd binnen de backend van de \texttt{Sockshop}. Gebruikersprofielen en opgeslagen klantgegevens worden op verzoek direct en definitief uit de Java/Helidon-databases gewist.
-    \item \textbf{Telemetriedata:} In de monitoringomgeving is het bewust onmogelijk gemaakt om zelf logs of traces te wissen. Dit voorkomt dat een aanvaller na een incident zijn eigen forensische sporen kan uitwissen door een verwijderverzoek in te dienen. Compliance wordt hier behaald via de ingestelde retentieperiode: alle telemetrie binnen Dynatrace wordt na maximaal 30 dagen automatisch en verwijderd.
+    \item \textbf{Telemetriedata:} In de monitoringomgeving is het bewust onmogelijk gemaakt om zelf logs of traces te wissen. Dit voorkomt dat een aanvaller na een incident zijn eigen forensische sporen kan uitwissen door een verwijderverzoek in te dienen. Compliance wordt hier behaald via de ingestelde retentieperiode: alle telemetrie binnen Dynatrace wordt na maximaal 30 dagen automatisch verwijderd.
 \end{itemize}
 
 \section{Gebruiksvriendelijkheid (beheerder perspectief)}
 
-De beheerbaarheid is geëvalueerd vanuit het perspectief van de beheerder. De focus lag op de configuratiegemak van de firewall, de bruikbaarheid van de incidentenlogs en de integratie met het observability-platform.
+De beheerbaarheid is geëvalueerd vanuit het perspectief van de beheerder. De focus lag op het configuratiegemak van de firewall, de bruikbaarheid van de incidentenlogs en de integratie met het observability-platform.
 
 \subsection{Configuratiegemak (Akamai)}
 

@@ -37,7 +37,7 @@ Het onterecht blokkeren van normale gebruikersinvoer (False Positives) vormt hie
 Waar traditionele evaluaties vaak focussen op systeemprestaties, richt deze PoC zich op de zichtbaarheid van de datastromen en de naleving van privacyvereisten (GDPR). Voor dit criterium wordt geëvalueerd of de integratie het gewenste niveau van observability en databescherming behaalt:
 
 \begin{itemize}
-    \item \textbf{End-to-End zichtbaarheid:} Er wordt beoordeeld of de Dynatrace OneAgent in staat is om de volledige interactieketen—van de Nginx-gateway tot de lokale Python-venv en de Java-microservices—succesvol vast te leggen in één overkoepelende trace.
+    \item \textbf{End-to-End zichtbaarheid:} Er wordt beoordeeld of de Dynatrace OneAgent in staat is om de volledige interactieketen succesvol vast te leggen in één overkoepelende trace.
     
     \item \textbf{Privacy-by-Design:} Er wordt kritisch geëvalueerd of de geconfigureerde Data Masking-regels (via reguliere expressies) effectief functioneren. Het doel is te bevestigen dat PII (zoals creditcardgegevens) consequent uit de logbestanden wordt gefilterd voordat deze in de dashboards van Dynatrace belanden.
 \end{itemize}

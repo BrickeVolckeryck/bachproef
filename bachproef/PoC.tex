@@ -97,7 +97,7 @@ Zoals gevisualiseerd in de \textit{Input / Output Settings} van Figuur \ref{fig:
 Deze grens van 2048 karakters is bewust zo ingesteld om ervoor te zorgen dat het volledige bericht wordt geanalyseerd. De werkelijke maximumlengte van de chatbotberichten ligt in de praktijk op 256 voor input en 512 voor output. Moest een gebruiker een bericht langer dan 256 karakters invoeren, zouden de eerste 2048 karakters worden geanalyseerd en zichtbaar zijn in akamai web secuity analytics, terwijl de rest van het bericht (indien aanwezig) zou worden genegeerd. Deze configuratie garandeert dat er geen relevante data buiten de inspectie valt.
 
 \subsubsection*{3. Tuning van Regels en Sensitivity Profile}
-Binnen de policy is een set van tien specifieke AI-regels actief (zie Figuur \ref{fig:akamai_rules}). Om de chatbot-omgeving optimaal te beschermen zonder legitiem gebruikersverkeer te hinderen, is de \textit{Sensitivity} (gevoeligheid) per regel handmatig afgestemd. Aangezien de gebruikte chatbot een NLU is en geen generatief model, is de regel \texttt{LLM Prompt Injection} uitgeschakeld. De actie \texttt{alert} zorgt ervoor dat alle pogingen tot prompt injection direct worden gelogd en gemarkeerd in de Akamai Security Analytics, maar niet automatisch worden geblokkeerd. Dit is de makkelijkste manier om FP's te vermijden, aangezien de NLU niet vatbaar is voor prompt injection.  
+Binnen de policy is een set van tien specifieke AI-regels actief (zie Figuur \ref{fig:akamai_rules}). Om de chatbot-omgeving optimaal te beschermen zonder legitiem gebruikersverkeer te hinderen, is de \textit{Sensitivity} per regel handmatig afgestemd. Aangezien de gebruikte chatbot een NLU is en geen generatief model, is de regel \texttt{LLM Prompt Injection} uitgeschakeld. De actie \texttt{alert} zorgt ervoor dat alle pogingen tot prompt injection direct worden gelogd en gemarkeerd in de Akamai Security Analytics, maar niet automatisch worden geblokkeerd. Dit is de makkelijkste manier om FP's te vermijden, aangezien de NLU niet vatbaar is voor prompt injection.  
 
 \begin{figure}[H]
     \centering
@@ -347,7 +347,7 @@ class SecureRestInput(InputChannel):
 
 \subsection{Nginx Gateway en Routing}
 
-Nginx dient als de kritieke schakel in de architectuur. De configuratie is zodanzoig opgesteld dat inkomend verkeer van de Firewall wordt verdeeld naar de juiste laag.\\
+Nginx dient als de kritieke schakel in de architectuur. De configuratie is zo opgesteld dat inkomend verkeer van de Firewall wordt verdeeld naar de juiste laag.\\
 
 In de onderstaande configuratie is te zien hoe Nginx verzoeken doorstuurt naar de Rasa-service die buiten Docker draait, door gebruik te maken van\\ \texttt{http://localhost:5005/webhooks/secure\_rest/}.
 
@@ -367,7 +367,7 @@ Deze hybride opzet garandeert dat de Akamai AI Firewall volledige zichtbaarheid 
 
 \subsection{Geautomatiseerde Opstart van de Testomgeving}
 
-Omdat de hybride testomgeving bestaat uit meerdere losse componenten zoals een Kubernetes-cluster met microservices en een lokale Python-omgeving voor de chatbot—vereist het handmatig opstarten veel herhalend typewerk. Om de omgeving voor elke test snel en in een consistente staat op te leveren, is een praktisch Bash-script geschreven.\\
+Omdat de hybride testomgeving bestaat uit meerdere losse componenten zoals een Kubernetes-cluster met microservices en een lokale Python-omgeving voor de chatbot-vereist het handmatig opstarten veel herhalend typewerk. Om de omgeving voor elke test snel en in een consistente staat op te leveren, is een praktisch Bash-script geschreven.\\
 
 Dit opstartscript \texttt{(start\_dev.sh)} automatiseert de volgende acties:
 
@@ -572,7 +572,7 @@ Zodra de ActiveGate de rauwe security-logs heeft verwerkt, worden de incidenten 
 De netwerkblokkades van de edge worden in de tabel vertaald naar security-events binnen dynatrace.
 
 \subsubsection*{4. Forensische dieptestudie van de geblokkeerde payload}
-Wanneer er binnen de tabel doorklikt naar de details van een specifiek incident, laat Dynatrace de volledige forensische drill-down weergave zien (zie Figuur \ref{fig:dt_finding_detail}). Omdat de ActiveGate de exacte metadata van de blokkade synchroniseert met de interne applicatie-telemetrie, krijgt de beheerder in dit venster direct inzage in het exacte bericht die door de Firewall for AI is tegengehouden. Dit maakt een snelle en diepgaande analyse mogelijk zonder dat er handmatig logs uit verschillende systemen gecorreleerd hoeven te worden.
+Wanneer er binnen de tabel doorgeklikt wordt naar de details van een specifiek incident, laat Dynatrace de volledige forensische drill-down weergave zien (zie Figuur \ref{fig:dt_finding_detail}). Omdat de ActiveGate de exacte metadata van de blokkade synchroniseert met de interne applicatie-telemetrie, krijgt de beheerder in dit venster direct inzage in het exacte bericht die door de Firewall for AI is tegengehouden. Dit maakt een snelle en diepgaande analyse mogelijk zonder dat er handmatig logs uit verschillende systemen gecorreleerd hoeven te worden.
 
 \begin{figure}[H]
     \centering
@@ -683,7 +683,7 @@ Omdat de volledige anoniemiserings- en maskeerlogica proactief en upstream is in
 De verwerking van deze datastroom binnen het Dynatrace-platform rust op twee fundamentele aspecten:
 
 \begin{enumerate}
-    \item \textbf{Behoud van Context zonder Inhoudelijk Privacyrisico:} Wanneer de OpenTelemetry Collector de traces overdraagt naar de Dynatrace-tenant, worden de gestandaardiseerde attributen (zoals \texttt{gen\_ai.input.messages} en \texttt{gen\_ai.output.messages}) direct geïndexeerd. Omdat de werkelijke PII (zoals e-mailadressen of creditcardnummers) al is overschreven met strings zoals \texttt{[REDACTED\_EMAIL]} of \texttt{[REDACTED\_CC]}, kan Dynatrace deze data veilig opslaan en visualiseren. Er bestaat voor operators geen enkele technische mogelijkheid om de oorspronkelijke, gevoelige inhoud vanuit de dashboards te reconstrueren.
+    \item \textbf{Behoud van Context zonder Inhoudelijk Privacyrisico:} Wanneer de OpenTelemetry Collector de traces overdraagt naar de Dynatrace-tenant, worden de gestandaardiseerde attributen (zoals \texttt{gen\_ai.input.messages} en \texttt{gen\_ai.\-output.messages}) direct geïndexeerd. Omdat de werkelijke PII (zoals e-mailadressen of creditcardnummers) al is overschreven met strings zoals \texttt{[REDACTED\_EMAIL]} of \texttt{[REDACTED\_CC]}, kan Dynatrace deze data veilig opslaan en visualiseren. Er bestaat voor operators geen enkele technische mogelijkheid om de oorspronkelijke, gevoelige inhoud vanuit de dashboards te reconstrueren.
     \item \textbf{Doelgerichte Attributie en Aansprakelijkheid via Identificatie:} In tegenstelling tot de inhoudelijke chatberichten, is er bewust voor gekozen om de gebruikersnaam (\texttt{sender\_id} of \texttt{username}) \textit{niet} te maskeren of te verbergen binnen de telemetrie-attributen. Vanuit een compliancestandpunt is het anonimiseren van de gebruikersidentiteit niet gewenst, hierdoor verliezen we de mogelijkheid gebruikers aansprakelijk te stellen voor hun acties binnen de chatbot. 
 \end{enumerate}
 
@@ -761,7 +761,7 @@ Waar de geautomatiseerde CLI-tests succesvol aantonen dat schadelijke input gebl
 
 Output vormt in de kern pas een direct gevaar wanneer de onderliggende database of backend al blootgesteld is. Een chatbot zal uit zichzelf niet snel malafide code of ernstige PII genereren, tenzij deze data al in de aangesproken systemen zit (bijvoorbeeld door een eerdere Stored XSS-aanval via een onbeveiligd admin-paneel, of door foutieve brondata).\\
 
-Wanneer een gebruiker de chatbot een legitieme vraag stelt, en de bot haalt vervolgens deze reeds 'vervuilde' data uit de database om als antwoord te dienen, dient de Output Filter van de Firewall for AI als een ultieme fail-safe. Het verbreekt de verbinding op het moment dat de geïnfecteerde respons de edge-server passeert. Omdat deze situatie sterk afhankelijk is van vooraf bestaande datacorruptie en complexe, meervoudige aanvalspatronen, is het simuleren van een output-blokkade sterk contextafhankelijk en uitdagend om in een simpel Bash-script te automatiseren. Dergelijke validaties zijn binnen deze Proof of Concept dan ook primair via gerichte, handmatige datamanipulatie-tests in de backend geverifieerd.
+Wanneer een gebruiker de chatbot een legitieme vraag stelt, en de bot haalt vervolgens deze reeds 'vervuilde' data uit de database om als antwoord te dienen, dient de Output Filter van de Firewall for AI als een ultieme fail-safe. Het verbreekt de verbinding op het moment dat de geïnfecteerde respons de edge-server passeert. Omdat deze situatie sterk afhankelijk is van vooraf bestaande datacorruptie en complexe, meervoudige aanvalspatronen, is het simuleren van een output-blokkade sterk contextafhankelijk en uitdagend om in een simpel Bash-script te automatiseren. Dergelijke validaties zijn binnen deze Proof of Concept dan ook via handmatige datamanipulatie-tests in de backend geverifieerd.
 
 \section{Dashboards en Rapportage}
 
@@ -801,7 +801,7 @@ Dit zorgt ervoor dat normale berichten (zoals \textit{"Good I like to buy some s
 \subsubsection*{2. Distributed Tracing en Latency Breakdown}
 Wanneer een beheerder in de tabel doorklikt op een specifieke interactie, opent Dynatrace de volledige \textit{Distributed Trace} onder het tabblad 'Prompts' (zie Figuur \ref{fig:dt_trace_prompts}).
 
-Aan de linkerkant is de volledige boomstructuur (\textit{call tree}) te zien van het verzoek \texttt{POST /webhook/secure\_rest}, dat in totaal 215.85 ms in beslag neemt. Je ziet precies hoe de chatbot-actie \texttt{AddToCart} (101.55 ms) de backend microservices aanspreekt: eerst wordt een \texttt{GET} uitgevoerd naar de \texttt{CatalogApi} via \texttt{getSocks} (13.14 ms) om het product te controleren, en daarna volgt een \texttt{POST} naar de \texttt{ItemsApi} via \texttt{addItem} (33.79 ms) om de winkelwagen bij te werken. Aan de rechterkant koppelt Dynatrace de exacte tekstinhoud aan deze trace: de gebruiker typte \textit{"add 1 magic sock to my cart"}, waarop de bot antwoordde met \textit{"Added 1x **Holy** to your cart!"}.
+Aan de linkerkant is de volledige boomstructuur (\textit{call tree}) te zien van het verzoek \texttt{POST /webhook/secure\_rest}, dat in totaal 215.85 ms in beslag neemt. Je ziet precies hoe de chatbot-actie \texttt{AddToCart} (101.55 ms) de backend microservices aanspreekt: eerst wordt een \texttt{GET} uitgevoerd naar de \texttt{CatalogApi} via \texttt{getSocks} (13.14 ms) om het product te controleren, en daarna volgt een \texttt{POST} naar de \texttt{ItemsApi} via \texttt{addItem} (33.79 ms) om de winkelwagen bij te werken. Aan de rechterkant koppelt Dynatrace de exacte tekstinhoud aan deze trace: de gebruiker typte \textit{"Add 1 magic sock to my cart"}, waarop de bot antwoordde met \textit{"Added 1x **Holy** to your cart!"}.
 
 \begin{figure}[H]
     \centering

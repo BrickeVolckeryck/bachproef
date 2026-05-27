@@ -7,18 +7,18 @@ De literatuurstudie onderzoekt daarom de onderliggende concepten, architecturen 
 
 De nadrukkelijke theoretische focus op Large Language Models (LLM’s) binnen deze literatuurstudie komt door het feit dat moderne AI-beveiligingsmechanismen (zoals Akamai’s Firewall for AI) specifiek zijn ontwikkeld om de unieke semantische risico's van generatieve taalmodellen te mitigeren. Voor de praktische uitvoering van de Proof of Concept (PoC) is echter bewust gekozen voor een intent-gebaseerd Natural Language Understanding (NLU)-systeem via Rasa. Omdat een NLU-engine deterministisch opereert op basis van gestructureerde trainingsdata en vooraf gedefinieerde intenties, is de applicatie van nature immuun voor LLM-specifieke kwetsbaarheden zoals \textit{prompt injection} of \textit{jailbreaking}. Mislukte of kwaadaardige instructies resulteren hier simpelweg in een gecontroleerde \textit{intent-fallback}. \\
 
-Een directe transitie naar een LLM zonder een dergelijke NLU-nulmeting vergroot het risico op hallucinaties aanzienlijk. De fundamentele architectuur van generatieve AI stuurt immers primair op taalkundige vloeiendheid en probabilistische coherentie, zonder dat het model een feitelijk of logisch begrip van de onderliggende data bezit \cite{bender2021dangers}. Een NLU-model kan eenvoudige, repetitieve workflows met een minimale inzet van resources afhandelen, waar de directe inzet van een rekenintensief en kostbaar LLM overdreven en inefficiënt zou zijn \cite{ijfmr2024intent}.
+Een directe transitie naar een LLM zonder een dergelijke NLU-nulmeting vergroot het risico op hallucinaties aanzienlijk. De fundamentele architectuur van generatieve AI stuurt immers primair op taalkundige vloeiendheid en probabilistische coherentie, zonder dat het model een feitelijk of logisch begrip van de onderliggende data bezit \autocite{bender2021dangers}. Een NLU-model kan eenvoudige, repetitieve workflows met een minimale inzet van resources afhandelen, waar de directe inzet van een rekenintensief en kostbaar LLM overdreven en inefficiënt zou zijn \autocite{ijfmr2024intent}.
 
 Ondanks dat de chatbot door zijn NLU-structuur inherent immuun is voor semantische manipulaties, toont Akamai's Firewall for AI binnen de PoC aan dat hij deze aanvalsvectoren (zoals code-injecties en toxisch taalgebruik) al effectief op de edge kan herkennen en proactief blokkeren nog voordat ze de API bereiken. Rasa dient zo als de ideale, veilige \textit{stepping stone} binnen het gelaagde \textit{Defense-in-Depth} framework. Het maakt het mogelijk om de end-to-end traceerbaarheid via Dynatrace en de semantische inspectie van Akamai op inkomende en uitgaande JSON-payloads objectief te testen en te kalibreren, zonder dat de testresultaten worden verstoord door de inherente onvoorspelbaarheid en dynamische output van een live generatief model. \\
 
-Hoewel de industrie een hybride architectuur aanbeveelt waarin een LLM fungeert als flexibele fallback bij een lage \textit{confidence score} \cite{rasa2026}, is deze generatieve laag binnen de huidige PoC bewust weggelaten. Hiermee wordt voorkomen dat de assistent onvoorspelbaar reageert op willekeurige of out-of-scope gebruikersvragen (zoals \textit{"What time is it?"}), waardoor de gestructureerde NLU via \textit{Flows} de absolute controle over de bedrijfslogica behoudt. Vanaf dit technisch in orde is, kan de organisatie de overstap naar een volledige LLM-omgeving risicoloos en gecontroleerd realiseren.\\
+Hoewel de industrie een hybride architectuur aanbeveelt waarin een LLM fungeert als flexibele fallback bij een lage \textit{confidence score}, is deze generatieve laag binnen de huidige PoC bewust weggelaten \autocite{rasa2026}. Hiermee wordt voorkomen dat de assistent onvoorspelbaar reageert op willekeurige of out-of-scope gebruikersvragen (zoals \textit{"What time is it?"}), waardoor de gestructureerde NLU via \textit{Flows} de absolute controle over de bedrijfslogica behoudt. Vanaf dit technisch in orde is, kan de organisatie de overstap naar een volledige LLM-omgeving risicoloos en gecontroleerd realiseren.\\
 
-Dit hoofdstuk vormt de conceptuele basis voor de methodologie in het volgende hoofdstuk, waarin wordt toegelicht hoe deze inzichten worden toegepast in het ontwerp en de implementatie van de proof-of-concept.\\
+Dit hoofdstuk vormt de basis voo het volgende hoofdstuk, waarin wordt toegelicht hoe deze inzichten worden toegepast in het ontwerp en de implementatie van de proof-of-concept.\\
 
 
 \section{Inleiding tot AI-gedreven Conversatiesystemen}
 
-AI-gedreven conversatiesystemen, vaak aangeduid als chatbots of virtuele assistenten, zijn softwaretoepassingen die natuurlijke taal gebruiken om interactie met gebruikers mogelijk te maken. Waar vroege chatbots voornamelijk werkten op basis van vooraf gedefinieerde regels en beslissingsbomen, maken moderne systemen gebruik van machine learning en, meer recent, Large Language Models (LLM’s). Deze evolutie heeft geleid tot een significante toename in flexibiliteit, schaalbaarheid en contextbegrip binnen menselijke-computerinteractie \autocite{adamopoulou2020chatbots}.\\
+AI-gedreven conversatiesystemen, vaak aangeduid als chatbots of virtuele assistenten, zijn softwaretoepassingen die natuurlijke taal gebruiken om interactie met gebruikers mogelijk te maken. Waar vroegere chatbots voornamelijk werkten op basis van vooraf gedefinieerde regels en beslissingsbomen, maken moderne systemen gebruik van machine learning en, meer recent, Large Language Models (LLM’s). Deze evolutie heeft geleid tot een significante toename in flexibiliteit, schaalbaarheid en contextbegrip binnen menselijke-computerinteractie \autocite{adamopoulou2020chatbots}.\\
 
 De opkomst van generatieve AI heeft het toepassingsgebied van chatbots verder uitgebreid. In tegenstelling tot traditionele Natural Language Processing (NLP)-systemen, die vaak beperkt zijn tot intentieherkenning en vooraf geprogrammeerde antwoorden, kunnen LLM-gebaseerde systemen autonoom tekst genereren op basis van context en probabilistische taalmodellen \autocite{brown2020language}. Hierdoor zijn ze in staat om complexere en meer natuurlijke dialogen te voeren.\\
 
@@ -277,7 +277,7 @@ Binnen de context van AI-gedreven systemen, waarbij meerdere lagen (frontend, AP
 
 \subsection{Definitie van Observability}
 
-De term observability vind zijn oorsprong in de controletheorie en verwijst naar hoever de interne toestand van een systeem kan worden afgeleid uit externe outputs. Toegepast op software betekent dit dat ontwikkelaars en beheerders in staat moeten zijn om het gedrag van een systeem te begrijpen op basis van gegenereerde Prestatiegegevens \autocite{ganesan2022observability}.\\
+De term observability vindt zijn oorsprong in de controletheorie en verwijst naar hoever de interne toestand van een systeem kan worden afgeleid uit externe outputs. Toegepast op software betekent dit dat ontwikkelaars en beheerders in staat moeten zijn om het gedrag van een systeem te begrijpen op basis van gegenereerde prestatiegegevens \autocite{ganesan2022observability}.\\
 
 In tegenstelling tot traditionele monitoring, dat vooraf gedefinieerde metrics opvolgt, richt observability zich op het beantwoorden van onverwachte vragen over systeemgedrag. Dit is bijzonder relevant voor AI-systemen, waar afwijkend gedrag niet altijd vooraf voorspelbaar is.
 
@@ -547,7 +547,7 @@ Binnen AI-monitoring moet een balans worden gevonden tussen:
     \item Beperking van opslagduur om privacyrisico’s te minimaliseren
 \end{itemize}
 
-Het definiëren van een duidelijk Gegevensbehoudbeleid is daarom essentieel binnen een compliant systeemarchitectuur.
+Het definiëren van een duidelijk gegevensbehoudbeleid is daarom essentieel binnen een compliant systeemarchitectuur.
 
 \subsection{Transparantie en Gebruikersrechten}
 
