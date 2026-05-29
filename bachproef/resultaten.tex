@@ -20,7 +20,7 @@ Om de correctheid van de Firewall structureel te valideren, zijn alle 9 use-case
     \begin{tabular}{|l|l|l|l|}
         \hline
         \textbf{Categorie} & \textbf{Use-Case} & \textbf{Payload / Testmethode} & \textbf{Resultaat} \\ \hline
-        Input & Code detected & SQLi (' OR 1=1) en XSS (<script>) & Succes (HTTP 403) \\ \hline
+        Input & Code detected & SQLi en XSS & Succes (HTTP 403) \\ \hline
         Input & Input too long & String >256 karakters & Succes (HTTP 403) \\ \hline
         Input & Non-allowed language & Russische prompt & Succes (HTTP 403) \\ \hline
         Input & Toxic content & Agressieve taal & Succes (HTTP 403) \\ \hline

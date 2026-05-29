@@ -3,7 +3,7 @@
 
 \section{Inleiding}
 
-Dit hoofdstuk beschrijft de technische opzet en uitvoering van de Proof of Concept (PoC) ter validatie van het voorgestelde geïntegreerde framework. In het vorige hoofdstuk werd een risicoanalyse uitgevoerd die de kwetsbaarheden van AI-gedreven chatbots in kaart bracht, evenals de noodzaak om interacties traceerbaar te maken conform GDPR en enterprise-standaarden. Dit hoofdstuk vertaalt deze theoretische risicobeoordeling naar een concrete, technische implementatie.\\
+Dit hoofdstuk beschrijft de technische opzet en uitvoering van de Proof of Concept (PoC) ter validatie van het voorgestelde geïntegreerde framework. In het vorige hoofdstuk werd een risicoanalyse uitgevoerd die de kwetsbaarheden van AI-gedreven chatbots in kaart bracht, evenals de noodzaak om interacties traceerbaar te maken en conform met GDPR en enterprise-standaarden. Dit hoofdstuk vertaalt deze theoretische risicobeoordeling naar een concrete, technische implementatie.\\
 
 De testomgeving bestaat uit een digitaal assistent-platform (Rasa) dat geïntegreerd is met een backend-architectuur. Eerst wordt de configuratie van de Akamai AI Firewall besproken, waarbij een onderscheid wordt gemaakt tussen vooraf gedefinieerde beveiligingsregels en applicatiespecifieke restricties. Vervolgens worden de toepassingsgebieden en de architecturale opzet van de chatbot toegelicht. Daarna wordt de geautomatiseerde testopstelling beschreven, waarmee kwaadaardige datastromen op een gecontroleerde manier worden gesimuleerd. Tot slot wordt de traceerbaarheid en observability binnen Dynatrace behandeld, inclusief het maskeren van gevoelige data en het correleren van incidenten.
 
@@ -120,7 +120,7 @@ Wanneer er op deze actie wordt doorgeklikt (zie Figuur \ref{fig:akamai_modify}),
 
 Wanneer een gebruiker bijvoorbeeld een prompt in een vreemde taal verstuurt en daarmee de regel \texttt{LLM input includes a non-allowed language} triggert, verbreekt Akamai niet simpelweg de verbinding, maar geeft het de edge-respons uit Figuur \ref{fig:akamai_modify}:
 
-\begin{lstlisting}[language={}, caption={Gecustomiseerde JSON-payload gegenereerd door de Akamai edge bij een taalovertreding.}, label={lst:akamai_json_resp}, breaklines=true, numbers=left, frame=single]
+\begin{lstlisting}[language={}, caption={gepersonaliseerde JSON-payload gegenereerd door de Akamai edge bij een taalovertreding.}, label={lst:akamai_json_resp}, breaklines=true, numbers=left, frame=single]
 {
   "ai_firewall": "block",
   "reason": "unsupported_language",
@@ -225,7 +225,7 @@ Om deze beperking te omzeilen, is er de keuze gemaakt voor een Custom REST Chann
 Dit custom kanaal breidt de standaard REST-functionaliteit van Rasa uit en dient als een kanaal dat twee cruciale taken vervult:
 
 \begin{enumerate}
-    \item \textbf{OpenTelemetry-integratie en Trace Stitching:} Voor elk inkomend POST-verzoek wordt handmatig een OpenTelemetry-span (\texttt{POST /webhook/secure\_rest}) gestart. Door de gedistribueerde tracing-context via het \texttt{inject()}-mechanisme als metadata aan het \texttt{UserMessage}-object mee te geven, wordt gegarandeerd dat de trace niet breekt binnen de Rasa-pijplijn. Dit maakt het mogelijk om de interactie in Dynatrace te correleren van de edge tot aan de backend microservices.
+    \item \textbf{OpenTelemetry-integratie en Trace Stitching:} Voor elk inkomend POST-verzoek wordt handmatig een OpenTelemetry-span (\texttt{POST /webhook/secure\_rest}) gestart. Door de gedistribueerde tracing-context via het \texttt{inject()}-mechanisme als metadata aan het \texttt{UserMessage}-object mee te geven, wordt gegarandeerd dat de trace niet breekt binnen de Rasa-pipeline. Dit maakt het mogelijk om de interactie in Dynatrace te correleren van de edge tot aan de backend microservices.
     \item \textbf{Context-Aware Data Masking (Privacy-by-Design):} Om te voldoen aan de strikte wetgeving rond dataminimalisatie (GDPR), implementeert de channel een controle. Voordat de gebruikersinvoer naar de Dynatrace-span wordt geëxporteerd, raadpleegt het script asynchroon de \texttt{Rasa Tracker API} om de huidige status van de conversatie te controleren. 
 \end{enumerate}
 
@@ -374,7 +374,7 @@ Dit opstartscript \texttt{(start\_dev.sh)} automatiseert de volgende acties:
 \begin{itemize}
     \item \textbf{Netwerktoegang (Port-Forwarding)}: Het legt verbindingen (kubectl port-forward) naar de afzonderlijke Kubernetes-services (zoals de frontend, catalogus en user-API's), zodat deze microservices bereikbaar worden op localhost.
     \item \textbf{Rasa Initialisatie}: Het activeert de lokale Python virtual environment (venv) en start zowel de Rasa NLU-engine als de bijbehorende action server op in de achtergrond.
-    \item \textbf{Schoon Afsluiten (Graceful Shutdown)}: Dankzij een trap-functie in Bash worden al deze achtergrondprocessen aan het eind van een test netjes in één keer afgesloten zodra de gebruiker Ctrl+C indrukt.
+    \item \textbf{Schoon Afsluiten (Graceful Shutdown)}: Dankzij een trap-functie in Bash worden al deze achtergrondprocessen aan het eind van een test proper in één keer afgesloten zodra de gebruiker Ctrl+C indrukt.
 \end{itemize}
 
 \begin{lstlisting}[language={bash}, caption={Bash-script voor het efficiënt opstarten en afsluiten van de hybride PoC-omgeving}, label={lst:opstartscript}, breaklines=true, numbers=left,frame=single]
@@ -571,8 +571,8 @@ Zodra de ActiveGate de rauwe security-logs heeft verwerkt, worden de incidenten 
 
 De netwerkblokkades van de edge worden in de tabel vertaald naar security-events binnen dynatrace.
 
-\subsubsection*{4. Forensische dieptestudie van de geblokkeerde payload}
-Wanneer er binnen de tabel doorgeklikt wordt naar de details van een specifiek incident, laat Dynatrace de volledige forensische drill-down weergave zien (zie Figuur \ref{fig:dt_finding_detail}). Omdat de ActiveGate de exacte metadata van de blokkade synchroniseert met de interne applicatie-telemetrie, krijgt de beheerder in dit venster direct inzage in het exacte bericht die door de Firewall for AI is tegengehouden. Dit maakt een snelle en diepgaande analyse mogelijk zonder dat er handmatig logs uit verschillende systemen gecorreleerd hoeven te worden.
+\subsubsection*{4. Studie van de geblokkeerde payload}
+Wanneer er binnen de tabel doorgeklikt wordt naar de details van een specifiek incident, laat Dynatrace de volledige forensische drill-down weergave zien (zie Figuur \ref{fig:dt_finding_detail}). Omdat de ActiveGate de exacte metadata van de blokkade synchroniseert met de interne applicatie-telemetrie, krijgt de beheerder in dit venster direct inzage in het exacte bericht dat door de Firewall for AI is tegengehouden. Dit maakt een snelle en diepgaande analyse mogelijk zonder dat er handmatig logs uit verschillende systemen gecorreleerd hoeven te worden.
 
 \begin{figure}[H]
     \centering
@@ -593,7 +593,7 @@ Zoals gedefinieerd in het Kubernetes Custom Resource manifest \texttt{crd-dynatr
 De ingebouwde \texttt{otlp}-receiver luistert op het netwerkadres \texttt{0.0.0.0} via zowel gRPC (poort 4317) als HTTP REST (poort 4318) om alle inkomende telemetrie-datastromen van de Rasa-engine op te vangen. Alvorens de traces via de \texttt{otlp\_http}-exporter veilig naar de Dynatrace endpoint worden verzonden, passeert de data de \texttt{transform}-processor voor grondige PII-sanitisatie.
 
 \subsubsection*{2. OTTL Transformatielogica: De 'Sniper'- versus 'Shotgun'-methodiek}
-De transformatie-pijplijn binnen de collector gebruikt 2 technieken om gestructureerde en ongestructureerde data binnen de span-context te zuiveren:
+De transformation-pipeline binnen de collector gebruikt 2 technieken om gestructureerde en ongestructureerde data binnen de span-context te zuiveren:
 
 \begin{itemize}
     \item \textbf{De 'Sniper'-aanpak (Gerichte Attribuutverwijdering \& Failsafe):} 
@@ -746,7 +746,7 @@ Bij de uitvoering van dit testscript wordt verwacht dat de firewall de interne l
     \label{fig:input}
 \end{figure}
 
-Voor een gebruiker van de chatbot gaat dit er natuurlijk anders uit zien. Hiervoor heb ik in de index.html een stuk javascript toegevoegd dat het duidelijk maakt aan de gebruiker dat zijn prompt geblokkeerd is en waarom.
+Voor een gebruiker van de chatbot gaat dit er natuurlijk anders uit zien. Hiervoor is in de index.html een stuk javascript toegevoegd dat het duidelijk maakt aan de gebruiker dat zijn prompt geblokkeerd is en waarom.
 
 \begin{figure}[H]
     \centering

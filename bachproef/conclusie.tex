@@ -24,7 +24,7 @@ Voor het mitigatie-pad (detectie $\rightarrow$ analyse $\rightarrow$ containment
 
 Een cruciaal resultaat van dit onderzoek is dat de koppeling tussen observability-data en security-events technisch gerealiseerd kan worden met behulp van de \texttt{rxVisitor}-cookie. Deze cookie dient als de unieke sleutel (correlation ID) waarmee de volledige interactiestroom tussen de eindgebruiker, de chatbot en de firewall over alle componenten heen kan worden gecorreleerd. Hierdoor is het mogelijk om het volledige gesprek chronologisch inzichtelijk te maken, inclusief eventuele geblokkeerde interacties.\\
 
-Dit geïntegreerde framework levert hiermee een betrouwbare vorm van \textit{audit trail} en \textit{chain-of-evidence} op. Omdat elk event en elke blokkering aan een specifieke sessie gekoppeld is, is de reconstructie van incidenten achteraf reproduceerbaar en juridisch verdedigbaar.\\
+Dit geïntegreerde framework levert hiermee een betrouwbare vorm van \textit{audit trail} en \textit{chain-of-evidence} op. Aangezien elk event en elke blokkering aan een specifieke sessie gekoppeld is, is de reconstructie van incidenten achteraf reproduceerbaar en juridisch verdedigbaar.\\
 
 Tegelijkertijd voldoet deze architectuur strikt aan de privacy-by-design en GDPR-richtlijnen. Door het toepassen van technieken zoals data masking en een gecontroleerde logverwerking op de verzamelde conversatiegegevens, wordt de verwerking van persoonsgegevens effectief beperkt tot het absolute minimum. Dit bewijst dat volledige technische traceerbaarheid en de nodige privacyvereisten elkaar niet tegenwerken.
 
